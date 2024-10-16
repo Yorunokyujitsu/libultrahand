@@ -317,7 +317,7 @@ namespace tsl {
 
     static size_t tableBGAlpha = 10;
     static Color tableBGColor = RGB888("#303030", tableBGAlpha);
-    static Color sectionTextColor = RGB888("#e9ff40");
+    static Color sectionTextColor = RGB888("#E9FF40");
     static Color infoTextColor = RGB888(whiteColor);
     static Color warningTextColor = RGB888("#FF7777");
 
@@ -331,6 +331,9 @@ namespace tsl {
     /* ASAP Color */
     static Color accentTextColor = RGB888("#00FFDD");
     static Color sectitleTextColor = RGB888("#5DC5FB");
+    static Color custom1TextColor = RGB888("#0593D3");
+    static Color custom2TextColor = RGB888("#EF6F53");
+    static Color custom3TextColor = RGB888("#EF5369");
 
     static void initializeThemeVars() { // NOTE: This needs to be called once in your application.
         // Fetch all theme settings at once from the INI file
@@ -425,6 +428,12 @@ namespace tsl {
             trackBarSliderMalleableColor = getColor("trackbar_slider_malleable_color");
             trackBarFullColor = getColor("trackbar_full_color");
             trackBarEmptyColor = getColor("trackbar_empty_color");
+
+            accentTextColor = getColor("accent_text_color");
+            sectitleTextColor = getColor("sectiontitle_text_color");
+            custom1TextColor = getColor("custom1_text_color");
+            custom2TextColor = getColor("custom2_text_color");
+            custom3TextColor = getColor("custom3_text_color");
         }
     }
     
@@ -433,7 +442,7 @@ namespace tsl {
     static void initializeUltrahandSettings() { // only needed for regular overlays
 
         std::string defaultLang = parseValueFromIniSection(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, DEFAULT_LANG_STR);
-        defaultLang = defaultLang.empty() ? "en" : defaultLang;
+        defaultLang = defaultLang.empty() ? "ko" : defaultLang;
 
         #ifdef UI_OVERRIDE_PATH
         
@@ -2886,7 +2895,8 @@ namespace tsl {
                 
                 #if IS_LAUNCHER_DIRECTIVE
                 bool isUltrahand = (this->m_title == CAPITAL_ULTRAHAND_PROJECT_NAME && 
-                                    this->m_subtitle.find("Ultrahand Package") == std::string::npos && 
+                                    this->m_subtitle.find("ㅤ") == std::string::npos &&
+                                    this->m_subtitle.find(" : ") == std::string::npos &&
                                     this->m_subtitle.find("Ultrahand Script") == std::string::npos);
 
                 if (isUltrahand) {
@@ -2942,7 +2952,7 @@ namespace tsl {
                     x = 20;
                     y = 52;
                     fontSize = 32;
-                    if (this->m_subtitle.find("Ultrahand Package") != std::string::npos) {
+                    if (this->m_subtitle.find("ㅤ") != std::string::npos || this->m_subtitle.find(" : ") != std::string::npos) {
                         const std::string& title = this->m_title;
                         titleColor = defaultPackageColor; // Default to green
                         
@@ -2974,6 +2984,15 @@ namespace tsl {
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "white") {
                             titleColor = Color(0xF, 0xF, 0xF, 0xF);
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom1") {
+                            titleColor = tsl::custom1TextColor;
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom2") {
+                            titleColor = tsl::custom2TextColor;
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom3") {
+                            titleColor = tsl::custom3TextColor;
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "ultra") {
                             for (char letter : title) {

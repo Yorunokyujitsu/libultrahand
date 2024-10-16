@@ -51,6 +51,7 @@ namespace ult {
         std::string about;
         std::string credits;
         std::string color;
+        std::string override;
         
         void clear() {
             title.clear();
@@ -59,6 +60,7 @@ namespace ult {
             about.clear();
             credits.clear();
             color.clear();
+            override.clear();
         }
     };
     

@@ -344,7 +344,7 @@ namespace ult {
     std::string FIRMWARE = "펌웨어";
     std::string BOOTLOADER = "부트로더";
     std::string HARDWARE = "하드웨어";
-    std::string MEMORY = "시스템 메모리";
+    std::string MEMORY = "메모리";
     std::string VENDOR = "제조사";
     std::string MODEL = "P/N";
     std::string STORAGE = "저장소";
@@ -354,7 +354,7 @@ namespace ult {
     std::string MEMORY_EXPANSION = "확장";
     std::string REBOOT_REQUIRED = "*적용을 위해, 재부팅 필요";
     std::string LOCAL_IP = "로컬 IP";
-    std::string WALLPAPER = "웰페이퍼";
+    std::string WALLPAPER = "배경";
     std::string THEME = "테마";
     std::string DEFAULT = "기본";
     std::string ROOT_PACKAGE = "기본 패키지";
@@ -363,7 +363,7 @@ namespace ult {
     std::string CLEAN_VERSIONS = "정리된 버전";
     std::string OVERLAY_VERSIONS = "오버레이 버전";
     std::string PACKAGE_VERSIONS = "패키지 버전";
-    std::string OPAQUE_SCREENSHOTS = "스크린샷";
+    std::string OPAQUE_SCREENSHOTS = "스크린샷 배경";
 
     std::string PACKAGE_INFO = "패키지 정보";
     std::string _TITLE = "이름";
@@ -396,10 +396,11 @@ namespace ult {
     std::string SEC_IFTX = "안내:";
     std::string SEC_WNTX = "주의:";
     std::string SEC_NULL = "";
-    std::string SEC_LINE = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ ㅤㅤㅤㅤㅤㅤ";
+    std::string SEC_LINE = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  ㅤㅤㅤㅤㅤㅤ";
 
     /* Mainmenu */
     std::string SEC_TXT1 = "시스템 확인 및 울트라핸드의 설정을 변경";
+    std::string SYS_MMRY = "시스템 메모리";
     std::string SEC_HDR1 = "Ultrahand+";
     std::string SEC_HDR2 = "Tester+";
     std::string CFG_MISC = "추가 설정";
@@ -413,7 +414,7 @@ namespace ult {
     std::string UPT_NTC3 = "Extra Setting+, System Clock+, OC Toolkit";
     std::string UPT_NTC4 = "MissonControl, SaltyNX, sys-con";
     std::string UPT_NTC5 = "EdiZon, emuiibo, FPSLocker, ReverseNX-RT";
-    std::string UPT_NTC6 = "Status-Monitor, sys-clk";
+    std::string UPT_NTC6 = "Status-Monitor, sys-clk-oc";
     std::string UPT_NTC7 = "JKSV, Linkalho, sys-clk-manager";
     std::string UPT_NTC8 = "다운로드 이후 자동으로 재부팅합니다";
     std::string UTH_INFO = "Ultrahand Overlay 정보";
@@ -569,7 +570,7 @@ namespace ult {
         FIRMWARE = "펌웨어";
         BOOTLOADER = "부트로더";
         HARDWARE = "하드웨어";
-        MEMORY = "시스템 메모리";
+        MEMORY = "메모리";
         VENDOR = "제조사";
         MODEL = "P/N";
         STORAGE = "저장소";
@@ -579,7 +580,7 @@ namespace ult {
         MEMORY_EXPANSION = "확장";
         REBOOT_REQUIRED = "*적용을 위해, 재부팅 필요";
         LOCAL_IP = "로컬 IP";
-        WALLPAPER = "웰페이퍼";
+        WALLPAPER = "배경";
         THEME = "테마";
         DEFAULT = "기본";
         ROOT_PACKAGE = "기본 패키지";
@@ -588,7 +589,7 @@ namespace ult {
         CLEAN_VERSIONS = "정리된 버전";
         OVERLAY_VERSIONS = "오버레이 버전";
         PACKAGE_VERSIONS = "패키지 버전";
-        OPAQUE_SCREENSHOTS = "스크린샷";
+        OPAQUE_SCREENSHOTS = "스크린샷 배경";
         ON = "\uE14B";
         OFF = "\uE14C";
         PACKAGE_INFO = "패키지 정보";
@@ -668,10 +669,11 @@ namespace ult {
         SEC_IFTX = "안내:";
         SEC_WNTX = "주의:";
         SEC_NULL = "";
-        SEC_LINE = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯ ㅤㅤㅤㅤㅤㅤ";
+        SEC_LINE = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  ㅤㅤㅤㅤㅤㅤ";
 
         /* Mainmenu */
         SEC_TXT1 = "시스템 확인 및 울트라핸드의 설정을 변경";
+        SYS_MMRY = "시스템 메모리";
         SEC_HDR1 = "Ultrahand+";
         SEC_HDR2 = "Tester+";
         CFG_MISC = "추가 설정";
@@ -685,7 +687,7 @@ namespace ult {
         UPT_NTC3 = "Extra Setting+, System Clock+, OC Toolkit";
         UPT_NTC4 = "MissonControl, SaltyNX, sys-con";
         UPT_NTC5 = "EdiZon, emuiibo, FPSLocker, ReverseNX-RT";
-        UPT_NTC6 = "Status-Monitor, sys-clk";
+        UPT_NTC6 = "Status-Monitor, sys-clk-oc";
         UPT_NTC7 = "JKSV, Linkalho, sys-clk-manager";
         UPT_NTC8 = "다운로드 이후 자동으로 재부팅합니다";
         UTH_INFO = "Ultrahand Overlay 정보";
@@ -853,6 +855,7 @@ namespace ult {
 
             /* Mainmenu */
             {"SEC_TXT1", &SEC_TXT1},
+            {"SYS_MMRY", &SYS_MMRY},
             {"SEC_HDR1", &SEC_HDR1},
             {"SEC_HDR2", &SEC_HDR2},
             {"CFG_MISC", &CFG_MISC},
@@ -1142,7 +1145,7 @@ namespace ult {
         {"click_alpha", "13"},
         {"click_color", "#2CD2B1"},
         {"progress_alpha", "7"},
-        {"progress_color", "#253EF7"},
+        {"progress_color", "#2597F7"},
         {"invert_bg_click_color", FALSE_STR},
         {"disable_selection_bg", FALSE_STR},
         {"disable_colorful_logo", FALSE_STR},
@@ -1150,10 +1153,11 @@ namespace ult {
         {"logo_color_2", whiteColor},
         {"dynamic_logo_color_1", "#C9F1FF"},
         {"dynamic_logo_color_2", "#4BCDF9"},
-
-        /* ASAP Color */
         {"accent_text_color", "#00FFDD"},
-        {"sectiontitle_text_color", "#5DC5FB"}
+        {"sectiontitle_text_color", "#5DC5FB"},
+        {"custom1_text_color", "#0593D3"},
+        {"custom2_text_color", "#EF6F53"},
+        {"custom3_text_color", "#EF5369"}
     };
     
     bool isNumericCharacter(char c) {

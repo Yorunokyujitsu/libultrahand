@@ -332,6 +332,7 @@ namespace ult {
 
     /* Mainmenu */
     extern std::string SEC_TXT1;
+    extern std::string SYS_MMRY;
     extern std::string SEC_HDR1;
     extern std::string SEC_HDR2;
     extern std::string CFG_MISC;
