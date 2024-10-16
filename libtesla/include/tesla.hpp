@@ -257,8 +257,8 @@ namespace tsl {
     static bool disableColorfulLogo = false;
 
     #if IS_LAUNCHER_DIRECTIVE
-    static Color logoColor1 = RGB888(whiteColor);
-    static Color logoColor2 = RGB888("#F7253E");
+    static Color logoColor1 = RGB888("#EAEAEA");
+    static Color logoColor2 = RGB888(whiteColor);
     #endif
 
     static size_t defaultBackgroundAlpha = 13;
@@ -327,7 +327,11 @@ namespace tsl {
     static Color trackBarSliderMalleableColor = RGB888("#A0A0A0");
     static Color trackBarFullColor = RGB888("#00FFDD");
     static Color trackBarEmptyColor = RGB888("#404040");
-    
+
+    /* ASAP Color */
+    static Color accentTextColor = RGB888("#00FFDD");
+    static Color sectitleTextColor = RGB888("#5DC5FB");
+
     static void initializeThemeVars() { // NOTE: This needs to be called once in your application.
         // Fetch all theme settings at once from the INI file
         auto themeData = getParsedDataFromIniFile(THEME_CONFIG_INI_PATH);
@@ -6717,7 +6721,7 @@ namespace tsl {
     
     
     namespace impl {
-        static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION
+        /* static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION */
         static const char* ULTRAHAND_CONFIG_FILE = "/config/ultrahand/config.ini"; // CUSTOM MODIFICATION
         
         /**
@@ -6784,11 +6788,11 @@ namespace tsl {
          */
         [[maybe_unused]] static void updateCombo(u64 keys) {
             tsl::cfg::launchCombo = keys;
-            hlp::ini::updateOverlaySettings({
+            /* hlp::ini::updateOverlaySettings({
                 { TESLA_STR, { // CUSTOM MODIFICATION
                     { KEY_COMBO_STR, tsl::hlp::keysToComboString(keys) }
                 }}
-            }, TESLA_CONFIG_FILE);
+            }, TESLA_CONFIG_FILE); */
             hlp::ini::updateOverlaySettings({
                 { ULTRAHAND_PROJECT_NAME, { // CUSTOM MODIFICATION
                     { KEY_COMBO_STR, tsl::hlp::keysToComboString(keys) }
@@ -6931,7 +6935,7 @@ namespace tsl {
                         #if IS_LAUNCHER_DIRECTIVE
                         if (updateMenuCombos) {
                             setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, ULTRAHAND_COMBO_STR);
-                            setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, ULTRAHAND_COMBO_STR);
+                            /* setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, ULTRAHAND_COMBO_STR); */
                             updateMenuCombos = false;
                         }
                         #endif
@@ -6947,8 +6951,8 @@ namespace tsl {
                     #if IS_LAUNCHER_DIRECTIVE
                     else if (updateMenuCombos && (shData->keysHeld & tsl::cfg::launchCombo2) == tsl::cfg::launchCombo2) {
                         tsl::cfg::launchCombo = tsl::cfg::launchCombo2;
-                        setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, TESLA_COMBO_STR);
-                        setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, TESLA_COMBO_STR);
+                        setIniFileValue(ULTRAHAND_CONFIG_INI_PATH, ULTRAHAND_PROJECT_NAME, KEY_COMBO_STR, ULTRAHAND_COMBO_STR/*TESLA_COMBO_STR*/);
+                        /* setIniFileValue(TESLA_CONFIG_INI_PATH, TESLA_STR, KEY_COMBO_STR, TESLA_COMBO_STR); */
                         eventFire(&shData->comboEvent);
                         updateMenuCombos = false;
                     }

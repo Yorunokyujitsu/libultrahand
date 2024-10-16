@@ -27,10 +27,18 @@ namespace ult {
     const std::string ROOT_PATH = "sdmc:/";
     const std::string SETTINGS_PATH = ROOT_PATH + "config/ultrahand/";
     const std::string ULTRAHAND_CONFIG_INI_PATH = SETTINGS_PATH + "config.ini";
-    const std::string TESLA_CONFIG_INI_PATH = ROOT_PATH + "config/tesla/config.ini";
+    /* const std::string TESLA_CONFIG_INI_PATH = ROOT_PATH + "config/tesla/config.ini"; */
     const std::string LANG_PATH = SETTINGS_PATH + "lang/";
     const std::string THEMES_PATH = SETTINGS_PATH + "themes/";
     const std::string WALLPAPERS_PATH = SETTINGS_PATH + "wallpapers/";
+    const std::string TESTER_PATH = ROOT_PATH;
+    const std::string ATMO_PATH = "sdmc:/atmosphere/";
+    const std::string BACKUP_PATH = "sdmc:/backup/";
+    const std::string HEKATE_PATH = "sdmc:/bootloader/";
+    const std::string CONFIG_PATH = "sdmc:/config/";
+    const std::string FWD_PATH = "sdmc:/nsp/";
+    const std::string SWITCH_PATH = "sdmc:/switch/";
+    const std::string WBOOT_PATH = "sdmc:/warmboot_mariko/";
     
     std::string THEME_CONFIG_INI_PATH = SETTINGS_PATH + "theme.ini";
     std::string WALLPAPER_PATH = SETTINGS_PATH + "wallpaper.rgba";
@@ -46,16 +54,16 @@ namespace ult {
     const std::string DOWNLOADS_PATH = SETTINGS_PATH + "downloads/";
     const std::string EXPANSION_PATH = SETTINGS_PATH + "expansion/";
     const std::string FUSE_DATA_INI_PATH = SETTINGS_PATH + "fuse.ini";
-    const std::string PACKAGE_PATH = ROOT_PATH + "switch/.packages/";
+    const std::string PACKAGE_PATH = ROOT_PATH + "config/ASAP-assist/Packages/";
     const std::string OVERLAY_PATH = ROOT_PATH + "switch/.overlays/";
     const std::string OVERLAYS_INI_FILEPATH = SETTINGS_PATH + "overlays.ini";
     const std::string PACKAGES_INI_FILEPATH = SETTINGS_PATH + "packages.ini";
     
-    const std::string ULTRAHAND_REPO_URL = "https://github.com/ppkantorski/Ultrahand-Overlay/";
-    const std::string INCLUDED_THEME_FOLDER_URL = "https://raw.githubusercontent.com/ppkantorski/Ultrahand-Overlay/main/themes/";
-    const std::string LATEST_RELEASE_INFO_URL = "https://raw.githubusercontent.com/ppkantorski/Ultrahand-Overlay/main/RELEASE.ini";
-    const std::string NX_OVLLOADER_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/download/v1.0.8/nx-ovlloader.zip";
-    const std::string NX_OVLLOADER_PLUS_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/download/v1.0.8/nx-ovlloader+.zip";
+    const std::string ULTRAHAND_REPO_URL = "https://github.com/Yorunokyujitsu/archive_aio/";
+    const std::string INCLUDED_THEME_FOLDER_URL = "https://raw.githubusercontent.com/Yorunokyujitsu/Ultrahand-Overlay/main/themes/";
+    const std::string LATEST_RELEASE_INFO_URL = "https://raw.githubusercontent.com/Yorunokyujitsu/Ultrahand-Overlay/main/RELEASE.ini";
+    const std::string NX_OVLLOADER_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/latest/download/nx-ovlloader.zip";
+    const std::string NX_OVLLOADER_PLUS_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/latest/download/nx-ovlloader+.zip";
     
     const std::string LAUNCH_ARGS_STR = "launch_args";
     const std::string USE_LAUNCH_ARGS_STR = "use_launch_args";
@@ -64,11 +72,11 @@ namespace ult {
     const std::string USE_LOGGING_STR = "use_logging";
     #endif
     
-    const std::string TESLA_COMBO_STR = "L+DDOWN+RS";
-    const std::string ULTRAHAND_COMBO_STR = "ZL+ZR+DDOWN";
+    /* const std::string TESLA_COMBO_STR = "ZL+ZR+DDOWN"; */
+    const std::string ULTRAHAND_COMBO_STR = "L+DDOWN+RS";
     
     const std::string FUSE_STR = "fuse";
-    const std::string TESLA_STR = "tesla";
+    /* const std::string TESLA_STR = "tesla"; */
     const std::string ERISTA_STR = "erista";
     const std::string MARIKO_STR = "mariko";
     const std::string KEY_COMBO_STR = "key_combo";
@@ -119,6 +127,16 @@ namespace ult {
     const std::string THEME_STR = "theme";
     const std::string NOT_AVAILABLE_STR = "Not available";
     const std::string BUFFERS = "buffers";
+    
+    /* ASAP STR */
+    const std::string NOT_OVERRIDE_STR = "Do not override";
+    const std::string AUTO_STR = "Auto";
+    const std::string CUSTOMCOL1_STR = "custom1";
+    const std::string CUSTOMCOL2_STR = "custom2";
+    const std::string CUSTOMCOL3_STR = "custom3";
+    const std::string SECTITLE_STR = "sectioninfo";
+    const std::string WARNING_STR = "warning";
+    const std::string ACCENT_STR = "accent";
     
     // Pre-defined symbols
     const std::string OPTION_SYMBOL = "\u22EF";
