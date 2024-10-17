@@ -418,7 +418,7 @@ namespace ult {
     std::string UPT_NTC7 = "JKSV, Linkalho, sys-clk-manager";
     std::string UPT_NTC8 = "다운로드 이후 자동으로 재부팅합니다";
     std::string UTH_INFO = "Ultrahand Overlay 정보";
-    std::string DF_THEME = "BLACK - Basic White";
+    std::string DF_THEME = "BLACK-BasicWhite";
 
     /* Current Package - Launcher+ */
     std::string LPLS_CFW = "에뮤/시스낸드 (커펌)";
@@ -691,7 +691,7 @@ namespace ult {
         UPT_NTC7 = "JKSV, Linkalho, sys-clk-manager";
         UPT_NTC8 = "다운로드 이후 자동으로 재부팅합니다";
         UTH_INFO = "Ultrahand Overlay 정보";
-        DF_THEME = "BLACK - Basic White";
+        DF_THEME = "BLACK-BasicWhite";
 
         /* Current Package - Launcher+ */
         LPLS_CFW = "에뮤/시스낸드 (커펌)";
