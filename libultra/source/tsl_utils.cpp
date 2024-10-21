@@ -239,8 +239,8 @@ namespace ult {
         { HidNpadButton_Right, "DRIGHT", "\uE0EE" }, { HidNpadButton_Down, "DDOWN", "\uE0EC" },
         { HidNpadButton_A, "A", "\uE0E0" }, { HidNpadButton_B, "B", "\uE0E1" },
         { HidNpadButton_X, "X", "\uE0E2" }, { HidNpadButton_Y, "Y", "\uE0E3" },
-        { HidNpadButton_StickL, "LS", "\uE08A" }, { HidNpadButton_StickR, "RS", "\uE08B" },
-        { HidNpadButton_Minus, "MINUS", "\uE0B6" }, { HidNpadButton_Plus, "PLUS", "\uE0B5" }
+        { HidNpadButton_StickL, "LS", "\uE104" }, { HidNpadButton_StickR, "RS", "\uE105" },
+        { HidNpadButton_Minus, "MINUS", "\uE0F2" }, { HidNpadButton_Plus, "PLUS", "\uE0F1" }
     }};
 
     std::unordered_map<std::string, std::string> createButtonCharMap() {
