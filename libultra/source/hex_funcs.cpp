@@ -645,14 +645,14 @@ namespace ult {
     
         
     /**
-     * @brief Extracts the version string from a binary file.
-     *
-     * This function reads a binary file and searches for a version pattern
-     * in the format "v#.#.#" (e.g., "v1.2.3").
-     *
-     * @param filePath The path to the binary file.
-     * @return The version string if found; otherwise, an empty string.
-     */
+    * @brief Extracts the version string from a binary file.
+    *
+    * This function reads a binary file and searches for a version pattern
+    * in the format "v#.#.#" (e.g., "v1.2.3"). It returns the version without the "v".
+    *
+    * @param filePath The path to the binary file.
+    * @return The version string if found; otherwise, an empty string.
+    */
     std::string extractVersionFromBinary(const std::string &filePath) {
     #if NO_FSTREAM_DIRECTIVE
         // Step 1: Open the binary file
@@ -660,17 +660,17 @@ namespace ult {
         if (!file) {
             return ""; // Return empty string if file cannot be opened
         }
-    
+
         // Get the file size
         fseek(file, 0, SEEK_END);
         std::streamsize size = ftell(file);
         fseek(file, 0, SEEK_SET);
-    
+
         // Read the entire file into a buffer
         std::vector<uint8_t> buffer(size);
         size_t bytesRead = fread(buffer.data(), sizeof(uint8_t), size, file);
         fclose(file); // Close the file after reading
-    
+
         if (bytesRead != static_cast<size_t>(size)) {
             return ""; // Return empty string if reading fails
         }
@@ -680,16 +680,16 @@ namespace ult {
         if (!file.is_open()) {
             return ""; // Return empty string if file cannot be opened
         }
-    
+
         std::streamsize size = file.tellg();
         file.seekg(0, std::ios::beg);
-    
+
         std::vector<uint8_t> buffer(size);
         if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
             return ""; // Return empty string if reading fails
         }
     #endif
-    
+
         // Step 2: Search for the pattern "v#.#.#"
         const char* data = reinterpret_cast<const char*>(buffer.data());
         for (std::streamsize i = 0; i < size; ++i) {
@@ -697,12 +697,12 @@ namespace ult {
                 std::isdigit(data[i + 1]) && data[i + 2] == '.' && 
                 std::isdigit(data[i + 3]) && data[i + 4] == '.' && 
                 std::isdigit(data[i + 5])) {
-    
-                // Extract the version string
-                return std::string(data + i, 6); // Return the version string
+
+                // Extract the version string without 'v'
+                return std::string(data + i + 1, 5); // Skip 'v' and return the rest (e.g., "1.2.3")
             }
         }
-    
+
         return "";  // Return empty string if no match is found
     }
 }

@@ -208,8 +208,8 @@ namespace tsl {
         
         return Color(redValue >> 4, greenValue >> 4, blueValue >> 4, alpha);
     }
-    
-    
+
+
     namespace style {
         constexpr u32 ListItemDefaultHeight         = 70;       ///< Standard list item height
         constexpr u32 MiniListItemDefaultHeight     = 40;       ///< Mini list item height
@@ -235,8 +235,8 @@ namespace tsl {
     static bool disableColorfulLogo = false;
 
     #if IS_LAUNCHER_DIRECTIVE
-    static Color logoColor1 = RGB888(ult::whiteColor);
-    static Color logoColor2 = RGB888("F7253E");
+    static Color logoColor1 = RGB888("EAEAEA");
+    static Color logoColor2 = RGB888(ult::whiteColor);
     #endif
 
     static size_t defaultBackgroundAlpha = 13;
@@ -255,7 +255,7 @@ namespace tsl {
     static Color defaultPackageColor = RGB888(ult::whiteColor);//RGB888("#00FF00");
     static Color defaultScriptColor = RGB888("FF33FF");
     static Color clockColor = RGB888(ult::whiteColor);
-    static Color batteryColor = RGB888("ffff45");
+    static Color batteryColor = RGB888("FFFF45");
     static Color versionTextColor = RGB888("AAAAAA");
     static Color onTextColor = RGB888("00FFDD");
     static Color offTextColor = RGB888("AAAAAA");
@@ -296,7 +296,7 @@ namespace tsl {
 
     static size_t tableBGAlpha = 10;
     static Color tableBGColor = RGB888("303030", tableBGAlpha);
-    static Color sectionTextColor = RGB888("e9ff40");
+    static Color sectionTextColor = RGB888("E9FF40");
     static Color infoTextColor = RGB888(ult::whiteColor);
     static Color warningTextColor = RGB888("FF7777");
 
@@ -306,7 +306,14 @@ namespace tsl {
     static Color trackBarSliderMalleableColor = RGB888("A0A0A0");
     static Color trackBarFullColor = RGB888("00FFDD");
     static Color trackBarEmptyColor = RGB888("404040");
-    
+
+    /* ASAP Color */
+    static Color accentTextColor = RGB888("00FFDD");
+    static Color sectitleTextColor = RGB888("5DC5FB");
+    static Color custom1TextColor = RGB888("0593D3");
+    static Color custom2TextColor = RGB888("EF6F53");
+    static Color custom3TextColor = RGB888("EF5369");
+
     static void initializeThemeVars() { // NOTE: This needs to be called once in your application.
         // Fetch all theme settings at once from the INI file
         auto themeData = ult::getParsedDataFromIniFile(ult::THEME_CONFIG_INI_PATH);
@@ -395,6 +402,12 @@ namespace tsl {
             infoTextColor = getColor("table_info_text_color");
             warningTextColor = getColor("warning_text_color");
 
+            accentTextColor = getColor("accent_text_color");
+            sectitleTextColor = getColor("sectiontitle_text_color");
+            custom1TextColor = getColor("custom1_text_color");
+            custom2TextColor = getColor("custom2_text_color");
+            custom3TextColor = getColor("custom3_text_color");
+
 
             trackBarSliderColor = getColor("trackbar_slider_color");
             trackBarSliderBorderColor = getColor("trackbar_slider_border_color");
@@ -409,7 +422,7 @@ namespace tsl {
     static void initializeUltrahandSettings() { // only needed for regular overlays
 
         std::string defaultLang = ult::parseValueFromIniSection(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::DEFAULT_LANG_STR);
-        defaultLang = defaultLang.empty() ? "en" : defaultLang;
+        defaultLang = defaultLang.empty() ? "ko" : defaultLang;
 
         #ifdef UI_OVERRIDE_PATH
         
@@ -1545,7 +1558,7 @@ namespace tsl {
             const stbtt_fontinfo& getStandardFont() const {
                 return m_stdFont;
             }
-            
+
             
             inline std::pair<u32, u32> drawString(const std::string& originalString, bool monospace, const s32 x, const s32 y, const s32 fontSize, const Color& color, const ssize_t maxWidth = 0) {
                 
@@ -1690,10 +1703,10 @@ namespace tsl {
                 size_t startPos = 0;
                 size_t textLength = text.length();
                 u32 segmentWidth, segmentHeight;
-                
+            
                 // Create a set for fast symbol lookup
                 std::unordered_set<std::string> specialSymbolSet(specialSymbols.begin(), specialSymbols.end());
-                
+            
                 // Variables initialized outside the loop
                 size_t specialPos = std::string::npos;
                 size_t foundLength = 0;
@@ -1701,12 +1714,12 @@ namespace tsl {
                 std::string normalTextStr; // To hold the text before the special symbol
                 std::string specialSymbolStr; // To hold the special symbol text
                 size_t pos; // To store position of the special symbol in the text
-                
+            
                 while (startPos < textLength) {
                     specialPos = std::string::npos;
                     foundLength = 0;
                     foundSymbol = std::string_view(); // Reset the foundSymbol
-                    
+            
                     // Find the nearest special symbol
                     for (const auto& symbol : specialSymbolSet) {
                         pos = text.find(symbol, startPos);
@@ -1716,13 +1729,13 @@ namespace tsl {
                             foundSymbol = symbol;
                         }
                     }
-                    
+            
                     // If no special symbol is found, draw the rest of the text
                     if (specialPos == std::string::npos) {
                         drawString(text.substr(startPos), false, x, y, fontSize, defaultColor);
                         break;
                     }
-                    
+            
                     // Draw the segment before the special symbol
                     if (specialPos > startPos) {
                         normalTextStr = text.substr(startPos, specialPos - startPos);
@@ -3188,7 +3201,7 @@ namespace tsl {
             int fontSize;
 
             std::string menuBottomLine;
-            
+        
     #if IS_LAUNCHER_DIRECTIVE
         OverlayFrame(const std::string& title, const std::string& subtitle,  const bool& _noClickableItems=false, const std::string& menuMode = "", const std::string& colorSelection = "", const std::string& pageLeftName = "", const std::string& pageRightName = "")
             : Element(), m_title(title), m_subtitle(subtitle), m_noClickableItems(_noClickableItems), m_menuMode(menuMode), m_colorSelection(colorSelection), m_pageLeftName(pageLeftName), m_pageRightName(pageRightName) {
@@ -3240,7 +3253,8 @@ namespace tsl {
                 
             #if IS_LAUNCHER_DIRECTIVE
                 bool isUltrahand = (this->m_title == ult::CAPITAL_ULTRAHAND_PROJECT_NAME && 
-                                    this->m_subtitle.find("Ultrahand Package") == std::string::npos && 
+                                    this->m_subtitle.find("ㅤ") == std::string::npos &&
+                                    this->m_subtitle.find(" : ") == std::string::npos &&
                                     this->m_subtitle.find("Ultrahand Script") == std::string::npos);
 
                 if (isUltrahand) {
@@ -3338,6 +3352,15 @@ namespace tsl {
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "white") {
                             titleColor = Color(0xF, 0xF, 0xF, 0xF);
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom1") {
+                            titleColor = tsl::custom1TextColor;
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom2") {
+                            titleColor = tsl::custom2TextColor;
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom3") {
+                            titleColor = tsl::custom3TextColor;
                             drawTitle(titleColor);
                         } else if (this->m_colorSelection == "ultra") {
                             for (char letter : title) {
@@ -7438,7 +7461,7 @@ namespace tsl {
     
     
     namespace impl {
-        static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION
+        /* static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION */
         static const char* ULTRAHAND_CONFIG_FILE = "/config/ultrahand/config.ini"; // CUSTOM MODIFICATION
         
         /**
@@ -7505,11 +7528,11 @@ namespace tsl {
          */
         [[maybe_unused]] static void updateCombo(u64 keys) {
             tsl::cfg::launchCombo = keys;
-            hlp::ini::updateOverlaySettings({
+            /* hlp::ini::updateOverlaySettings({
                 { ult::TESLA_STR, { // CUSTOM MODIFICATION
                     { ult::KEY_COMBO_STR , tsl::hlp::keysToComboString(keys) }
                 }}
-            }, TESLA_CONFIG_FILE);
+            }, TESLA_CONFIG_FILE); */
             hlp::ini::updateOverlaySettings({
                 { ult::ULTRAHAND_PROJECT_NAME, { // CUSTOM MODIFICATION
                     { ult::KEY_COMBO_STR , tsl::hlp::keysToComboString(keys) }
@@ -7653,7 +7676,7 @@ namespace tsl {
                         #if IS_LAUNCHER_DIRECTIVE
                         if (ult::updateMenuCombos) {
                             ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
-                            ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                            /* ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR); */
                             ult::updateMenuCombos = false;
                         }
                         #endif
@@ -7669,8 +7692,8 @@ namespace tsl {
                     #if IS_LAUNCHER_DIRECTIVE
                     else if (ult::updateMenuCombos && (((shData->keysHeld & tsl::cfg::launchCombo2) == tsl::cfg::launchCombo2) && shData->keysDown & tsl::cfg::launchCombo2)) {
                         std::swap(tsl::cfg::launchCombo, tsl::cfg::launchCombo2); // Swap the two launch combos
-                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
-                        ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
+                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                        /* ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR); */
                         eventFire(&shData->comboEvent);
                         ult::updateMenuCombos = false;
                     }
