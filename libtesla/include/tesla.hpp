@@ -310,6 +310,7 @@ namespace tsl {
     /* ASAP Color */
     static Color accentTextColor = RGB888("00FFDD");
     static Color sectitleTextColor = RGB888("5DC5FB");
+    static Color statusTextColor = RGB888("00CC00");
     static Color custom1TextColor = RGB888("0593D3");
     static Color custom2TextColor = RGB888("EF6F53");
     static Color custom3TextColor = RGB888("EF5369");
@@ -404,6 +405,7 @@ namespace tsl {
 
             accentTextColor = getColor("accent_text_color");
             sectitleTextColor = getColor("sectiontitle_text_color");
+            statusTextColor = getColor("status_text_color");
             custom1TextColor = getColor("custom1_text_color");
             custom2TextColor = getColor("custom2_text_color");
             custom3TextColor = getColor("custom3_text_color");

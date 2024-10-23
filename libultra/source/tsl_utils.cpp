@@ -1182,6 +1182,7 @@ namespace ult {
         {"dynamic_logo_color_2", "4BCDF9"},
         {"accent_text_color", "00FFDD"},
         {"sectiontitle_text_color", "5DC5FB"},
+        {"status_text_color", "00FFDD"},
         {"custom1_text_color", "0593D3"},
         {"custom2_text_color", "EF6F53"},
         {"custom3_text_color", "EF5369"}
