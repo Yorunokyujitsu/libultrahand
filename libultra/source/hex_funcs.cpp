@@ -648,7 +648,7 @@ namespace ult {
      * @brief Extracts the version string from a binary file.
      *
      * This function reads a binary file and searches for a version pattern
-     * in the format "v#.#.#" (e.g., "v1.2.3").
+     * in the format "v#.#.#" (e.g., "v1.2.3"). It returns the version without the "v".
      *
      * @param filePath The path to the binary file.
      * @return The version string if found; otherwise, an empty string.
@@ -698,8 +698,8 @@ namespace ult {
                 std::isdigit(data[i + 3]) && data[i + 4] == '.' && 
                 std::isdigit(data[i + 5])) {
     
-                // Extract the version string
-                return std::string(data + i, 6); // Return the version string
+                // Extract the version string without 'v'
+                return std::string(data + i + 1, 5); // Skip 'v' and return the rest (e.g., "1.2.3")
             }
         }
     
