@@ -65,7 +65,8 @@ namespace ult {
                 {";about=", &packageHeader.about},
                 {";credits=", &packageHeader.credits},
                 {";color=", &packageHeader.color},
-                {";show_version=", &packageHeader.show_version}
+                {";show_version=", &packageHeader.show_version},
+                {";override=", &packageHeader.override}
             };
     
             size_t startPos, endPos;
