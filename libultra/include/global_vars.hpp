@@ -32,10 +32,17 @@ namespace ult {
     extern const std::string ROOT_PATH;
     extern const std::string SETTINGS_PATH;
     extern const std::string ULTRAHAND_CONFIG_INI_PATH;
-    extern const std::string TESLA_CONFIG_INI_PATH;
+    /* extern const std::string TESLA_CONFIG_INI_PATH; */
     extern const std::string LANG_PATH;
     extern const std::string THEMES_PATH;
     extern const std::string WALLPAPERS_PATH;
+    extern const std::string ATMO_PATH;
+    extern const std::string BACKUP_PATH;
+    extern const std::string HEKATE_PATH;
+    extern const std::string CONFIG_PATH;
+    extern const std::string FWD_PATH;
+    extern const std::string SWITCH_PATH;
+    extern const std::string WBOOT_PATH;
     
     // Can be overriden with APPEARANCE_OVERRIDE_PATH directive
     extern std::string THEME_CONFIG_INI_PATH;
@@ -72,11 +79,11 @@ namespace ult {
 
     #endif
 
-    extern const std::string TESLA_COMBO_STR;
+    /* extern const std::string TESLA_COMBO_STR; */
     extern const std::string ULTRAHAND_COMBO_STR;
     
     extern const std::string FUSE_STR;
-    extern const std::string TESLA_STR;
+    /* extern const std::string TESLA_STR; */
     extern const std::string ERISTA_STR;
     extern const std::string MARIKO_STR;
     extern const std::string KEY_COMBO_STR;
@@ -127,6 +134,16 @@ namespace ult {
     extern const std::string THEME_STR;
     extern const std::string NOT_AVAILABLE_STR;
     extern const std::string BUFFERS;
+
+    /* ASAP STR */
+    extern const std::string NOT_OVERRIDE_STR;
+    extern const std::string AUTO_STR;
+    extern const std::string CUSTOMCOL1_STR;
+    extern const std::string CUSTOMCOL2_STR;
+    extern const std::string CUSTOMCOL3_STR;
+    extern const std::string SECTITLE_STR;
+    extern const std::string WARNING_STR;
+    extern const std::string ACCENT_STR;
 
     // Pre-defined symbols
     extern const std::string OPTION_SYMBOL;
