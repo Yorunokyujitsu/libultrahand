@@ -446,9 +446,9 @@ namespace ult {
 
     /* Current Package - Launcher+ */
     std::string LPLS_CFW = "에뮤/시스낸드 (커펌)";
-    std::string LPLS_CFE = "커펌　(eMMC/SD　Card)";
+    std::string LPLS_CFE = "커스텀 펌웨어";
     std::string LPLS_OFW = "시스낸드 (정펌)";
-    std::string LPLS_OFE = "정펌　(eMMC)";
+    std::string LPLS_OFE = "시스낸드 스톡";
     std::string HKT_HOME = "메인 메뉴";
     std::string L4T_ANDE = "안드로이드";
     std::string L4T_EMUE = "에뮬레이터";
