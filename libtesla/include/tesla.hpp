@@ -236,8 +236,8 @@ namespace tsl {
     static bool disableColorfulLogo = false;
 
     
-    static Color logoColor1 = RGB888(ult::whiteColor);
-    static Color logoColor2 = RGB888("F7253E");
+    static Color logoColor1 = RGB888("EAEAEA");
+    static Color logoColor2 = RGB888(ult::whiteColor);
     
 
     static size_t defaultBackgroundAlpha = 13;
@@ -254,9 +254,9 @@ namespace tsl {
 
     static Color defaultOverlayColor = RGB888(ult::whiteColor);
     static Color defaultPackageColor = RGB888(ult::whiteColor);//RGB888("#00FF00");
-    static Color defaultScriptColor = RGB888("FF33FF");
+    static Color defaultScriptColor = RGB888(ult::whiteColor);
     static Color clockColor = RGB888(ult::whiteColor);
-    static Color batteryColor = RGB888("ffff45");
+    static Color batteryColor = RGB888("FFFF45");
     static Color versionTextColor = RGB888("AAAAAA");
     static Color onTextColor = RGB888("00FFDD");
     static Color offTextColor = RGB888("AAAAAA");
@@ -297,7 +297,7 @@ namespace tsl {
 
     static size_t tableBGAlpha = 10;
     static Color tableBGColor = RGB888("303030", tableBGAlpha);
-    static Color sectionTextColor = RGB888("e9ff40");
+    static Color sectionTextColor = RGB888("E9FF40");
     static Color infoTextColor = RGB888(ult::whiteColor);
     static Color warningTextColor = RGB888("FF7777");
 
@@ -310,6 +310,14 @@ namespace tsl {
     static Color trackBarSliderMalleableColor = RGB888("A0A0A0");
     static Color trackBarFullColor = RGB888("00FFDD");
     static Color trackBarEmptyColor = RGB888("404040");
+
+    /* ASAP Color */
+    static Color accentTextColor = RGB888("00FFDD");
+    static Color sectitleTextColor = RGB888("5DC5FB");
+    static Color statusTextColor = RGB888("00CC00");
+    static Color custom1TextColor = RGB888("0593D3");
+    static Color custom2TextColor = RGB888("EF6F53");
+    static Color custom3TextColor = RGB888("EF5369");
     
     static void initializeThemeVars() { // NOTE: This needs to be called once in your application.
         // Fetch all theme settings at once from the INI file
@@ -403,6 +411,13 @@ namespace tsl {
             neutralRamTextColor = getColor("neutral_ram_text_color");
             badRamTextColor = getColor("bad_ram_text_color");
 
+            accentTextColor = getColor("accent_text_color");
+            sectitleTextColor = getColor("sectiontitle_text_color");
+            statusTextColor = getColor("status_text_color");
+            custom1TextColor = getColor("custom1_text_color");
+            custom2TextColor = getColor("custom2_text_color");
+            custom3TextColor = getColor("custom3_text_color");
+
             trackBarSliderColor = getColor("trackbar_slider_color");
             trackBarSliderBorderColor = getColor("trackbar_slider_border_color");
             trackBarSliderMalleableColor = getColor("trackbar_slider_malleable_color");
@@ -416,7 +431,7 @@ namespace tsl {
     static void initializeUltrahandSettings() { // only needed for regular overlays
 
         std::string defaultLang = ult::parseValueFromIniSection(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::DEFAULT_LANG_STR);
-        defaultLang = defaultLang.empty() ? "en" : defaultLang;
+        defaultLang = defaultLang.empty() ? "ko" : defaultLang;
 
         #ifdef UI_OVERRIDE_PATH
         
@@ -2173,7 +2188,7 @@ namespace tsl {
                 cfg::LayerHeight = cfg::ScreenHeight * (float(cfg::FramebufferHeight) / float(cfg::LayerMaxHeight));
 
                 // Apply underscanning offset
-                if (ult::DefaultFramebufferWidth == 1280 && ult::DefaultFramebufferHeight == 28) // for status monitor micro mode
+                if (ult::DefaultFramebufferWidth == 1280 && ult::DefaultFramebufferHeight == 18) // for status monitor micro mode
                     cfg::LayerHeight += 1.99*verticalUnderscanPixels;
                 else
                     cfg::LayerWidth += horizontalUnderscanPixels;
@@ -3307,7 +3322,8 @@ namespace tsl {
                 
             #if IS_LAUNCHER_DIRECTIVE
                 bool isUltrahand = (this->m_title == ult::CAPITAL_ULTRAHAND_PROJECT_NAME && 
-                                    this->m_subtitle.find("Ultrahand Package") == std::string::npos && 
+                                    this->m_subtitle.find("ㅤ") == std::string::npos &&
+                                    this->m_subtitle.find(" : ") == std::string::npos &&
                                     this->m_subtitle.find("Ultrahand Script") == std::string::npos);
 
                 if (isUltrahand) {
@@ -3407,6 +3423,15 @@ namespace tsl {
                         } else if (this->m_colorSelection == "white") {
                             titleColor = Color(0xF, 0xF, 0xF, 0xF);
                             drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom1") {
+                            titleColor = tsl::custom1TextColor;
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom2") {
+                            titleColor = tsl::custom2TextColor;
+                            drawTitle(titleColor);
+                        } else if (this->m_colorSelection == "custom3") {
+                            titleColor = tsl::custom3TextColor;
+                            drawTitle(titleColor);
                         } else if (this->m_colorSelection == "ultra") {
                             for (char letter : title) {
                                 // Calculate the progress for each letter based on the counter
@@ -3499,7 +3524,7 @@ namespace tsl {
 
                 else if (ult::inMainMenu) {
                     if (ult::inOverlaysPage)
-                        ult::nextPageWidth = tsl::gfx::calculateStringWidth(ult::PACKAGES,23);
+                        ult::nextPageWidth = tsl::gfx::calculateStringWidth(ult::PACKAGE,23);
                     else if (ult::inPackagesPage)
                         ult::nextPageWidth = tsl::gfx::calculateStringWidth(ult::OVERLAYS,23);
                 }
@@ -3524,13 +3549,13 @@ namespace tsl {
                     if (this->m_menuMode == "packages") {
                         menuBottomLine += "\uE0ED"+ult::GAP_2+ult::OVERLAYS;
                     } else if (this->m_menuMode == "overlays") {
-                        menuBottomLine += "\uE0EE"+ult::GAP_2+ult::PACKAGES;
+                        menuBottomLine += "\uE0EE"+ult::GAP_2+ult::PACKAGE;
                     }
                 } else {
                     if (this->m_menuMode == "packages") {
                         menuBottomLine += "\uE0EE"+ult::GAP_2+ult::OVERLAYS;
                     } else if (this->m_menuMode == "overlays") {
-                        menuBottomLine += "\uE0ED"+ult::GAP_2+ult::PACKAGES;
+                        menuBottomLine += "\uE0ED"+ult::GAP_2+ult::PACKAGE;
                     }
                 }
                 
@@ -7764,7 +7789,7 @@ namespace tsl {
     
     
     namespace impl {
-        static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION
+        /* static const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini"; // CUSTOM MODIFICATION */
         static const char* ULTRAHAND_CONFIG_FILE = "/config/ultrahand/config.ini"; // CUSTOM MODIFICATION
         
         /**
@@ -7797,12 +7822,12 @@ namespace tsl {
             u64 decodedKeys = hlp::comboStringToKeys(parsedConfig[ult::ULTRAHAND_PROJECT_NAME][ult::KEY_COMBO_STR]); // CUSTOM MODIFICATION
             if (decodedKeys)
                 tsl::cfg::launchCombo = decodedKeys;
-            else {
+            /*else {
                 parsedConfig = hlp::ini::readOverlaySettings(TESLA_CONFIG_FILE);
                 decodedKeys = hlp::comboStringToKeys(parsedConfig["tesla"][ult::KEY_COMBO_STR]);
                 if (decodedKeys)
                     tsl::cfg::launchCombo = decodedKeys;
-            }
+            }*/
             
             #if USING_WIDGET_DIRECTIVE
             ult::datetimeFormat = parsedConfig[ult::ULTRAHAND_PROJECT_NAME]["datetime_format"]; // read datetime_format
@@ -7837,11 +7862,11 @@ namespace tsl {
          */
         [[maybe_unused]] static void updateCombo(u64 keys) {
             tsl::cfg::launchCombo = keys;
-            hlp::ini::updateOverlaySettings({
+            /* hlp::ini::updateOverlaySettings({
                 { ult::TESLA_STR, { // CUSTOM MODIFICATION
                     { ult::KEY_COMBO_STR , tsl::hlp::keysToComboString(keys) }
                 }}
-            }, TESLA_CONFIG_FILE);
+            }, TESLA_CONFIG_FILE); */
             hlp::ini::updateOverlaySettings({
                 { ult::ULTRAHAND_PROJECT_NAME, { // CUSTOM MODIFICATION
                     { ult::KEY_COMBO_STR , tsl::hlp::keysToComboString(keys) }
@@ -7987,7 +8012,7 @@ namespace tsl {
                         #if IS_LAUNCHER_DIRECTIVE
                         if (ult::updateMenuCombos) {
                             ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
-                            ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                            /* ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR); */
                             ult::updateMenuCombos = false;
                         }
                         #endif
@@ -8003,8 +8028,8 @@ namespace tsl {
                     #if IS_LAUNCHER_DIRECTIVE
                     else if (ult::updateMenuCombos && (((shData->keysHeld & tsl::cfg::launchCombo2) == tsl::cfg::launchCombo2) && shData->keysDown & tsl::cfg::launchCombo2)) {
                         std::swap(tsl::cfg::launchCombo, tsl::cfg::launchCombo2); // Swap the two launch combos
-                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
-                        ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
+                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                        /* ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR); */
                         eventFire(&shData->comboEvent);
                         ult::updateMenuCombos = false;
                     }
@@ -8044,7 +8069,7 @@ namespace tsl {
                         case WaiterObject_CaptureButton:
                             ult::disableTransparency = true;
                             eventClear(&captureButtonPressEvent);
-                            svcSleepThread(500'000'000);
+                            svcSleepThread(300'000'000);
                             ult::disableTransparency = false;
                             break;
                     }
