@@ -381,6 +381,76 @@ namespace ult {
     extern std::string REBOOT;
     extern std::string SHUTDOWN;
     extern std::string BOOT_ENTRY;
+
+    /* ASAP Packages */
+    extern std::string SEC_IFTX;
+    extern std::string SEC_WNTX;
+    extern std::string SEC_NULL;
+    extern std::string SEC_LINE;
+
+    extern std::string VOL_TEXT;
+    extern std::string SYS_VOLM;
+    extern std::string LPLS_IFO;
+    extern std::string RBT_SECT;
+    
+    /* Mainmenu */
+    extern std::string SEC_TXT1;
+    extern std::string SYS_MMRY;
+    extern std::string SEC_HDR1;
+    extern std::string SEC_HDR2;
+    extern std::string CFG_MISC;
+    extern std::string UPT_MENU;
+    extern std::string UPT_ASAP;
+    extern std::string UPT_TXT1;
+    extern std::string UPT_TXT2;
+    extern std::string UPT_TXT3;
+    extern std::string UPT_NTC1;
+    extern std::string UPT_NTC2;
+    extern std::string UPT_NTC3;
+    extern std::string UPT_NTC4;
+    extern std::string UPT_NTC5;
+    extern std::string UPT_NTC6;
+    extern std::string UPT_NTC7;
+    extern std::string UPT_NTC8;
+    extern std::string UTH_INFO;
+    extern std::string DF_THEME;
+
+    /* Current Package - Launcher+ */
+    extern std::string LPLS_CFW;
+    extern std::string LPLS_CFE;
+    extern std::string LPLS_OFW;
+    extern std::string LPLS_OFE;
+    extern std::string HKT_HOME;
+    extern std::string L4T_ANDE;
+    extern std::string L4T_EMUE;
+    extern std::string L4T_UBTE;
+    extern std::string LPLS_MT1;
+    extern std::string LPLS_MT2;
+    extern std::string LPLS_MT3;
+    extern std::string LPLS_IF1;
+    extern std::string LPLS_IF2;
+    extern std::string LPLS_IF3;
+    extern std::string LPLS_IF4;
+    extern std::string LPLS_IF5;
+
+    /* USER GUIDE */
+    extern std::string EXST_USG;
+    extern std::string SCLK_USG;
+    extern std::string OCTK_USG;
+    extern std::string HELP_USG;
+    extern std::string VOLP_USG;
+    extern std::string LPLS_USG;
+    extern std::string USG_TXT1;
+    extern std::string USG_TXT2;
+    extern std::string USG_TXT3;
+    extern std::string USG_TXT4;
+    extern std::string USG_TXT5;
+    extern std::string USG_TXT6;
+
+    /* ETC */
+    extern std::string OVERRIDE_SELECTION;
+    extern std::string AUTO_SELECTION;
+    extern std::string LANG_FILE;
     #endif
 
     extern std::string FREE;
