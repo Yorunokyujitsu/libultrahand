@@ -306,8 +306,9 @@ namespace ult {
         { HidNpadButton_Right, "DRIGHT", "\uE0EE" }, { HidNpadButton_Down, "DDOWN", "\uE0EC" },
         { HidNpadButton_A, "A", "\uE0E0" }, { HidNpadButton_B, "B", "\uE0E1" },
         { HidNpadButton_X, "X", "\uE0E2" }, { HidNpadButton_Y, "Y", "\uE0E3" },
-        { HidNpadButton_StickL, "LS", "\uE08A" }, { HidNpadButton_StickR, "RS", "\uE08B" },
-        { HidNpadButton_Minus, "MINUS", "\uE0B6" }, { HidNpadButton_Plus, "PLUS", "\uE0B5" }
+        // ASAP: Change button style.
+        { HidNpadButton_StickL, "LS", "\uE104" }, { HidNpadButton_StickR, "RS", "\uE105" },
+        { HidNpadButton_Minus, "MINUS", "\uE0F2" }, { HidNpadButton_Plus, "PLUS", "\uE0F1" }
     }};
 
     std::unordered_map<std::string, std::string> createButtonCharMap() {
@@ -380,141 +381,328 @@ namespace ult {
 
     #if IS_LAUNCHER_DIRECTIVE
     std::string ENGLISH = "English";
-    std::string SPANISH = "Spanish";
-    std::string FRENCH = "French";
-    std::string GERMAN = "German";
-    std::string JAPANESE = "Japanese";
-    std::string KOREAN = "Korean";
-    std::string ITALIAN = "Italian";
+    std::string SPANISH = "Español";
+    std::string FRENCH = "Français";
+    std::string GERMAN = "Deutsch";
+    std::string JAPANESE = "日本語";
+    std::string KOREAN = "한국어";
+    std::string ITALIAN = "Italiano";
     std::string DUTCH = "Dutch";
-    std::string PORTUGUESE = "Portuguese";
-    std::string RUSSIAN = "Russian";
-    std::string UKRAINIAN = "Ukrainian";
-    std::string POLISH = "Polish";
-    std::string SIMPLIFIED_CHINESE = "Simplified Chinese";
-    std::string TRADITIONAL_CHINESE = "Traditional Chinese";
-    std::string OVERLAYS = "Overlays"; //defined in libTesla now
-    std::string OVERLAYS_ABBR = "Overlays";
-    std::string OVERLAY = "Overlay";
-    std::string HIDDEN_OVERLAYS = "Hidden Overlays";
-    std::string PACKAGES = "Packages"; //defined in libTesla now
-    std::string PACKAGE = "Package";
-    std::string HIDDEN_PACKAGES = "Hidden Packages";
-    std::string HIDDEN = "Hidden";
-    std::string HIDE_OVERLAY = "Hide Overlay";
-    std::string HIDE_PACKAGE = "Hide Package";
-    std::string LAUNCH_ARGUMENTS = "Launch Arguments";
-    std::string QUICK_LAUNCH = "Quick Launch";
-    std::string BOOT_COMMANDS = "Boot Commands";
-    std::string EXIT_COMMANDS = "Exit Commands";
-    std::string ERROR_LOGGING = "Error Logging";
-    std::string COMMANDS = "Commands";
-    std::string SETTINGS = "Settings";
-    std::string MAIN_SETTINGS = "Main Settings";
-    std::string UI_SETTINGS = "UI Settings";
+    std::string PORTUGUESE = "Português";
+    std::string RUSSIAN = "Русский";
+    std::string UKRAINIAN = "Українська";
+    std::string POLISH = "polski";
+    std::string SIMPLIFIED_CHINESE = "中文 (簡体)";
+    std::string TRADITIONAL_CHINESE = "中文 (繁体)";
+    std::string OVERLAYS = "오버레이"; //defined in libTesla now
+    std::string OVERLAYS_ABBR = "오버레이";
+    std::string OVERLAY = "오버레이";
+    std::string HIDDEN_OVERLAYS = "숨겨진 오버레이";
+    std::string PACKAGES = "Package+"; //defined in libTesla now
+    std::string PACKAGE = "패키지";
+    std::string HIDDEN_PACKAGES = "숨겨진 패키지";
+    std::string HIDDEN = "숨김";
+    std::string HIDE_OVERLAY = "오버레이 숨김";
+    std::string HIDE_PACKAGE = "패키지 숨김";
+    std::string LAUNCH_ARGUMENTS = "인수 실행";
+    std::string QUICK_LAUNCH = "빠른 실행";
+    std::string BOOT_COMMANDS = "Boot 커맨드";
+    std::string EXIT_COMMANDS = "Exit 커맨드";
+    std::string ERROR_LOGGING = "오류 로깅";
+    std::string COMMANDS = "커맨드";
+    std::string SETTINGS = "설정";
+    std::string MAIN_SETTINGS = "메인 설정";
+    std::string UI_SETTINGS = "UI 변경";
 
-    std::string WIDGET = "Widget";
-    std::string WIDGET_ITEMS = "Widget Items";
-    std::string WIDGET_SETTINGS = "Widget Settings";
-    std::string CLOCK = "Clock";
-    std::string BATTERY = "Battery";
-    std::string SOC_TEMPERATURE = "SOC Temperature";
-    std::string PCB_TEMPERATURE = "PCB Temperature";
-    std::string BACKDROP = "Backdrop";
-    std::string DYNAMIC_COLORS = "Dynamic Colors";
-    std::string CENTER_ALIGNMENT = "Center Alignment";
-    std::string EXTENDED_BACKDROP = "Extended Backdrop";
-    std::string MISCELLANEOUS = "Miscellaneous";
-    //std::string MENU_ITEMS = "Menu Items";
-    std::string MENU_SETTINGS = "Menu Settings";
-    std::string USER_GUIDE = "User Guide";
-    std::string SHOW_HIDDEN = "Show Hidden";
-    std::string PAGE_SWAP = "Page Swap";
-    std::string RIGHT_SIDE_MODE = "Right-side Mode";
-    std::string OVERLAY_VERSIONS = "Overlay Versions";
-    std::string PACKAGE_VERSIONS = "Package Versions";
-    std::string CLEAN_VERSIONS = "Clean Versions";
-    //std::string VERSION_LABELS = "Version Labels";
-    std::string KEY_COMBO = "Key Combo";
-    std::string MODE = "Mode";
-    std::string LANGUAGE = "Language";
-    std::string OVERLAY_INFO = "Overlay Info";
-    std::string SOFTWARE_UPDATE = "Software Update";
-    std::string UPDATE_ULTRAHAND = "Update Ultrahand";
-    std::string UPDATE_LANGUAGES = "Update Languages";
-    std::string SYSTEM = "System";
-    std::string DEVICE_INFO = "Device Info";
-    std::string FIRMWARE = "Firmware";
-    std::string BOOTLOADER = "Bootloader";
-    std::string HARDWARE = "Hardware";
-    std::string MEMORY = "Memory";
-    std::string VENDOR = "Vendor";
-    std::string MODEL = "Model";
-    std::string STORAGE = "Storage";
-    std::string NOTICE = "Notice";
-    std::string UTILIZES = "Utilizes";
+    std::string WIDGET = "위젯";
+    std::string WIDGET_ITEMS = "위젯 아이템";
+    std::string WIDGET_SETTINGS = "위젯 설정";
+    std::string CLOCK = "시각";
+    std::string BATTERY = "배터리";
+    std::string SOC_TEMPERATURE = "SoC 온도";
+    std::string PCB_TEMPERATURE = "PCB 온도";
+    std::string BACKDROP = "배경";
+    std::string DYNAMIC_COLORS = "동적 색상";
+    std::string CENTER_ALIGNMENT = "위젯 가운데 정렬";
+    std::string EXTENDED_BACKDROP = "위젯 배경 확장";
+    std::string MISCELLANEOUS = "기타";
+    //std::string MENU_ITEMS = "메뉴 아이템";
+    std::string MENU_SETTINGS = "메뉴 설정";
+    std::string USER_GUIDE = "사용 설명서";
+    std::string SHOW_HIDDEN = "숨김 항목 표시";
+    std::string PAGE_SWAP = "페이지 교체";
+    std::string RIGHT_SIDE_MODE = "우측 배치";
+    std::string OVERLAY_VERSIONS = "오버레이 버전";
+    std::string PACKAGE_VERSIONS = "패키지 버전";
+    std::string CLEAN_VERSIONS = "정리된 버전";
+    //std::string VERSION_LABELS = "버전 표시";
+    std::string KEY_COMBO = "키 조합";
+    std::string MODE = "모드";
+    std::string LANGUAGE = "언어";
+    std::string OVERLAY_INFO = "오버레이 정보";
+    std::string SOFTWARE_UPDATE = "업데이트";
+    std::string UPDATE_ULTRAHAND = "Ultrahand 업데이트";
+    std::string UPDATE_LANGUAGES = "언어팩 다운로드";
+    std::string SYSTEM = "시스템 정보";
+    std::string DEVICE_INFO = "기기 상세";
+    std::string FIRMWARE = "펌웨어";
+    std::string BOOTLOADER = "부트로더";
+    std::string HARDWARE = "하드웨어";
+    std::string MEMORY = "메모리";
+    std::string VENDOR = "제조사";
+    std::string MODEL = "P/N";
+    std::string STORAGE = "저장소";
+    std::string NOTICE = "안내";
+    std::string UTILIZES = "2MB 활용";
 
-    std::string MEMORY_EXPANSION = "Memory Expansion";
-    std::string REBOOT_REQUIRED = "*Reboot required.";
-    std::string LOCAL_IP = "Local IP";
-    std::string WALLPAPER = "Wallpaper";
-    std::string THEME = "Theme";
-    std::string DEFAULT = "default";
-    std::string ROOT_PACKAGE = "Root Package";
-    std::string SORT_PRIORITY = "Sort Priority";
-    std::string FAILED_TO_OPEN = "Failed to open file";
-    std::string LAUNCH_COMBOS = "Launch Combos";
-    std::string OPAQUE_SCREENSHOTS = "Opaque Screenshots";
+    std::string MEMORY_EXPANSION = "여유 ";
+    std::string REBOOT_REQUIRED = "적용을 위해, 재부팅이 필요합니다";
+    std::string LOCAL_IP = "로컬 IP";
+    std::string WALLPAPER = "배경";
+    std::string THEME = "테마";
+    std::string DEFAULT = "기본";
+    std::string ROOT_PACKAGE = "기본 패키지";
+    std::string SORT_PRIORITY = "우선순위 정렬";
+    std::string FAILED_TO_OPEN = "파일 열기 실패";
+    std::string LAUNCH_COMBOS = "실행 버튼";
+    std::string OPAQUE_SCREENSHOTS = "스크린샷 배경";
 
-    std::string PACKAGE_INFO = "Package Info";
-    std::string _TITLE = "Title";
-    std::string _VERSION= "Version";
-    std::string _CREATOR = "Creator(s)";
-    std::string _ABOUT = "About";
-    std::string _CREDITS = "Credits";
+    std::string PACKAGE_INFO = "패키지 정보";
+    std::string _TITLE = "이름";
+    std::string _VERSION= "버전";
+    std::string _CREATOR = "개발자";
+    std::string _ABOUT = "설명";
+    std::string _CREDITS = "기여자";
 
     std::string USERGUIDE_OFFSET = "176";
-    std::string SETTINGS_MENU = "Settings Menu";
-    std::string SCRIPT_OVERLAY = "Script Overlay";
-    std::string STAR_FAVORITE = "Star/Favorite";
-    std::string APP_SETTINGS = "App Settings";
-    std::string ON_MAIN_MENU = "on Main Menu";
-    std::string ON_A_COMMAND = "on a command";
-    std::string ON_OVERLAY_PACKAGE = "on overlay/package";
-    std::string FEATURES = "Features";
-    std::string SWIPE_TO_OPEN = "Swipe to Open";
+    std::string SETTINGS_MENU = "설정 메뉴";
+    std::string SCRIPT_OVERLAY = "오버레이 스크립트";
+    std::string STAR_FAVORITE = "즐겨찾기";
+    std::string APP_SETTINGS = "앱 설정";
+    std::string ON_MAIN_MENU = "메인 메뉴";
+    std::string ON_A_COMMAND = "커맨드 위에서";
+    std::string ON_OVERLAY_PACKAGE = "오버레이/패키지 위에서";
+    std::string FEATURES = "이펙트";
+    std::string SWIPE_TO_OPEN = "밀어서 열기";
 
-    std::string THEME_SETTINGS = "Theme Settings";
-    std::string DYNAMIC_LOGO = "Dynamic Logo";
-    std::string SELECTION_BACKGROUND = "Selection Background";
-    std::string SELECTION_TEXT = "Selection Text";
-    std::string SELECTION_VALUE = "Selection Value";
-    std::string LIBULTRAHAND_TITLES = "libultrahand Titles";
-    std::string LIBULTRAHAND_VERSIONS = "libultrahand Versions";
-    std::string PACKAGE_TITLES = "Package Titles";
-    //std::string PACKAGE_VERSIONS = "Package Versions";
+    std::string THEME_SETTINGS = "테마 설정";
+    std::string DYNAMIC_LOGO = "동적 로고";
+    std::string SELECTION_BACKGROUND = "선택 배경";
+    std::string SELECTION_TEXT = "선택 텍스트";
+    std::string SELECTION_VALUE = "선택 값";
+    std::string LIBULTRAHAND_TITLES = "libultrahand 제목";
+    std::string LIBULTRAHAND_VERSIONS = "libultrahand 버전";
+    std::string PACKAGE_TITLES = "패키지 제목";
+    //std::string PACKAGE_VERSIONS = "패키지 버전";
 
-    //std::string PROGRESS_ANIMATION = "Progress Animation";
+    //std::string PROGRESS_ANIMATION = "애니메이션";
 
-    std::string REBOOT_TO = "Reboot To";
-    std::string REBOOT = "Reboot";
-    std::string SHUTDOWN = "Shutdown";
-    std::string BOOT_ENTRY = "Boot Entry";
+    /* ASAP Packages */
+    // Sections
+    std::string REBOOT_TO = "다시 시작 · 시스템 종료";
+    std::string CFWBOOT = "에뮤/시스낸드 (커펌)";
+    std::string OFWBOOT = "시스낸드 (정펌)";
+    std::string ANDROID = "Lineage (안드로이드)";
+    std::string LAKKA = "Lakka (에뮬레이터)";
+    std::string UBUNTU = "Ubuntu (리눅스)";
+    std::string REBOOT = "Hekate (메인 메뉴)";
+    std::string SHUTDOWN = "시스템 종료";
+    // Informations
+    std::string CFWBOOT_TITLE = "Extra Setting+";
+    std::string HEKATE_TITLE = "Hekate";
+    std::string L4T_TITLE = "L4T";
+    std::string VOLUME_INFO = "독 모드 볼륨 조절 지원";
+    std::string LAUNCHER_INFO = "재부팅 · UMS 도구";
+    std::string CFWBOOT_INFO = "에서 선택한 낸드로만 커펌 부팅";
+    std::string HEKATE_INFO = "홈 메뉴, UMS (이동식 디스크)로 재부팅";
+    std::string BOOT_ENTRY = "로 재부팅, 해당 OS 설치시 사용 가능합니다";
+    // Configs
+    std::string MAINMENU_INFO = "시스템 확인 및 울트라핸드의 설정을 변경";
+    std::string INFO = "정보";
+    std::string ABOUT_INFO = "커스텀 패키지 테슬라 메뉴";
+    std::string OLD_DEVICE = "구형";
+    std::string NEW_DEVICE = "개선판";
+    std::string DF_THEME = "BLACK-BasicWhite";
+    std::string UPDATE_ULTRA_INFO = "다음 구성 요소를 전부 업데이트합니다";
+    std::string UPDATE_TEST_WARN = "테스터 팩에선 오류가 발생할 수 있습니다";
+    std::string HIGHLIGHT_LINE = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  　　　　　　";
+    std::string UPDATE_TEST_INFO = "ASAP을 테스터 버전으로 교체합니다";
+    std::string UPDATE_TEST_NOTICE = "다운로드 이후 자동으로 재부팅합니다";
+    // ETC.
+    std::string OVERRIDE_SELECTION = "설정 안 함";
+    std::string AUTO_SELECTION = "자동";
+    // Package-System Clock+
+    std::string ENABLED = "활성화";
+    std::string SCPLUS_INFO = "Sys-ClkOC Toolkitloader.kip 관리 도구";
+    std::string SC_STATUS = " 앱의 사용 여부 선택";
+    std::string LDR_TOOL = "Loader.kip 편집 도구";
+    std::string LDR_INFO = " 선택시 자동 재부팅";
+    std::string TOOL_WARNING_1 = "낸드에 치명적인 손상을 초래할 수 있습니다";
+    std::string TOOL_WARNING_2 = "시스낸드에서의 편집/사용을 피해주십시오";
+    std::string CPU_VOLTAGE = "CPU 전압 허용 범위";
+    std::string CPU_INFO = "단위: mV";
+    std::string CPU_CHART = "　 구분";
+    std::string USED = "사용중";
+    // Package-Extra Setting+
+    std::string EXTRA_SETTING = "커스텀 펌웨어 관련 설정을 진행합니다";
+    std::string CFW_CFG = "시스템 세부 설정 편집";
+    std::string CFW_CFG_INFO = "커스텀 펌웨어의 여러 기능을 설정합니다";
+    std::string DEFAULT_NAND = "기본 낸드";
+    std::string DEFAULT_NAND_INFO = "Atmosphère 부팅 낸드 설정";
+    std::string NO_EMUNAND = "에뮤낸드 없음";
+    std::string ADD_ENTRY = "부팅 런처";
+    std::string ADD_ENTRY_INFO = "Hekate - Moon 런처 항목 설정";
+    std::string MOON_LAUNCHER = "Moon 런처";
+    std::string MOON_ENTRY = "부팅 엔트리";
+    std::string MOON_LAUNCHER_INFO = "각 엔트리의 아이콘은 자동으로 설정됩니다";
+    std::string MOON_LAUNCHER_WARN_1 = "L4T를 부팅하려면 OS의 설치가 필요합니다";
+    std::string MOON_LAUNCHER_WARN_2 = "Ubuntu의 경우, 버전을 맞춰 생성하세요";
+    std::string MOON_CFW = "기본 낸드로 설정된 커펌 (자동 생성)";
+    std::string MOON_STOCK = "커펌 모듈 OFF 정펌 (자동 생성)";
+    std::string MOON_ANDROID = "안드로이드 (Lineage OS) 부팅 엔트리";
+    std::string MOON_LAKKA = "Libretro 기반 Lakka 부팅 엔트리";
+    std::string MOON_UBUNTU = "Switchroot 포팅 LINUX 부팅 엔트리";
+    std::string SYSTEM_CFG = "시스템 설정";
+    std::string SYSTEM_CFG_INFO = "커펌 시스템 값 설정";
+    std::string HEKATE_BOOT = "부팅";
+    std::string HEKATE_BOOT_INFO = "시작 관련 설정을 변경합니다";
+    std::string HEKATE_BACKLIGHT_INFO = "홈 화면의 백라이트 밝기를 조절합니다";
+    std::string HEKATE_BACKLIGHT = "화면 밝기";
+    std::string AUTO_HOS_OFF_SEC = "시스템 종료 후";
+    std::string AUTO_HOS_OFF_VAL = "자동으로 깨어나지 않도록합니다";
+    std::string HEKATE_AUTO_HOS_OFF = "HOS 종료";
+    std::string BOOT_WAIT_SEC = "1초 이상";
+    std::string BOOT_WAIT_VAL = " 볼륨 입력으로 Hekate로 이동 가능";
+    std::string HEKATE_BOOT_WAIT = "부팅 화면 대기 시간";
+    std::string BOOT_WAIT_SECOND = "초";
+    std::string AUTOBOOT_CFW_SEC = " 버튼";
+    std::string AUTOBOOT_CFW_VAL = "재기동 시 Atmosphère로 재시작합니다";
+    std::string HEKATE_AUTOBOOT = "자동 부팅";
+    std::string SYSTEM_PAGE = "시스템";
+    std::string DMNT_CHEAT = "dmnt 치트";
+    std::string DMNT_TOGGLE = "dmnt 토글 저장";
+    std::string NO_GC_INFO = "게임 카드 설치를 비활성화합니다";
+    std::string NO_GC_WARN = "슬립 해제시 카트리지를 인식하면 오류 발생";
+    std::string NO_GC = "카트리지 차단";
+    std::string REC_INFO = " 버튼 녹화 설정을 변경합니다";
+    std::string REC_WARN = "값에 따라 녹화 시간이 변동될 수 있습니다";
+    std::string SYSMMC_ONLY = "시스낸드 전용";
+    std::string ENABLED_EMUMMC = "에뮤낸드 = 기본 적용";
+    std::string EXOSPHERE_INFO = "본체의 시리얼 넘버를 변조합니다";
+    std::string EXOSPHERE = "시리얼 변조";
+    std::string DNS_INFO = "닌텐도 서버와 연결을 차단합니다";
+    std::string DNS_MITM = "서버 차단";
+    std::string APPLY_RESET_SEC = "설정 값 적용/리셋";
+    std::string APPLY_RESET_VAL = "자동으로 재부팅 됩니다";
+    std::string APPLY_CFG = "설정 적용";
+    std::string RESET_CFG = "기본 값으로 되돌리기";
+    std::string HB_MENU = "홈브류 메뉴";
+    std::string HB_MENU_INFO = "Sphaira 실행 버튼 설정";
+    std::string FULL_MEMORY = "풀 메모리 모드";
+    std::string FULL_MEMORY_INFO = "메모리 제한 없음";
+    std::string FULL_MEMORY_REC = "권장";
+    std::string FULL_MEMORY_FORWARDER_VAL = "sphaira 열기  sphaira 아이콘으로 이동";
+    std::string FULL_MEMORY_FORWARDER_CTN = "  버튼 입력  바로가기 설치  설치";
+    std::string FULL_MEMORY_KEY = "(타이틀) +  홀드 진입을 활성화합니다";
+    std::string APPLET_MEMORY = "애플릿 모드";
+    std::string APPLET_MEMORY_INFO = "메모리 제한됨";
+    std::string APPLET_MEMORY_VAL = " (앨범),  (유저) 진입 설정을 변경합니다";
+    std::string APPLET_MEMORY_KEY = "기본:  (앨범) +  홀드";
+    std::string APPLET_HB_MENU_ICON = "진입 아이콘";
+    std::string APPLET_HB_MENU_KEY = "진입 커맨드";
+    std::string APPLET_ALBUM = "앨범";
+    std::string APPLET_USER = "유저";
+    std::string APPLET_KEY_HOLD = "홀드";
+    std::string APPLET_KEY_CLICK = "원클릭";
+    std::string SD_CLEANUP = "SD 카드 정리";
+    std::string SD_CLEANUP_INFO = "Ultrahand 초기화, 정크 삭제";
+    std::string NORMAL_DEVICE = "일반 기기";
+    std::string PATCH_DEVICE = "8GB 기기";
+    std::string RAM_PATCH_WARN = "패치시 일반 기기는 작동하지 않게됩니다";
+    std::string RAM_PATCH = "8GB 패치";
+    // Package-Quick Guide+
+    std::string QUICK_GUIDE_INFO = "간이 설명서오류 코드";
+    std::string QUICK_GUIDE = "가이드";
+    std::string KEYMAP_INFO = "전반적인 터치 조작 가능";
+    std::string KEY_MOVE = "이동";
+    std::string KEY_MENU = "메뉴";
+    std::string KEY_SELECT = "선택";
+    std::string KEYGAP_1 = "  　　";
+    std::string KEYGAP_2 = "  ";
+    std::string KEYGAP_3 = "  　　";
+    std::string PACK_INFO = "패키지 설명서";
+    std::string USEFUL = "유용한 기능 (앱 실행 상태)";
+    std::string HIDE_SPHAIRA = "'앱 숨기기:' = '  정렬  Sphaira 숨기기  켬'";
+    std::string FORWARDER_SPHAIRA = "'바로가기 설치:' = '홈브류 +   바로가기 설치'";
+    std::string APP_INSTALL = "앱 설치";
+    std::string PC_INSTALL = "  기타  FTP·MTP 설치  파일 넣기";
+    std::string FTP_INSTALL = "서버 연결  Install 폴더에 파일 끌어넣기";
+    std::string MTP_INSTALL = "PC 연결  Install 폴더에 파일 끌어넣기";
+    std::string USB_INSTALL = "'2.외장하드:' = '파일 탐색기  마운트  파일 선택'";
+    std::string HDD_INSTALL_1 = "하드 연결  파일 탐색기    고급 ";
+    std::string HDD_INSTALL_2 = "마운트  하드 선택  파일 선택  예";
+    std::string ERROR_INFO = "오류 코드";
+    std::string ALBUM_INFO = "앨범 오류";
+    std::string ALBUM_ERROR_1 = "sphairahbmenu 혹은 dmnt의 구성 불량";
+    std::string ALBUM_ERROR_2 = "애플릿 모드 사용중인 경우, 메모리 부족 충돌";
+    std::string CPUDEAD_INFO = "CPU 파손";
+    std::string CPU_ERROR = "CPU에 복구 불가능한 손상이 발생";
+    std::string SYSTEM_ERROR = "시스템 오류";
+    std::string MODULE_ERROR = "모듈 오류";
+    std::string MODULE_INFO_1 = "스위치 모듈 오류시 안내문 참고";
+    std::string MODULE_INFO_2 = "앱이 아닌 스위치 모듈 오류가 발생한 경우";
+    std::string MODULE_INFO_3 = "시스템 파일 손상, 낸드 리빌딩 필요";
+    std::string MODULE_INFO_4 = "에뮤낸드 파일 손상, 재생성으로 해결";
+    std::string SYSNAND_INFO = "시스낸드";
+    std::string EMUNAND_INFO = "에뮤낸드";
+    std::string NORMAL_ERROR = "자주 발생하는 오류";
+    std::string APP_MODULE_ERROR = "앱 모듈 오류";
+    std::string SWITCH_MODULE_ERROR = "스위치 모듈 오류";
+    std::string PREV_PAGE = "이전 페이지";
+    std::string NEXT_PAGE = "다음 페이지";
+    std::string VER_ERR = "버전 오류";
+    std::string SD_ERR = "SD 카드 오류";
+    std::string STORAGE_ERR = "저장소 오류";
+    std::string MISC_ERR = "기타 오류";
+    std::string NSS_ERR = "Switch Online Service 오류";
+    std::string SERVER_ERR = "서버 오류";
+    std::string NETWORK_ERR = "네트워크 오류";
+    std::string FORWARDER_ERR = "글로벌 오류";
+    std::string FORWARDER_INFO = "NSP 포워더 (바로가기)";
+    std::string APP_ERR = "유저 환경에 따라 발생하는 오류";
+    std::string APP_MODULE = "홈브류오버레이용 시스템 모듈";
+    std::string SCROLL = "스크롤";
+    std::string SWITCH_MODULE = "스위치 시스템 모듈";
+    // Overlays-Custom infomation
+    std::string OVLSYSMODULE = "모듈 관리자";
+    std::string EDIZON = "치트 매니저";
+    std::string EMUIIBO = "가상 아미보";
+    std::string FIZEAU = "색감 매니저";
+    std::string NXFANCONTROL = "쿨링 시스템";
+    std::string FPSLOCKER = "고정 프레임";
+    std::string LDNMITM = "LAN 플레이";
+    std::string QUICKNTP = "시간 동기화";
+    std::string REVERSENX = "모드 전환기";
+    std::string STATUSMONITOR = "상태 모니터";
+    std::string STUDIOUSPANCAKE = "빠른 재부팅";
+    std::string SYSCLK = "클럭 조정기";
+    std::string SYSDVR = "USB 스트리밍";
+    std::string SYSPATCH = "패치 시스템";
     #endif
 
-    std::string FREE = "free";
+    std::string FREE = "여유";
 
     std::string DEFAULT_CHAR_WIDTH = "0.33";
-    std::string UNAVAILABLE_SELECTION = "Not available";
+    std::string UNAVAILABLE_SELECTION = "설정 없음";
 
 
-    std::string ON = "On";
-    std::string OFF = "Off";
+    std::string ON = "\uE14B";
+    std::string OFF = "\uE14C";
 
-    std::string OK = "OK";
-    std::string BACK = "Back";
-    std::string HIDE = "Hide";
-    std::string CANCEL = "Cancel";
+    std::string OK = "확인";
+    std::string BACK = "뒤로";
+    std::string HIDE = "숨기기";
+    std::string CANCEL = "취소";
 
     std::string GAP_1 = "     ";
     std::string GAP_2 = "  ";
@@ -522,50 +710,50 @@ namespace ult {
     std::atomic<float> halfGap = 0.0f;
     
 
-    std::string EMPTY = "Empty";
+    std::string EMPTY = "비어있음";
     
     #if USING_WIDGET_DIRECTIVE
-    std::string SUNDAY = "Sunday";
-    std::string MONDAY = "Monday";
-    std::string TUESDAY = "Tuesday";
-    std::string WEDNESDAY = "Wednesday";
-    std::string THURSDAY = "Thursday";
-    std::string FRIDAY = "Friday";
-    std::string SATURDAY = "Saturday";
+    std::string SUNDAY = " 日";
+    std::string MONDAY = " 月";
+    std::string TUESDAY = " 火";
+    std::string WEDNESDAY = " 水";
+    std::string THURSDAY = " 木";
+    std::string FRIDAY = " 金";
+    std::string SATURDAY = " 土";
     
-    std::string JANUARY = "January";
-    std::string FEBRUARY = "February";
-    std::string MARCH = "March";
-    std::string APRIL = "April";
-    std::string MAY = "May";
-    std::string JUNE = "June";
-    std::string JULY = "July";
-    std::string AUGUST = "August";
-    std::string SEPTEMBER = "September";
-    std::string OCTOBER = "October";
-    std::string NOVEMBER = "November";
-    std::string DECEMBER = "December";
+    std::string JANUARY = "1월";
+    std::string FEBRUARY = "2월";
+    std::string MARCH = "3월";
+    std::string APRIL = "4월";
+    std::string MAY = "5월";
+    std::string JUNE = "6월";
+    std::string JULY = "7월";
+    std::string AUGUST = "8월";
+    std::string SEPTEMBER = "9월";
+    std::string OCTOBER = "10월";
+    std::string NOVEMBER = "11월";
+    std::string DECEMBER = "12월";
     
-    std::string SUN = "Sun";
-    std::string MON = "Mon";
-    std::string TUE = "Tue";
-    std::string WED = "Wed";
-    std::string THU = "Thu";
-    std::string FRI = "Fri";
-    std::string SAT = "Sat";
+    std::string SUN = " 日";
+    std::string MON = " 月";
+    std::string TUE = " 火";
+    std::string WED = " 水";
+    std::string THU = " 木";
+    std::string FRI = " 金";
+    std::string SAT = " 土";
     
-    std::string JAN = "Jan";
-    std::string FEB = "Feb";
-    std::string MAR = "Mar";
-    std::string APR = "Apr";
-    std::string MAY_ABBR = "May";
-    std::string JUN = "Jun";
-    std::string JUL = "Jul";
-    std::string AUG = "Aug";
-    std::string SEP = "Sep";
-    std::string OCT = "Oct";
-    std::string NOV = "Nov";
-    std::string DEC = "Dec";
+    std::string JAN = "1월";
+    std::string FEB = "2월";
+    std::string MAR = "3월";
+    std::string APR = "4월";
+    std::string MAY_ABBR = "5월";
+    std::string JUN = "6월";
+    std::string JUL = "7월";
+    std::string AUG = "8월";
+    std::string SEP = "9월";
+    std::string OCT = "10월";
+    std::string NOV = "11월";
+    std::string DEC = "12월";
     #endif
 
     
@@ -573,179 +761,366 @@ namespace ult {
     // Constant string definitions (English)
     void reinitializeLangVars() {
         ENGLISH = "English";
-        SPANISH = "Spanish";
-        FRENCH = "French";
-        GERMAN = "German";
-        JAPANESE = "Japanese";
-        KOREAN = "Korean";
-        ITALIAN = "Italian";
+        SPANISH = "Español";
+        FRENCH = "Français";
+        GERMAN = "Deutsch";
+        JAPANESE = "日本語";
+        KOREAN = "한국어";
+        ITALIAN = "Italiano";
         DUTCH = "Dutch";
-        PORTUGUESE = "Portuguese";
-        RUSSIAN = "Russian";
-        UKRAINIAN = "Ukrainian";
-        POLISH = "Polish";
-        SIMPLIFIED_CHINESE = "Simplified Chinese";
-        TRADITIONAL_CHINESE = "Traditional Chinese";
+        PORTUGUESE = "Português";
+        RUSSIAN = "Русский";
+        UKRAINIAN = "Українська";
+        POLISH = "polski";
+        SIMPLIFIED_CHINESE = "中文 (簡体)";
+        TRADITIONAL_CHINESE = "中文 (繁体)";
         DEFAULT_CHAR_WIDTH = "0.33";
-        UNAVAILABLE_SELECTION = "Not available";
-        OVERLAYS = "Overlays"; //defined in libTesla now
-        OVERLAYS_ABBR = "Overlays";
-        OVERLAY = "Overlay";
-        HIDDEN_OVERLAYS = "Hidden Overlays";
-        PACKAGES = "Packages"; //defined in libTesla now
-        PACKAGE = "Package";
-        HIDDEN_PACKAGES = "Hidden Packages";
-        HIDDEN = "Hidden";
-        HIDE_OVERLAY = "Hide Overlay";
-        HIDE_PACKAGE = "Hide Package";
-        LAUNCH_ARGUMENTS = "Launch Arguments";
-        QUICK_LAUNCH = "Quick Launch";
-        BOOT_COMMANDS = "Boot Commands";
-        EXIT_COMMANDS = "Exit Commands";
-        ERROR_LOGGING = "Error Logging";
-        COMMANDS = "Commands";
-        SETTINGS = "Settings";
-        MAIN_SETTINGS = "Main Settings";
-        UI_SETTINGS = "UI Settings";
-        WIDGET = "Widget";
-        WIDGET_ITEMS = "Widget Items";
-        WIDGET_SETTINGS = "Widget Settings";
-        CLOCK = "Clock";
-        BATTERY = "Battery";
-        SOC_TEMPERATURE = "SOC Temperature";
-        PCB_TEMPERATURE = "PCB Temperature";
-        BACKDROP = "Backdrop";
-        DYNAMIC_COLORS = "Dynamic Colors";
-        CENTER_ALIGNMENT = "Center Alignment";
-        EXTENDED_BACKDROP = "Extended Backdrop";
-        MISCELLANEOUS = "Miscellaneous";
-        //MENU_ITEMS = "Menu Items";
-        MENU_SETTINGS = "Menu Settings";
-        USER_GUIDE = "User Guide";
-        SHOW_HIDDEN = "Show Hidden";
-        PAGE_SWAP = "Page Swap";
-        RIGHT_SIDE_MODE = "Right-side Mode";
-        OVERLAY_VERSIONS = "Overlay Versions";
-        PACKAGE_VERSIONS = "Package Versions";
-        CLEAN_VERSIONS = "Clean Versions";
-        //VERSION_LABELS = "Version Labels";
-        KEY_COMBO = "Key Combo";
-        MODE = "Mode";
-        LANGUAGE = "Language";
-        OVERLAY_INFO = "Overlay Info";
-        SOFTWARE_UPDATE = "Software Update";
-        UPDATE_ULTRAHAND = "Update Ultrahand";
-        UPDATE_LANGUAGES = "Update Languages";
-        SYSTEM = "System";
-        DEVICE_INFO = "Device Info";
-        FIRMWARE = "Firmware";
-        BOOTLOADER = "Bootloader";
-        HARDWARE = "Hardware";
-        MEMORY = "Memory";
-        VENDOR = "Vendor";
-        MODEL = "Model";
-        STORAGE = "Storage";
-        NOTICE = "Notice";
-        UTILIZES = "Utilizes";
-        FREE = "free";
-        MEMORY_EXPANSION = "Memory Expansion";
-        REBOOT_REQUIRED = "*Reboot required.";
-        LOCAL_IP = "Local IP";
-        WALLPAPER = "Wallpaper";
-        THEME = "Theme";
-        DEFAULT = "default";
-        ROOT_PACKAGE = "Root Package";
-        SORT_PRIORITY = "Sort Priority";
-        FAILED_TO_OPEN = "Failed to open file";
+        UNAVAILABLE_SELECTION = "설정 없음";
+        OVERLAYS = "오버레이"; //defined in libTesla now
+        OVERLAYS_ABBR = "오버레이";
+        OVERLAY = "오버레이";
+        HIDDEN_OVERLAYS = "숨겨진 오버레이";
+        PACKAGES = "Package+"; //defined in libTesla now
+        PACKAGE = "패키지";
+        HIDDEN_PACKAGES = "숨겨진 패키지";
+        HIDDEN = "숨김";
+        HIDE_OVERLAY = "오버레이 숨김";
+        HIDE_PACKAGE = "패키지 숨김";
+        LAUNCH_ARGUMENTS = "인수 실행";
+        QUICK_LAUNCH = "빠른 실행";
+        BOOT_COMMANDS = "Boot 커맨드";
+        EXIT_COMMANDS = "Exit 커맨드";
+        ERROR_LOGGING = "오류 로깅";
+        COMMANDS = "커맨드";
+        SETTINGS = "설정";
+        MAIN_SETTINGS = "메인 설정";
+        UI_SETTINGS = "UI 변경";
+        WIDGET = "위젯";
+        WIDGET_ITEMS = "위젯 아이템";
+        WIDGET_SETTINGS = "위젯 설정";
+        CLOCK = "시각";
+        BATTERY = "배터리";
+        SOC_TEMPERATURE = "SoC 온도";
+        PCB_TEMPERATURE = "PCB 온도";
+        BACKDROP = "배경";
+        DYNAMIC_COLORS = "동적 색상";
+        CENTER_ALIGNMENT = "위젯 가운데 정렬";
+        EXTENDED_BACKDROP = "위젯 배경 확장";
+        MISCELLANEOUS = "기타";
+        //MENU_ITEMS = "메뉴 아이템";
+        MENU_SETTINGS = "메뉴 설정";
+        USER_GUIDE = "사용 설명서";
+        SHOW_HIDDEN = "숨김 항목 표시";
+        PAGE_SWAP = "페이지 교체";
+        RIGHT_SIDE_MODE = "우측 배치";
+        OVERLAY_VERSIONS = "오버레이 버전";
+        PACKAGE_VERSIONS = "패키지 버전";
+        CLEAN_VERSIONS = "정리된 버전";
+        //VERSION_LABELS = "버전 표시";
+        KEY_COMBO = "키 조합";
+        MODE = "모드";
+        LANGUAGE = "언어";
+        OVERLAY_INFO = "오버레이 정보";
+        SOFTWARE_UPDATE = "업데이트";
+        UPDATE_ULTRAHAND = "Ultrahand 업데이트";
+        UPDATE_LANGUAGES = "언어팩 다운로드";
+        SYSTEM = "시스템 정보";
+        DEVICE_INFO = "기기 상세";
+        FIRMWARE = "펌웨어";
+        BOOTLOADER = "부트로더";
+        HARDWARE = "하드웨어";
+        MEMORY = "메모리";
+        VENDOR = "제조사";
+        MODEL = "P/N";
+        STORAGE = "저장소";
+        NOTICE = "안내";
+        UTILIZES = "2MB 활용";
+        FREE = "여유";
+        MEMORY_EXPANSION = "확장";
+        REBOOT_REQUIRED = "적용을 위해, 재부팅이 필요합니다";
+        LOCAL_IP = "로컬 IP";
+        WALLPAPER = "배경";
+        THEME = "테마";
+        DEFAULT = "기본";
+        ROOT_PACKAGE = "기본 패키지";
+        SORT_PRIORITY = "우선순위 정렬";
+        FAILED_TO_OPEN = "파일 열기 실패";
 
-        LAUNCH_COMBOS = "Launch Combos";
-        OPAQUE_SCREENSHOTS = "Opaque Screenshots";
-        ON = "On";
-        OFF = "Off";
-        PACKAGE_INFO = "Package Info";
-        _TITLE = "Title";
-        _VERSION= "Version";
-        _CREATOR = "Creator(s)";
-        _ABOUT = "About";
-        _CREDITS = "Credits";
-        OK = "OK";
-        BACK = "Back";
-        HIDE = "Hide";
-        CANCEL = "Cancel";
+        LAUNCH_COMBOS = "실행 버튼";
+        OPAQUE_SCREENSHOTS = "스크린샷 배경";
+        ON = "\uE14B";
+        OFF = "\uE14C";
+        PACKAGE_INFO = "패키지 정보";
+        _TITLE = "이름";
+        _VERSION= "정보";
+        _CREATOR = "개발자";
+        _ABOUT = "설명";
+        _CREDITS = "기여자";
+        OK = "확인";
+        BACK = "뒤로";
+        HIDE = "숨기기";
+        CANCEL = "취소";
 
-        REBOOT_TO = "Reboot To";
-        REBOOT = "Reboot";
-        SHUTDOWN = "Shutdown";
-        BOOT_ENTRY = "Boot Entry";
+        /* ASAP Packages */
+        // Sections
+        REBOOT_TO = "다시 시작 · 시스템 종료";
+        CFWBOOT = "에뮤/시스낸드 (커펌)";
+        OFWBOOT = "시스낸드 (정펌)";
+        ANDROID = "Lineage (안드로이드)";
+        LAKKA = "Lakka (에뮬레이터)";
+        UBUNTU = "Ubuntu (리눅스)";
+        REBOOT = "Hekate (메인 메뉴)";
+        SHUTDOWN = "시스템 종료";
+        // Informations
+        CFWBOOT_TITLE = "Extra Setting+";
+        HEKATE_TITLE = "Hekate";
+        L4T_TITLE = "L4T";
+        VOLUME_INFO = "독 모드 볼륨 조절 지원";
+        LAUNCHER_INFO = "재부팅 · UMS 도구";
+        CFWBOOT_INFO = "에서 선택한 낸드로만 커펌 부팅";
+        HEKATE_INFO = "홈 메뉴, UMS (이동식 디스크)로 재부팅";
+        BOOT_ENTRY = "로 재부팅, 해당 OS 설치시 사용 가능합니다";
+        // Configs
+        MAINMENU_INFO = "시스템 확인 및 울트라핸드의 설정을 변경";
+        INFO = "정보";
+        ABOUT_INFO = "커스텀 패키지 테슬라 메뉴";
+        OLD_DEVICE = "구형";
+        NEW_DEVICE = "개선판";
+        DF_THEME = "BLACK-BasicWhite";
+        UPDATE_ULTRA_INFO = "다음 구성 요소를 전부 업데이트합니다";
+        UPDATE_TEST_WARN = "테스터 팩에선 오류가 발생할 수 있습니다";
+        HIGHLIGHT_LINE = "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  　　　　　　";
+        UPDATE_TEST_INFO = "ASAP을 테스터 버전으로 교체합니다";
+        UPDATE_TEST_NOTICE = "다운로드 이후 자동으로 재부팅합니다";
+        // ETC.
+        OVERRIDE_SELECTION = "설정 안 함";
+        AUTO_SELECTION = "자동";
+        // Package-System Clock+
+        ENABLED = "활성화";
+        SCPLUS_INFO = "Sys-ClkOC Toolkitloader.kip 관리 도구";
+        SC_STATUS = "앱의 사용 여부 선택";
+        LDR_TOOL = "Loader.kip 편집 도구";
+        LDR_INFO = "선택시 자동 재부팅";
+        TOOL_WARNING_1 = "낸드에 치명적인 손상을 초래할 수 있습니다";
+        TOOL_WARNING_2 = "시스낸드에서의 편집/사용을 피해주십시오";
+        CPU_VOLTAGE = "CPU 전압 허용 범위";
+        CPU_INFO = "단위: mV";
+        CPU_CHART = "　 구분";
+        USED = "사용중";
+        // Package-Extra Setting+
+        EXTRA_SETTING = "커스텀 펌웨어 관련 설정을 진행합니다";
+        CFW_CFG = "시스템 세부 설정 편집";
+        CFW_CFG_INFO = "커스텀 펌웨어의 여러 기능을 설정합니다";
+        DEFAULT_NAND = "기본 낸드";
+        DEFAULT_NAND_INFO = "Atmosphère 부팅 낸드 설정";
+        NO_EMUNAND = "에뮤낸드 없음";
+        ADD_ENTRY = "부팅 런처";
+        ADD_ENTRY_INFO = "Hekate - Moon 런처 항목 설정";
+        MOON_LAUNCHER = "Moon 런처";
+        MOON_ENTRY = "부팅 엔트리";
+        MOON_LAUNCHER_INFO = "각 엔트리의 아이콘은 자동으로 설정됩니다";
+        MOON_LAUNCHER_WARN_1 = "L4T를 부팅하려면 OS의 설치가 필요합니다";
+        MOON_LAUNCHER_WARN_2 = "Ubuntu의 경우, 버전을 맞춰 생성하세요";
+        MOON_CFW = "기본 낸드로 설정된 커펌 (자동 생성)";
+        MOON_STOCK = "커펌 모듈 OFF 정펌 (자동 생성)";
+        MOON_ANDROID = "안드로이드 (Lineage OS) 부팅 엔트리";
+        MOON_LAKKA = "Libretro 기반 Lakka 부팅 엔트리";
+        MOON_UBUNTU = "Switchroot 포팅 LINUX 부팅 엔트리";
+        SYSTEM_CFG = "시스템 설정";
+        SYSTEM_CFG_INFO = "커펌 시스템 값 설정";
+        HEKATE_BOOT = "부팅";
+        HEKATE_BOOT_INFO = "시작 관련 설정을 변경합니다";
+        HEKATE_BACKLIGHT_INFO = "홈 화면의 백라이트 밝기를 조절합니다";
+        HEKATE_BACKLIGHT = "화면 밝기";
+        AUTO_HOS_OFF_SEC = "시스템 종료 후";
+        AUTO_HOS_OFF_VAL = "자동으로 깨어나지 않도록합니다";
+        HEKATE_AUTO_HOS_OFF = "HOS 종료";
+        BOOT_WAIT_SEC = "1초 이상";
+        BOOT_WAIT_VAL = " 볼륨 입력으로 Hekate로 이동 가능";
+        HEKATE_BOOT_WAIT = "부팅 화면 대기 시간";
+        BOOT_WAIT_SECOND = "초";
+        AUTOBOOT_CFW_SEC = " 버튼";
+        AUTOBOOT_CFW_VAL = "재기동 시 Atmosphère로 재시작합니다";
+        HEKATE_AUTOBOOT = "자동 부팅";
+        SYSTEM_PAGE = "시스템";
+        DMNT_CHEAT = "dmnt 치트";
+        DMNT_TOGGLE = "dmnt 토글 저장";
+        NO_GC_INFO = "게임 카드 설치를 비활성화합니다";
+        NO_GC_WARN = "슬립 해제시 카트리지를 인식하면 오류 발생";
+        NO_GC = "카트리지 차단";
+        REC_INFO = " 버튼 녹화 설정을 변경합니다";
+        REC_WARN = "값에 따라 녹화 시간이 변동될 수 있습니다";
+        SYSMMC_ONLY = "시스낸드 전용";
+        ENABLED_EMUMMC = "에뮤낸드 = 기본 적용";
+        EXOSPHERE_INFO = "본체의 시리얼 넘버를 변조합니다";
+        EXOSPHERE = "시리얼 변조";
+        DNS_INFO = "닌텐도 서버와 연결을 차단합니다";
+        DNS_MITM = "서버 차단";
+        APPLY_RESET_SEC = "설정 값 적용리셋";
+        APPLY_RESET_VAL = "자동으로 재부팅 됩니다";
+        APPLY_CFG = "설정 적용";
+        RESET_CFG = "기본 값으로 되돌리기";
+        HB_MENU = "홈브류 메뉴";
+        HB_MENU_INFO = "Sphaira 실행 버튼 설정";
+        FULL_MEMORY = "풀 메모리 모드";
+        FULL_MEMORY_INFO = "메모리 제한 없음";
+        FULL_MEMORY_REC = "권장";
+        FULL_MEMORY_FORWARDER_VAL = "sphaira 열기  sphaira 아이콘으로 이동";
+        FULL_MEMORY_FORWARDER_CTN = "  버튼 입력  바로가기 설치  설치";
+        FULL_MEMORY_KEY = "(타이틀) +  홀드 진입을 활성화합니다";
+        APPLET_MEMORY = "애플릿 모드";
+        APPLET_MEMORY_INFO = "메모리 제한됨";
+        APPLET_MEMORY_VAL = " (앨범),  (유저) 진입 설정을 변경합니다";
+        APPLET_MEMORY_KEY = "기본:  (앨범) +  홀드";
+        APPLET_HB_MENU_ICON = "진입 아이콘";
+        APPLET_HB_MENU_KEY = "진입 커맨드";
+        APPLET_ALBUM = "앨범";
+        APPLET_USER = "유저";
+        APPLET_KEY_HOLD = "홀드";
+        APPLET_KEY_CLICK = "원클릭";
+        SD_CLEANUP = "SD 카드 정리";
+        SD_CLEANUP_INFO = "Ultrahand 초기화, 정크 삭제";
+        NORMAL_DEVICE = "일반 기기";
+        PATCH_DEVICE = "8GB 기기";
+        RAM_PATCH_WARN = "패치시 일반 기기는 작동하지 않게됩니다";
+        RAM_PATCH = "8GB 패치";
+        // Package-Quick Guide+
+        QUICK_GUIDE_INFO = "간이 설명서오류 코드";
+        QUICK_GUIDE = "가이드";
+        KEYMAP_INFO = "전반적인 터치 조작 가능";
+        KEY_MOVE = "이동";
+        KEY_MENU = "메뉴";
+        KEY_SELECT = "선택";
+        KEYGAP_1 = "  　　";
+        KEYGAP_2 = "  ";
+        KEYGAP_3 = "  　　";
+        PACK_INFO = "패키지 설명서";
+        USEFUL = "유용한 기능 (앱 실행 상태)";
+        HIDE_SPHAIRA = "'앱 숨기기:' = '  정렬  Sphaira 숨기기  켬'";
+        FORWARDER_SPHAIRA = "'바로가기 설치:' = '홈브류 +   바로가기 설치'";
+        APP_INSTALL = "앱 설치";
+        PC_INSTALL = "  기타  FTP·MTP 설치  파일 넣기";
+        FTP_INSTALL = "서버 연결  Install 폴더에 파일 끌어넣기";
+        MTP_INSTALL = "PC 연결  Install 폴더에 파일 끌어넣기";
+        USB_INSTALL = "'2.외장하드:' = '파일 탐색기  마운트  파일 선택'";
+        HDD_INSTALL_1 = "하드 연결  파일 탐색기    고급 ";
+        HDD_INSTALL_2 = "마운트  하드 선택  파일 선택  예";
+        ERROR_INFO = "오류 코드";
+        ALBUM_INFO = "앨범 오류";
+        ALBUM_ERROR_1 = "sphairahbmenu 혹은 dmnt의 구성 불량";
+        ALBUM_ERROR_2 = "애플릿 모드 사용중인 경우, 메모리 부족 충돌";
+        CPUDEAD_INFO = "CPU 파손";
+        CPU_ERROR = "CPU에 복구 불가능한 손상이 발생";
+        SYSTEM_ERROR = "시스템 오류";
+        MODULE_ERROR = "모듈 오류";
+        MODULE_INFO_1 = "스위치 모듈 오류시 안내문 참고";
+        MODULE_INFO_2 = "앱이 아닌 스위치 모듈 오류가 발생한 경우";
+        MODULE_INFO_3 = "시스템 파일 손상, 낸드 리빌딩 필요";
+        MODULE_INFO_4 = "에뮤낸드 파일 손상, 재생성으로 해결";
+        SYSNAND_INFO = "시스낸드";
+        EMUNAND_INFO = "에뮤낸드";
+        NORMAL_ERROR = "자주 발생하는 오류";
+        APP_MODULE_ERROR = "앱 모듈 오류";
+        SWITCH_MODULE_ERROR = "스위치 모듈 오류";
+        PREV_PAGE = "이전 페이지";
+        NEXT_PAGE = "다음 페이지";
+        VER_ERR = "버전 오류";
+        SD_ERR = "SD 카드 오류";
+        STORAGE_ERR = "저장소 오류";
+        MISC_ERR = "기타 오류";
+        NSS_ERR = "Switch Online Service 오류";
+        SERVER_ERR = "서버 오류";
+        NETWORK_ERR = "네트워크 오류";
+        FORWARDER_ERR = "글로벌 오류";
+        FORWARDER_INFO = "NSP 포워더 (바로가기)";
+        APP_ERR = "유저 환경에 따라 발생하는 오류";
+        APP_MODULE = "홈브류오버레이용 시스템 모듈";
+        SCROLL = "스크롤";
+        SWITCH_MODULE = "스위치 시스템 모듈";
+        // Overlays-Custom infomation
+        OVLSYSMODULE = "모듈 관리자";
+        EDIZON = "치트 매니저";
+        EMUIIBO = "가상 아미보";
+        FIZEAU = "색감 매니저";
+        NXFANCONTROL = "쿨링 시스템";
+        FPSLOCKER = "고정 프레임";
+        LDNMITM = "LAN 플레이";
+        QUICKNTP = "시간 동기화";
+        REVERSENX = "모드 전환기";
+        STATUSMONITOR = "상태 모니터";
+        STUDIOUSPANCAKE = "빠른 재부팅";
+        SYSCLK = "클럭 조정기";
+        SYSDVR = "USB 스트리밍";
+        SYSPATCH = "패치 시스템";
         GAP_1 = "     ";
         GAP_2 = "  ";
 
         USERGUIDE_OFFSET = "176";
-        SETTINGS_MENU = "Settings Menu";
-        SCRIPT_OVERLAY = "Script Overlay";
-        STAR_FAVORITE = "Star/Favorite";
-        APP_SETTINGS = "App Settings";
-        ON_MAIN_MENU = "on Main Menu";
-        ON_A_COMMAND = "on a command";
-        ON_OVERLAY_PACKAGE = "on overlay/package";
-        FEATURES = "Features";
-        SWIPE_TO_OPEN = "Swipe to Open";
-        //PROGRESS_ANIMATION = "Progress Animation";
+        SETTINGS_MENU = "설정 메뉴";
+        SCRIPT_OVERLAY = "오버레이 스크립트";
+        STAR_FAVORITE = "즐겨찾기";
+        APP_SETTINGS = "앱 설정";
+        ON_MAIN_MENU = "메인 메뉴";
+        ON_A_COMMAND = "커맨드 위에서";
+        ON_OVERLAY_PACKAGE = "오버레이/패키지 위에서";
+        FEATURES = "이펙트";
+        SWIPE_TO_OPEN = "밀어서 열기";
+        //PROGRESS_ANIMATION = "애니메이션";
 
-        THEME_SETTINGS = "Theme Settings";
-        DYNAMIC_LOGO = "Dynamic Logo";
-        SELECTION_BACKGROUND = "Selection Background";
-        SELECTION_TEXT = "Selection Text";
-        SELECTION_VALUE = "Selection Value";
-        LIBULTRAHAND_TITLES = "libultrahand Titles";
-        LIBULTRAHAND_VERSIONS = "libultrahand Versions";
-        PACKAGE_TITLES = "Package Titles";
-        //PACKAGE_VERSIONS = "Package Versions";
+        THEME_SETTINGS = "테마 설정";
+        DYNAMIC_LOGO = "동적 로고";
+        SELECTION_BACKGROUND = "선택 배경";
+        SELECTION_TEXT = "선택 텍스트";
+        SELECTION_VALUE = "선택 값";
+        LIBULTRAHAND_TITLES = "libultrahand 제목";
+        LIBULTRAHAND_VERSIONS = "libultrahand 버전";
+        PACKAGE_TITLES = "패키지 제목";
+        //PACKAGE_VERSIONS = "패키지 버전";
 
 
-        EMPTY = "Empty";
+        EMPTY = "비어 있음";
     
-        SUNDAY = "Sunday";
-        MONDAY = "Monday";
-        TUESDAY = "Tuesday";
-        WEDNESDAY = "Wednesday";
-        THURSDAY = "Thursday";
-        FRIDAY = "Friday";
-        SATURDAY = "Saturday";
+        SUNDAY = " 日";
+        MONDAY = " 月";
+        TUESDAY = " 火";
+        WEDNESDAY = " 水";
+        THURSDAY = " 木";
+        FRIDAY = " 金";
+        SATURDAY = " 土";
         
-        JANUARY = "January";
-        FEBRUARY = "February";
-        MARCH = "March";
-        APRIL = "April";
-        MAY = "May";
-        JUNE = "June";
-        JULY = "July";
-        AUGUST = "August";
-        SEPTEMBER = "September";
-        OCTOBER = "October";
-        NOVEMBER = "November";
-        DECEMBER = "December";
+        JANUARY = "1월";
+        FEBRUARY = "2월";
+        MARCH = "3월";
+        APRIL = "4월";
+        MAY = "5월";
+        JUNE = "6월";
+        JULY = "7월";
+        AUGUST = "8월";
+        SEPTEMBER = "9월";
+        OCTOBER = "10월";
+        NOVEMBER = "11월";
+        DECEMBER = "12월";
         
-        SUN = "Sun";
-        MON = "Mon";
-        TUE = "Tue";
-        WED = "Wed";
-        THU = "Thu";
-        FRI = "Fri";
-        SAT = "Sat";
+        SUN = " 日";
+        MON = " 月";
+        TUE = " 火";
+        WED = " 水";
+        THU = " 木";
+        FRI = " 金";
+        SAT = " 土";
         
-        JAN = "Jan";
-        FEB = "Feb";
-        MAR = "Mar";
-        APR = "Apr";
-        MAY_ABBR = "May";
-        JUN = "Jun";
-        JUL = "Jul";
-        AUG = "Aug";
-        SEP = "Sep";
-        OCT = "Oct";
-        NOV = "Nov";
-        DEC = "Dec";
+        JAN = "1월";
+        FEB = "2월";
+        MAR = "3월";
+        APR = "4월";
+        MAY_ABBR = "5월";
+        JUN = "6월";
+        JUL = "7월";
+        AUG = "8월";
+        SEP = "9월";
+        OCT = "10월";
+        NOV = "11월";
+        DEC = "12월";
     }
     #endif
     
@@ -888,10 +1263,197 @@ namespace ult {
             //{"PACKAGE_VERSIONS", &PACKAGE_VERSIONS},
             //{"PROGRESS_ANIMATION", &PROGRESS_ANIMATION},
 
+            /* ASAP Packages */
+            // Sections
             {"REBOOT_TO", &REBOOT_TO},
+            {"CFWBOOT", &CFWBOOT},
+            {"OFWBOOT", &OFWBOOT},
+            {"ANDROID", &ANDROID},
+            {"LAKKA", &LAKKA},
+            {"UBUNTU", &UBUNTU},
             {"REBOOT", &REBOOT},
             {"SHUTDOWN", &SHUTDOWN},
+            // Informations
+            {"CFWBOOT_TITLE", &CFWBOOT_TITLE},
+            {"HEKATE_TITLE", &HEKATE_TITLE},
+            {"L4T_TITLE", &L4T_TITLE},
+            {"VOLUME_INFO", &VOLUME_INFO},
+            {"LAUNCHER_INFO", &LAUNCHER_INFO},
+            {"CFWBOOT_INFO", &CFWBOOT_INFO},
+            {"HEKATE_INFO", &HEKATE_INFO},
             {"BOOT_ENTRY", &BOOT_ENTRY},
+            // Configs
+            {"MAINMENU_INFO", &MAINMENU_INFO},
+            {"INFO", &INFO},
+            {"ABOUT_INFO", &ABOUT_INFO},
+            {"OLD_DEVICE", &OLD_DEVICE},
+            {"NEW_DEVICE", &NEW_DEVICE},
+            {"DF_THEME", &DF_THEME},
+            {"UPDATE_ULTRA_INFO", &UPDATE_ULTRA_INFO},
+            {"UPDATE_TEST_WARN", &UPDATE_TEST_WARN},
+            {"HIGHLIGHT_LINE", &HIGHLIGHT_LINE},
+            {"UPDATE_TEST_INFO", &UPDATE_TEST_INFO},
+            {"UPDATE_TEST_NOTICE", &UPDATE_TEST_NOTICE},
+            // ETC.
+            {"OVERRIDE_SELECTION", &OVERRIDE_SELECTION},
+            {"AUTO_SELECTION", &AUTO_SELECTION},
+            // Package-System Clock+
+            {"ENABLED", &ENABLED},
+            {"SCPLUS_INFO", &SCPLUS_INFO},
+            {"SC_STATUS", &SC_STATUS},
+            {"LDR_TOOL", &LDR_TOOL},
+            {"LDR_INFO", &LDR_INFO},
+            {"TOOL_WARNING_1", &TOOL_WARNING_1},
+            {"TOOL_WARNING_2", &TOOL_WARNING_2},
+            {"CPU_VOLTAGE", &CPU_VOLTAGE},
+            {"CPU_INFO", &CPU_INFO},
+            {"CPU_CHART", &CPU_CHART},
+            {"USED", &USED},
+            // Package-Extra Setting+
+            {"EXTRA_SETTING", &EXTRA_SETTING},
+            {"CFW_CFG", &CFW_CFG},
+            {"CFW_CFG_INFO", &CFW_CFG_INFO},
+            {"DEFAULT_NAND", &DEFAULT_NAND},
+            {"DEFAULT_NAND_INFO", &DEFAULT_NAND_INFO},
+            {"NO_EMUNAND", &NO_EMUNAND},
+            {"ADD_ENTRY", &ADD_ENTRY},
+            {"ADD_ENTRY_INFO", &ADD_ENTRY_INFO},
+            {"MOON_LAUNCHER", &MOON_LAUNCHER},
+            {"MOON_ENTRY", &MOON_ENTRY},
+            {"MOON_LAUNCHER_INFO", &MOON_LAUNCHER_INFO},
+            {"MOON_LAUNCHER_WARN_1", &MOON_LAUNCHER_WARN_1},
+            {"MOON_LAUNCHER_WARN_2", &MOON_LAUNCHER_WARN_2},
+            {"MOON_CFW", &MOON_CFW},
+            {"MOON_STOCK", &MOON_STOCK},
+            {"MOON_ANDROID", &MOON_ANDROID},
+            {"MOON_LAKKA", &MOON_LAKKA},
+            {"MOON_UBUNTU", &MOON_UBUNTU},
+            {"SYSTEM_CFG", &SYSTEM_CFG},
+            {"SYSTEM_CFG_INFO", &SYSTEM_CFG_INFO},
+            {"HEKATE_BOOT", &HEKATE_BOOT},
+            {"HEKATE_BOOT_INFO", &HEKATE_BOOT_INFO},
+            {"HEKATE_BACKLIGHT_INFO", &HEKATE_BACKLIGHT_INFO},
+            {"HEKATE_BACKLIGHT", &HEKATE_BACKLIGHT},
+            {"AUTO_HOS_OFF_SEC", &AUTO_HOS_OFF_SEC},
+            {"AUTO_HOS_OFF_VAL", &AUTO_HOS_OFF_VAL},
+            {"HEKATE_AUTO_HOS_OFF", &HEKATE_AUTO_HOS_OFF},
+            {"BOOT_WAIT_SEC", &BOOT_WAIT_SEC},
+            {"BOOT_WAIT_VAL", &BOOT_WAIT_VAL},
+            {"HEKATE_BOOT_WAIT", &HEKATE_BOOT_WAIT},
+            {"BOOT_WAIT_SECOND", &BOOT_WAIT_SECOND},
+            {"AUTOBOOT_CFW_SEC", &AUTOBOOT_CFW_SEC},
+            {"AUTOBOOT_CFW_VAL", &AUTOBOOT_CFW_VAL},
+            {"HEKATE_AUTOBOOT", &HEKATE_AUTOBOOT},
+            {"SYSTEM_PAGE", &SYSTEM_PAGE},
+            {"DMNT_CHEAT", &DMNT_CHEAT},
+            {"DMNT_TOGGLE", &DMNT_TOGGLE},
+            {"NO_GC_INFO", &NO_GC_INFO},
+            {"NO_GC_WARN", &NO_GC_WARN},
+            {"NO_GC", &NO_GC},
+            {"REC_INFO", &REC_INFO},
+            {"REC_WARN", &REC_WARN},
+            {"SYSMMC_ONLY", &SYSMMC_ONLY},
+            {"ENABLED_EMUMMC", &ENABLED_EMUMMC},
+            {"EXOSPHERE_INFO", &EXOSPHERE_INFO},
+            {"EXOSPHERE", &EXOSPHERE},
+            {"DNS_INFO", &DNS_INFO},
+            {"DNS_MITM", &DNS_MITM},
+            {"APPLY_RESET_SEC", &APPLY_RESET_SEC},
+            {"APPLY_RESET_VAL", &APPLY_RESET_VAL},
+            {"APPLY_CFG", &APPLY_CFG},
+            {"RESET_CFG", &RESET_CFG},
+            {"HB_MENU", &HB_MENU},
+            {"HB_MENU_INFO", &HB_MENU_INFO},
+            {"FULL_MEMORY", &FULL_MEMORY},
+            {"FULL_MEMORY_INFO", &FULL_MEMORY_INFO},
+            {"FULL_MEMORY_REC", &FULL_MEMORY_REC},
+            {"FULL_MEMORY_FORWARDER_VAL", &FULL_MEMORY_FORWARDER_VAL},
+            {"FULL_MEMORY_FORWARDER_CTN", &FULL_MEMORY_FORWARDER_CTN},
+            {"FULL_MEMORY_KEY", &FULL_MEMORY_KEY},
+            {"APPLET_MEMORY", &APPLET_MEMORY},
+            {"APPLET_MEMORY_INFO", &APPLET_MEMORY_INFO},
+            {"APPLET_MEMORY_VAL", &APPLET_MEMORY_VAL},
+            {"APPLET_MEMORY_KEY", &APPLET_MEMORY_KEY},
+            {"APPLET_HB_MENU_ICON", &APPLET_HB_MENU_ICON},
+            {"APPLET_HB_MENU_KEY", &APPLET_HB_MENU_KEY},
+            {"APPLET_ALBUM", &APPLET_ALBUM},
+            {"APPLET_USER", &APPLET_USER},
+            {"APPLET_KEY_HOLD", &APPLET_KEY_HOLD},
+            {"APPLET_KEY_CLICK", &APPLET_KEY_CLICK},
+            {"SD_CLEANUP", &SD_CLEANUP},
+            {"SD_CLEANUP_INFO", &SD_CLEANUP_INFO},
+            {"NORMAL_DEVICE", &NORMAL_DEVICE},
+            {"PATCH_DEVICE", &PATCH_DEVICE},
+            {"RAM_PATCH_WARN", &RAM_PATCH_WARN},
+            {"RAM_PATCH", &RAM_PATCH},
+            // Package-Quick Guide+
+            {"QUICK_GUIDE_INFO", &QUICK_GUIDE_INFO},
+            {"QUICK_GUIDE", &QUICK_GUIDE},
+            {"KEYMAP_INFO", &KEYMAP_INFO},
+            {"KEY_MOVE", &KEY_MOVE},
+            {"KEY_MENU", &KEY_MENU},
+            {"KEY_SELECT", &KEY_SELECT},
+            {"KEYGAP_1", &KEYGAP_1},
+            {"KEYGAP_2", &KEYGAP_2},
+            {"KEYGAP_3", &KEYGAP_3},
+            {"PACK_INFO", &PACK_INFO},
+            {"USEFUL", &USEFUL},
+            {"HIDE_SPHAIRA", &HIDE_SPHAIRA},
+            {"FORWARDER_SPHAIRA", &FORWARDER_SPHAIRA},
+            {"APP_INSTALL", &APP_INSTALL},
+            {"PC_INSTALL", &PC_INSTALL},
+            {"FTP_INSTALL", &FTP_INSTALL},
+            {"MTP_INSTALL", &MTP_INSTALL},
+            {"USB_INSTALL", &USB_INSTALL},
+            {"HDD_INSTALL_1", &HDD_INSTALL_1},
+            {"HDD_INSTALL_2", &HDD_INSTALL_2},
+            {"ERROR_INFO", &ERROR_INFO},
+            {"ALBUM_INFO", &ALBUM_INFO},
+            {"ALBUM_ERROR_1", &ALBUM_ERROR_1},
+            {"ALBUM_ERROR_2", &ALBUM_ERROR_2},
+            {"CPUDEAD_INFO", &CPUDEAD_INFO},
+            {"CPU_ERROR", &CPU_ERROR},
+            {"SYSTEM_ERROR", &SYSTEM_ERROR},
+            {"MODULE_ERROR", &MODULE_ERROR},
+            {"MODULE_INFO_1", &MODULE_INFO_1},
+            {"MODULE_INFO_2", &MODULE_INFO_2},
+            {"MODULE_INFO_3", &MODULE_INFO_3},
+            {"MODULE_INFO_4", &MODULE_INFO_4},
+            {"SYSNAND_INFO", &SYSNAND_INFO},
+            {"EMUNAND_INFO", &EMUNAND_INFO},
+            {"NORMAL_ERROR", &NORMAL_ERROR},
+            {"APP_MODULE_ERROR", &APP_MODULE_ERROR},
+            {"SWITCH_MODULE_ERROR", &SWITCH_MODULE_ERROR},
+            {"PREV_PAGE", &PREV_PAGE},
+            {"NEXT_PAGE", &NEXT_PAGE},
+            {"VER_ERR", &VER_ERR},
+            {"SD_ERR", &SD_ERR},
+            {"STORAGE_ERR", &STORAGE_ERR},
+            {"MISC_ERR", &MISC_ERR},
+            {"NSS_ERR", &NSS_ERR},
+            {"SERVER_ERR", &SERVER_ERR},
+            {"NETWORK_ERR", &NETWORK_ERR},
+            {"FORWARDER_ERR", &FORWARDER_ERR},
+            {"FORWARDER_INFO", &FORWARDER_INFO},
+            {"APP_ERR", &APP_ERR},
+            {"APP_MODULE", &APP_MODULE},
+            {"SCROLL", &SCROLL},
+            {"SWITCH_MODULE", &SWITCH_MODULE},
+            // Overlays-Custom infomation
+            {"OVLSYSMODULE", &OVLSYSMODULE},
+            {"EDIZON", &EDIZON},
+            {"EMUIIBO", &EMUIIBO},
+            {"FIZEAU", &FIZEAU},
+            {"NXFANCONTROL", &NXFANCONTROL},
+            {"FPSLOCKER", &FPSLOCKER},
+            {"LDNMITM", &LDNMITM},
+            {"QUICKNTP", &QUICKNTP},
+            {"REVERSENX", &REVERSENX},
+            {"STATUSMONITOR", &STATUSMONITOR},
+            {"STUDIOUSPANCAKE", &STUDIOUSPANCAKE},
+            {"SYSCLK", &SYSCLK},
+            {"SYSDVR", &SYSDVR},
+            {"SYSPATCH", &SYSPATCH},
             #endif
 
             {"FREE", &FREE},
@@ -1045,7 +1607,12 @@ namespace ult {
             {"Reboot To", &REBOOT_TO},
             {"Boot Entry", &BOOT_ENTRY},
             {"Reboot", &REBOOT},
-            {"Shutdown", &SHUTDOWN}
+            {"Shutdown", &SHUTDOWN},
+            {"CFWBOOT", &CFWBOOT},
+            {"OFWBOOT", &OFWBOOT},
+            {"ANDROID", &ANDROID},
+            {"EMULATOR", &LAKKA},
+            {"LINUX", &UBUNTU}
         };
         #endif
     
@@ -1092,14 +1659,14 @@ namespace ult {
     // Prepare a map of default settings
     std::map<const std::string, std::string> defaultThemeSettingsMap = {
         {"default_overlay_color", whiteColor},
-        {"default_package_color", "00FF00"},
-        {"default_script_color", "FF33FF"},
+        {"default_package_color", whiteColor},
+        {"default_script_color", whiteColor},
         {"clock_color", whiteColor},
         {"temperature_color", whiteColor},
-        {"battery_color", "ffff45"},
+        {"battery_color", "3CDD88"},
         {"battery_charging_color", "00FF00"},
-        {"battery_low_color", "FF0000"},
-        {"widget_backdrop_alpha", "15"},
+        {"battery_low_color", "F63345"},
+        {"widget_backdrop_alpha", "13"},
         {"widget_backdrop_color", blackColor},
         {"bg_alpha", "13"},
         {"bg_color", blackColor},
@@ -1109,30 +1676,30 @@ namespace ult {
         {"text_color", whiteColor},
         {"header_text_color", whiteColor},
         {"header_separator_color", whiteColor},
-        {"star_color", whiteColor},
-        {"selection_star_color", whiteColor},
+        {"star_color", "FFAA17"},
+        {"selection_star_color", "FFAA17"},
         {"bottom_button_color", whiteColor},
         {"bottom_text_color", whiteColor},
         {"bottom_separator_color", whiteColor},
         {"top_separator_color", "404040"},
-        {"table_bg_color", "2C2C2C"},
-        {"table_bg_alpha", "14"},
-        {"table_section_text_color", whiteColor},
+        {"table_bg_color", "3F3F3F"},
+        {"table_bg_alpha", "13"},
+        {"table_section_text_color", "5DC5FB"},
         //{"table_info_text_color", "00FFDD"},
-        {"table_info_text_color", "9ed0ff"},
-        {"warning_text_color", "FF7777"},
-        {"healthy_ram_text_color", "00FF00"},
-        {"neutral_ram_text_color", "FFAA00"},
-        {"bad_ram_text_color", "FF0000"},
+        {"table_info_text_color", whiteColor},
+        {"warning_text_color", "F63345"},
+        {"healthy_ram_text_color", "3CDD88"},
+        {"neutral_ram_text_color", "FFAA17"},
+        {"bad_ram_text_color", "F63345"},
         {"trackbar_slider_color", "606060"},
         {"trackbar_slider_border_color", "505050"},
         {"trackbar_slider_malleable_color", "A0A0A0"},
         {"trackbar_full_color", "00FFDD"},
         {"trackbar_empty_color", "404040"},
         {"overlay_text_color", whiteColor},
-        {"ult_overlay_text_color", "9ed0ff"},
+        {"ult_overlay_text_color", whiteColor},
         {"package_text_color", whiteColor},
-        {"ult_package_text_color", "9ed0ff"},
+        {"ult_package_text_color", whiteColor},
         {"banner_version_text_color", "AAAAAA"},
         {"overlay_version_text_color", "AAAAAA"},
         {"ult_overlay_version_text_color", "00FFDD"},
@@ -1140,30 +1707,33 @@ namespace ult {
         {"ult_package_version_text_color", "00FFDD"},
         {"on_text_color", "00FFDD"},
         {"off_text_color", "AAAAAA"},
-        {"invalid_text_color", "FF0000"},
-        {"inprogress_text_color", "FFFF45"},
-        {"selection_text_color", "9ed0ff"},
-        {"selection_value_text_color", "FF7777"},
+        {"invalid_text_color", "F63345"},
+        {"inprogress_text_color", "3CDD88"},
+        {"selection_text_color", whiteColor},
+        {"selection_value_text_color", "00FFFF"},
         {"selection_bg_color", blackColor},
-        {"selection_bg_alpha", "11"},
+        {"selection_bg_alpha", "13"},
         {"trackbar_color", "555555"},
         {"highlight_color_1", "2288CC"},
         {"highlight_color_2", "88FFFF"},
-        {"highlight_color_3", "FFFF45"},
-        {"highlight_color_4", "F7253E"},
+        {"highlight_color_3", "3CDD88"},
+        {"highlight_color_4", "2CD2B1"},
         {"click_text_color", whiteColor},
-        {"click_alpha", "7"},
-        {"click_color", "3E25F7"},
+        {"click_alpha", "13"},
+        {"click_color", "2CD2B1"},
         {"progress_alpha", "7"},
-        {"progress_color", "253EF7"},
+        {"progress_color", "2597F7"},
         {"invert_bg_click_color", FALSE_STR},
         //{"disable_selection_bg", FALSE_STR},
         //{"disable_selection_value_color", FALSE_STR},
         //{"disable_colorful_logo", FALSE_STR},
-        {"logo_color_1", whiteColor},
-        {"logo_color_2", "FF0000"},
-        {"dynamic_logo_color_1", "00E669"},
-        {"dynamic_logo_color_2", "8080EA"}
+        {"logo_color_1", "EAEAEA"},
+        {"logo_color_2", whiteColor},
+        {"dynamic_logo_color_1", "C9F1FF"},
+        {"dynamic_logo_color_2", "4BCDF9"},
+        // ASAP: Packages coler.
+        {"accent_text_color", "00FFDD"},
+        {"notice_text_color", "00FFFF"}
     };
     
     bool isNumericCharacter(char c) {
@@ -1555,8 +2125,8 @@ namespace ult {
     
     
     // Time implementation
-    CONSTEXPR_STRING std::string DEFAULT_DT_FORMAT = "'%a %T'";
-    std::string datetimeFormat = "%a %T";
+    CONSTEXPR_STRING std::string DEFAULT_DT_FORMAT = "'%T %a'";
+    std::string datetimeFormat = "%T %a";
     
     
     // Widget settings

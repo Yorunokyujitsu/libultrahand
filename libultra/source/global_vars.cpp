@@ -29,7 +29,7 @@ namespace ult {
     CONSTEXPR_STRING std::string ROOT_PATH = "sdmc:/";
     const std::string SETTINGS_PATH = "sdmc:/config/ultrahand/";
     const std::string ULTRAHAND_CONFIG_INI_PATH = "sdmc:/config/ultrahand/config.ini";
-    const std::string TESLA_CONFIG_INI_PATH = "sdmc:/config/tesla/config.ini";
+    //const std::string TESLA_CONFIG_INI_PATH = "sdmc:/config/tesla/config.ini";
     const std::string LANG_PATH = "sdmc:/config/ultrahand/lang/";
     const std::string THEMES_PATH = "sdmc:/config/ultrahand/themes/";
     const std::string WALLPAPERS_PATH = "sdmc:/config/ultrahand/wallpapers/";
@@ -56,11 +56,18 @@ namespace ult {
     const std::string OVERLAYS_INI_FILEPATH = "sdmc:/config/ultrahand/overlays.ini";
     const std::string PACKAGES_INI_FILEPATH = "sdmc:/config/ultrahand/packages.ini";
 
+    const std::string ATMOSPHERE_PATH = "sdmc:/atmosphere/";
+    const std::string LDRKIP_PATH = "sdmc:/backup/kips/.OC/loader.kip";
+    const std::string HEKATE_PATH = "sdmc:/bootloader/";
+    const std::string EXPANSION_RAM_PATH = "sdmc:/switch/.packages/.offload/.ram/";
+
     const std::set<std::string> PROTECTED_FILES = {"sdmc:/atmosphere/package3", "sdmc:/atmosphere/stratosphere.romfs"};
     
-    const std::string ULTRAHAND_REPO_URL = "https://github.com/ppkantorski/Ultrahand-Overlay/";
-    const std::string INCLUDED_THEME_FOLDER_URL = "https://raw.githubusercontent.com/ppkantorski/Ultrahand-Overlay/main/themes/";
-    const std::string LATEST_RELEASE_INFO_URL = "https://raw.githubusercontent.com/ppkantorski/Ultrahand-Overlay/main/RELEASE.ini";
+    const std::string ULTRAHAND_REPO_URL = "https://github.com/Yorunokyujitsu/ASAP-NX/";
+    const std::string INCLUDED_THEME_FOLDER_URL = "https://raw.githubusercontent.com/Yorunokyujitsu/ASAP-NX/main/misc/ini/ultrahand_theme/";
+    const std::string INCLUDED_WALLPAPER_FOLDER_URL = "https://raw.githubusercontent.com/Yorunokyujitsu/ASAP-NX/main/misc/res/ultrahand.rgba";
+    const std::string LANGUAGE_FOLDER_URL = "https://raw.githubusercontent.com/Yorunokyujitsu/ASAP-NX/main/misc/json/lang/ultrahand/";
+    const std::string LATEST_RELEASE_INFO_URL = "https://raw.githubusercontent.com/Yorunokyujitsu/ASAP-NX/main/version.inc";
     const std::string NX_OVLLOADER_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/latest/download/nx-ovlloader.zip";
     const std::string NX_OVLLOADER_PLUS_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/latest/download/nx-ovlloader+.zip";
     const std::string OLD_NX_OVLLOADER_ZIP_URL = "https://github.com/ppkantorski/nx-ovlloader/releases/download/v1.0.8/nx-ovlloader.zip";
@@ -75,11 +82,11 @@ namespace ult {
     const std::string USE_LOGGING_STR = "use_logging";
     //#endif
     
-    CONSTEXPR_STRING std::string TESLA_COMBO_STR = "L+DDOWN+RS";
-    CONSTEXPR_STRING std::string ULTRAHAND_COMBO_STR = "ZL+ZR+DDOWN";
+    //CONSTEXPR_STRING std::string TESLA_COMBO_STR = "L+DDOWN+RS";
+    CONSTEXPR_STRING std::string ULTRAHAND_COMBO_STR = "L+DDOWN+RS";
     
     CONSTEXPR_STRING std::string FUSE_STR = "fuse";
-    CONSTEXPR_STRING std::string TESLA_STR = "tesla";
+    //CONSTEXPR_STRING std::string TESLA_STR = "tesla";
     CONSTEXPR_STRING std::string ERISTA_STR = "erista";
     CONSTEXPR_STRING std::string MARIKO_STR = "mariko";
     CONSTEXPR_STRING std::string KEY_COMBO_STR = "key_combo";
