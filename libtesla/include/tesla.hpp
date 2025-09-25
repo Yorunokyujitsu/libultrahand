@@ -288,8 +288,8 @@ namespace tsl {
     //static bool disableColorfulLogo = false;
 
     
-    static Color logoColor1 = RGB888(ult::whiteColor);
-    static Color logoColor2 = RGB888("F7253E");
+    static Color logoColor1 = RGB888("EAEAEA");
+    static Color logoColor2 = RGB888(ult::whiteColor);
     
 
     static size_t defaultBackgroundAlpha = 13;
@@ -299,8 +299,8 @@ namespace tsl {
     static Color notificationTextColor = RGB888(ult::whiteColor);
     static Color headerTextColor = RGB888(ult::whiteColor);
     static Color headerSeparatorColor = RGB888(ult::whiteColor);
-    static Color starColor = RGB888(ult::whiteColor);
-    static Color selectionStarColor = RGB888(ult::whiteColor);
+    static Color starColor = RGB888("FFAA17");
+    static Color selectionStarColor = RGB888("FFAA17");
     static Color buttonColor = RGB888(ult::whiteColor);
     static Color bottomTextColor = RGB888(ult::whiteColor);
     static Color bottomSeparatorColor = RGB888(ult::whiteColor);
@@ -308,19 +308,19 @@ namespace tsl {
 
     static Color defaultOverlayColor = RGB888(ult::whiteColor);
     static Color defaultPackageColor = RGB888(ult::whiteColor);//RGB888("#00FF00");
-    static Color defaultScriptColor = RGB888("FF33FF");
+    static Color defaultScriptColor = RGB888(ult::whiteColor);
     static Color clockColor = RGB888(ult::whiteColor);
     static Color temperatureColor = RGB888(ult::whiteColor);
-    static Color batteryColor = RGB888("ffff45");
+    static Color batteryColor = RGB888("3CDD88");
     static Color batteryChargingColor = RGB888("00FF00");
-    static Color batteryLowColor = RGB888("FF0000");
-    static size_t widgetBackdropAlpha = 15;
+    static Color batteryLowColor = RGB888("F63345");
+    static size_t widgetBackdropAlpha = 13;
     static Color widgetBackdropColor = RGB888(ult::blackColor, widgetBackdropAlpha);
 
     static Color overlayTextColor = RGB888(ult::whiteColor);
-    static Color ultOverlayTextColor = RGB888("9ed0ff");
+    static Color ultOverlayTextColor = RGB888(ult::whiteColor);
     static Color packageTextColor = RGB888(ult::whiteColor);
-    static Color ultPackageTextColor = RGB888("9ed0ff");
+    static Color ultPackageTextColor = RGB888(ult::whiteColor);
 
     static Color bannerVersionTextColor = RGB888("AAAAAA");
     static Color overlayVersionTextColor = RGB888("AAAAAA");
@@ -331,29 +331,29 @@ namespace tsl {
     static Color offTextColor = RGB888("AAAAAA");
     
     #if IS_LAUNCHER_DIRECTIVE
-    static Color dynamicLogoRGB1 = RGB888("00E669");
-    static Color dynamicLogoRGB2 = RGB888("8080EA");
+    static Color dynamicLogoRGB1 = RGB888("C9F1FF");
+    static Color dynamicLogoRGB2 = RGB888("4BCDF9");
     #endif
 
     //static bool disableSelectionBG = false;
     //static bool disableSelectionValueColor = false;
     static bool invertBGClickColor = false;
 
-    static size_t selectionBGAlpha = 11;
+    static size_t selectionBGAlpha = 13;
     static Color selectionBGColor = RGB888(ult::blackColor, selectionBGAlpha);
 
     static Color highlightColor1 = RGB888("2288CC");
     static Color highlightColor2 = RGB888("88FFFF");
-    static Color highlightColor3 = RGB888("FFFF45");
-    static Color highlightColor4 = RGB888("F7253E");
+    static Color highlightColor3 = RGB888("2288CC");
+    static Color highlightColor4 = RGB888("88FFFF");
 
     static Color highlightColor = tsl::style::color::ColorHighlight;
     
-    static size_t clickAlpha = 7;
-    static Color clickColor = RGB888("3E25F7", clickAlpha);
+    static size_t clickAlpha = 13;
+    static Color clickColor = RGB888("2CD2B1", clickAlpha);
 
     static size_t progressAlpha = 7;
-    static Color progressColor = RGB888("253EF7", progressAlpha);
+    static Color progressColor = RGB888("2597F7", progressAlpha);
 
     static Color trackBarColor = RGB888("555555");
 
@@ -363,28 +363,38 @@ namespace tsl {
 
     static Color textSeparatorColor = RGB888("404040");
 
-    static Color selectedTextColor = RGB888("9ed0ff");
-    static Color selectedValueTextColor = RGB888("FF7777");
-    static Color inprogressTextColor = RGB888(ult::whiteColor);
-    static Color invalidTextColor = RGB888("FF0000");
+    static Color selectedTextColor = RGB888(ult::whiteColor);
+    static Color selectedValueTextColor = RGB888("00FFFF");
+    static Color inprogressTextColor = RGB888("3CDD88");
+    static Color invalidTextColor = RGB888("F63345");
     static Color clickTextColor = RGB888(ult::whiteColor);
 
-    static size_t tableBGAlpha = 14;
-    static Color tableBGColor = RGB888("2C2C2C", tableBGAlpha); //RGB888("303030", tableBGAlpha);
+    static size_t tableBGAlpha = 13;
+    static Color tableBGColor = RGB888("3F3F3F", tableBGAlpha); //RGB888("303030", tableBGAlpha);
     static Color sectionTextColor = RGB888(ult::whiteColor);
     //static Color infoTextColor = RGB888("00FFDD");
-    static Color infoTextColor =RGB888("9ed0ff");
-    static Color warningTextColor = RGB888("FF7777");
+    static Color infoTextColor = RGB888(ult::whiteColor);
+    static Color warningTextColor = RGB888("F63345");
 
-    static Color healthyRamTextColor = RGB888("00FF00");
-    static Color neutralRamTextColor = RGB888("FFAA00");
-    static Color badRamTextColor = RGB888("FF0000");
+    static Color healthyRamTextColor = RGB888("3CDD88");
+    static Color neutralRamTextColor = RGB888("FFAA17");
+    static Color badRamTextColor = RGB888("F63345");
 
     static Color trackBarSliderColor = RGB888("606060");
     static Color trackBarSliderBorderColor = RGB888("505050");
     static Color trackBarSliderMalleableColor = RGB888("A0A0A0");
     static Color trackBarFullColor = RGB888("00FFDD");
     static Color trackBarEmptyColor = RGB888("404040");
+    /* ASAP Color */
+    static Color accentTextColor = RGB888("00FFDD");
+    static Color noticeTextColor = RGB888("00FFFF");
+    // status-monitor-overlay
+    static size_t stmBGAlpha = 10;
+    static Color stmBGColor = RGB888("111111", stmBGAlpha);
+    static Color stmMimicBGColor = RGB888("000000", stmBGAlpha);
+    static Color stmAccentColor = RGB888("00FFDD");
+    static Color stmSectionColor = RGB888("22DDFF");
+    static Color stmTextColor = RGB888(ult::whiteColor);
     
     static void initializeThemeVars() { // NOTE: This needs to be called once in your application.
         // Fetch all theme settings at once from the INI file
@@ -503,6 +513,16 @@ namespace tsl {
             trackBarSliderMalleableColor = getColor("trackbar_slider_malleable_color");
             trackBarFullColor = getColor("trackbar_full_color");
             trackBarEmptyColor = getColor("trackbar_empty_color");
+            // ASAP
+            accentTextColor = getColor("accent_text_color");
+            noticeTextColor = getColor("notice_text_color");
+            // status-monitor-overlay
+            stmBGAlpha = getAlpha("stm_bg_alpha");
+            stmBGColor = getColor("stm_bg_color", stmBGAlpha);
+            stmMimicBGColor = getColor("stm_mimicbg_color", stmBGAlpha);
+            stmAccentColor = getColor("stm_accent_color");
+            stmSectionColor = getColor("stm_section_color");
+            stmTextColor = getColor("stm_text_color");
         }
     }
     
@@ -528,9 +548,9 @@ namespace tsl {
         };
         
         // Get default language with fallback
-        std::string defaultLang = getStringValue(ult::DEFAULT_LANG_STR, "en");
+        std::string defaultLang = getStringValue(ult::DEFAULT_LANG_STR, "ko");
         if (defaultLang.empty()) {
-            defaultLang = "en";
+            defaultLang = "ko";
         }
         
         #ifdef UI_OVERRIDE_PATH
@@ -4912,7 +4932,8 @@ namespace tsl {
                 }
 
                 const bool isUltrahandMenu = (m_title == ult::CAPITAL_ULTRAHAND_PROJECT_NAME && 
-                                        m_subtitle.find("Ultrahand Package") == std::string::npos && 
+                                        m_subtitle.find("　") == std::string::npos &&
+                                        m_subtitle.find(" : ") == std::string::npos &&
                                         m_subtitle.find("Ultrahand Script") == std::string::npos);
                 
                 if (isUltrahandMenu) {
@@ -4967,7 +4988,7 @@ namespace tsl {
                                     break;
                                 case 'r': // red
                                     if (len == 3 && m_colorSelection == "red") {
-                                        titleColor = RGB888("#F7253E");
+                                        titleColor = RGB888("#F63345");
                                     }
                                     break;
                                 case 'b': // blue
@@ -5151,12 +5172,12 @@ namespace tsl {
                             ? (m_menuMode == "packages"
                                 ? "\uE0ED" + ult::GAP_2 + ult::OVERLAYS_ABBR
                                 : m_menuMode == "overlays"
-                                    ? "\uE0EE" + ult::GAP_2 + ult::PACKAGES
+                                    ? "\uE0EE" + ult::GAP_2 + ult::PACKAGE
                                     : "")
                             : (m_menuMode == "packages"
                                 ? "\uE0EE" + ult::GAP_2 + ult::OVERLAYS_ABBR
                                 : m_menuMode == "overlays"
-                                    ? "\uE0ED" + ult::GAP_2 + ult::PACKAGES
+                                    ? "\uE0ED" + ult::GAP_2 + ult::PACKAGE
                                     : ""))
                         : "") +
                     (!interpreterIsRunningNow && !m_pageLeftName.empty()
@@ -12062,7 +12083,7 @@ namespace tsl {
     
     
     namespace impl {
-        static constexpr const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini";
+        // static constexpr const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini";
         static constexpr const char* ULTRAHAND_CONFIG_FILE = "/config/ultrahand/config.ini";
         
         /**
@@ -12095,12 +12116,12 @@ namespace tsl {
             u64 decodedKeys = hlp::comboStringToKeys(parsedConfig[ult::ULTRAHAND_PROJECT_NAME][ult::KEY_COMBO_STR]); // CUSTOM MODIFICATION
             if (decodedKeys)
                 tsl::cfg::launchCombo = decodedKeys;
-            else {
+            /* else {
                 parsedConfig = hlp::ini::readOverlaySettings(TESLA_CONFIG_FILE);
                 decodedKeys = hlp::comboStringToKeys(parsedConfig["tesla"][ult::KEY_COMBO_STR]);
                 if (decodedKeys)
                     tsl::cfg::launchCombo = decodedKeys;
-            }
+            } */
             
             //#if USING_WIDGET_DIRECTIVE
             ult::datetimeFormat = parsedConfig[ult::ULTRAHAND_PROJECT_NAME]["datetime_format"]; // read datetime_format
@@ -12172,11 +12193,11 @@ namespace tsl {
          */
         [[maybe_unused]] static void updateCombo(u64 keys) {
             tsl::cfg::launchCombo = keys;
-            hlp::ini::updateOverlaySettings({
+            /* hlp::ini::updateOverlaySettings({
                 { ult::TESLA_STR, { // CUSTOM MODIFICATION
                     { ult::KEY_COMBO_STR , tsl::hlp::keysToComboString(keys) }
                 }}
-            }, TESLA_CONFIG_FILE);
+            }, TESLA_CONFIG_FILE); */
             hlp::ini::updateOverlaySettings({
                 { ult::ULTRAHAND_PROJECT_NAME, { // CUSTOM MODIFICATION
                     { ult::KEY_COMBO_STR , tsl::hlp::keysToComboString(keys) }
@@ -12628,7 +12649,7 @@ namespace tsl {
                     #if IS_LAUNCHER_DIRECTIVE
                         if (ult::updateMenuCombos) {
                             ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
-                            ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                            // ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
                             ult::updateMenuCombos = false;
                         }
                     #endif
@@ -12650,8 +12671,8 @@ namespace tsl {
                 #if IS_LAUNCHER_DIRECTIVE
                     else if (ult::updateMenuCombos && (((shData->keysHeld & tsl::cfg::launchCombo2) == tsl::cfg::launchCombo2) && shData->keysDown & tsl::cfg::launchCombo2)) {
                         std::swap(tsl::cfg::launchCombo, tsl::cfg::launchCombo2); // Swap the two launch combos
-                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
-                        ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
+                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                        // ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
                         eventFire(&shData->comboEvent);
                         mainComboHasTriggered.store(true, std::memory_order_release);
                         ult::updateMenuCombos = false;
