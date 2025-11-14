@@ -55,10 +55,11 @@ namespace ult {
     const std::string LANG_PATH                   = BASE_CONFIG_PATH + "lang/";
     const std::string THEMES_PATH                 = BASE_CONFIG_PATH + "themes/";
     const std::string WALLPAPERS_PATH             = BASE_CONFIG_PATH + "wallpapers/";
+    const std::string SOUNDS_PATH                 = BASE_CONFIG_PATH + "sounds/";
     const std::string FLAGS_PATH                  = BASE_CONFIG_PATH + "flags/";
     const std::string NOTIFICATIONS_PATH          = BASE_CONFIG_PATH + "notifications/";
     const std::string PAYLOADS_PATH               = BASE_CONFIG_PATH + "payloads/";
-    const std::string HB_APPSTORE_JSON            = SWITCH_PATH + ".appstore/.get/packages/UltrahandOverlay/info.json";
+    const std::string HB_APPSTORE_JSON            = SWITCH_PATH + "appstore/.get/packages/UltrahandOverlay/info.json";
     std::string THEME_CONFIG_INI_PATH             = BASE_CONFIG_PATH + THEME_FILENAME;
     std::string WALLPAPER_PATH                    = BASE_CONFIG_PATH + WALLPAPER_FILENAME;
     const std::string DOWNLOADS_PATH              = BASE_CONFIG_PATH + "downloads/";
@@ -92,6 +93,7 @@ namespace ult {
     const std::string OLD_NX_OVLLOADER_ZIP_URL      = GITHUB_ORIGIN_URL + "nx-ovlloader/releases/download/v1.0.8/nx-ovlloader.zip";
     const std::string OLD_NX_OVLLOADER_PLUS_ZIP_URL = GITHUB_ORIGIN_URL + "nx-ovlloader/releases/download/v1.0.8/nx-ovlloader+.zip";
     const std::string UPDATER_PAYLOAD_URL           = GITHUB_RAW_ORIGIN_URL + "Ultrahand-Overlay/main/payloads/ultrahand_updater.bin";
+    const std::string SOUND_EFFECTS_URL             = GITHUB_RAW_BASE_URL + "Ultrahand-Overlay/main/sounds/sounds.zip";
 
     // Launch options
     const std::string LAUNCH_ARGS_STR       = "launch_args";

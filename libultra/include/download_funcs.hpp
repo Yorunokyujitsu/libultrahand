@@ -15,6 +15,7 @@
  *  Licensed under both GPLv2 and CC-BY-4.0
  *  Copyright (c) 2024 ppkantorski
  ********************************************************************************/
+
 #pragma once
 #ifndef DOWNLOAD_FUNCS_HPP
 #define DOWNLOAD_FUNCS_HPP
@@ -59,27 +60,20 @@ namespace ult {
     extern std::atomic<int> downloadPercentage;
     extern std::atomic<int> unzipPercentage;
     
-    // User agent string for curl requests
-    inline constexpr const char* userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
-    
-    // Custom deleters for CURL handles
-    struct CurlDeleter {
-        void operator()(CURL* curl) const;
-    };
     
     // Thread-safe callback functions
-    #if !USING_FSTREAM_DIRECTIVE
-    size_t writeCallback(void* ptr, size_t size, size_t nmemb, FILE* stream);
-    #else
-    size_t writeCallback(void* ptr, size_t size, size_t nmemb, std::ostream* stream);
-    #endif
+    //#if !USING_FSTREAM_DIRECTIVE
+    //size_t writeCallback(void* ptr, size_t size, size_t nmemb, FILE* stream);
+    //#else
+    //size_t writeCallback(void* ptr, size_t size, size_t nmemb, std::ostream* stream);
+    //#endif
     
-    int progressCallback(void* ptr, curl_off_t totalToDownload, curl_off_t nowDownloaded, curl_off_t totalToUpload, curl_off_t nowUploaded);
+    //int progressCallback(void* ptr, curl_off_t totalToDownload, curl_off_t nowDownloaded, curl_off_t totalToUpload, curl_off_t nowUploaded);
     
     
     // Thread-safe initialization and cleanup functions
-    void initializeCurl();
-    void cleanupCurl();
+    //void initializeCurl();
+    //void cleanupCurl();
     
     // Main API functions - thread-safe and optimized
     bool downloadFile(const std::string& url, const std::string& toDestination, bool noPercentagePolling=false);
