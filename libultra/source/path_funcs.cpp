@@ -15,7 +15,7 @@
  *   of the project's documentation and must remain intact.
  * 
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2024 ppkantorski
+ *  Copyright (c) 2023-2025 ppkantorski
  ********************************************************************************/
 
 #include "path_funcs.hpp"
@@ -24,7 +24,7 @@
 namespace ult {
     std::atomic<bool> abortFileOp(false);
     
-    size_t COPY_BUFFER_SIZE = 65536/8; // Back to non-const as requested
+    size_t COPY_BUFFER_SIZE = 8192; // Back to non-const as requested
 
     std::atomic<int> copyPercentage(-1);
     
@@ -220,23 +220,25 @@ namespace ult {
     #endif
     }
     
-
     /**
-     * @brief Deletes a file or directory.
+     * @brief Deletes a file or directory without using an explicit stack.
      *
-     * This function deletes the file or directory specified by `path`. It can delete both files and directories.
+     * This function deletes the file or directory specified by `pathToDelete`.
+     * It uses a state-machine approach with a current directory pointer instead
+     * of an explicit stack data structure.
      *
-     * @param path The path of the file or directory to be deleted.
+     * @param pathToDelete The path of the file or directory to be deleted.
+     * @param logSource The path to the log file where deletions are recorded.
      */
     void deleteFileOrDirectory(const std::string& pathToDelete, const std::string& logSource) {
-        std::vector<std::string> stack;
+        if (pathToDelete.empty()) return;
         
-        // Batch logging optimization - collect successful deletions instead of logging immediately
         std::vector<std::string> successfulDeletions;
         const bool needsLogging = !logSource.empty();
-    
+        
+        // Handle single file case
         const bool pathIsFile = pathToDelete.back() != '/';
-    
+        
         if (pathIsFile) {
             if (isFile(pathToDelete)) {
                 if (remove(pathToDelete.c_str()) == 0) {
@@ -282,82 +284,104 @@ namespace ult {
             }
             return;
         }
-    
-        stack.push_back(pathToDelete);
-        struct stat pathStat;
-        std::string currentPath, filePath;
-        bool isEmpty;
-    
-        while (!stack.empty()) {
-            currentPath = stack.back();
-    
-            if (stat(currentPath.c_str(), &pathStat) != 0) {
-                stack.pop_back();
+        
+        // Directory deletion - stackless approach
+        // Normalize root path
+        std::string rootPath = pathToDelete;
+        if (rootPath.back() != '/') rootPath += '/';
+        
+        std::string currentDir = rootPath;
+        struct stat st;
+        
+        while (true) {
+            DIR* directory = opendir(currentDir.c_str());
+            if (!directory) {
+                #if USING_LOGGING_DIRECTIVE
+                if (!disableLogging)
+                    logMessage("Failed to open directory: " + currentDir);
+                #endif
+                
+                // Can't open - either deleted or error. Try to move up.
+                if (currentDir == rootPath) break; // Done with root
+                
+                size_t pos = currentDir.find_last_of('/', currentDir.length() - 2);
+                if (pos != std::string::npos && pos >= rootPath.length() - 1) {
+                    currentDir = currentDir.substr(0, pos + 1);
+                } else {
+                    break;
+                }
                 continue;
             }
-    
-            if (S_ISREG(pathStat.st_mode)) { // It's a file
-                stack.pop_back(); // Remove from stack before deletion
-                if (remove(currentPath.c_str()) == 0) {
-                    // Batch logging - store successful deletion instead of writing immediately
-                    if (needsLogging) {
-                        successfulDeletions.push_back(currentPath);
+            
+            bool foundSubdir = false;
+            bool foundFile = false;
+            dirent* entry;
+            
+            while ((entry = readdir(directory)) != nullptr) {
+                const char* name = entry->d_name;
+                if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) continue;
+                
+                std::string childPath = currentDir + name;
+                if (stat(childPath.c_str(), &st) != 0) continue;
+                
+                if (S_ISDIR(st.st_mode)) {
+                    // Found a subdirectory - dive into it
+                    currentDir = childPath + "/";
+                    foundSubdir = true;
+                    break;
+                } else if (S_ISREG(st.st_mode)) {
+                    // Delete file immediately
+                    if (remove(childPath.c_str()) == 0) {
+                        if (needsLogging) {
+                            successfulDeletions.push_back(childPath);
+                        }
+                        foundFile = true;
+                    } else {
+                        #if USING_LOGGING_DIRECTIVE
+                        if (!disableLogging)
+                            logMessage("Failed to delete file: " + childPath);
+                        #endif
                     }
                 } else {
                     #if USING_LOGGING_DIRECTIVE
                     if (!disableLogging)
-                        logMessage("Failed to delete file: " + currentPath);
+                        logMessage("Unknown file type: " + childPath);
                     #endif
                 }
-            } else if (S_ISDIR(pathStat.st_mode)) { // It's a directory
-                DIR* directory = opendir(currentPath.c_str());
-                if (!directory) {
-                    #if USING_LOGGING_DIRECTIVE
-                    if (!disableLogging)
-                        logMessage("Failed to open directory: " + currentPath);
-                    #endif
-                    stack.pop_back();
-                    continue;
-                }
-    
-                dirent* entry;
-                isEmpty = true;
-                while ((entry = readdir(directory)) != nullptr) {
-                    const std::string& fileName = entry->d_name;
-                    if (fileName != "." && fileName != "..") {
-                        filePath = currentPath + fileName;
-                        stack.push_back(filePath + (filePath.back() == '/' ? "" : "/"));
-                        isEmpty = false;
-                    }
-                }
-                closedir(directory);
-    
-                if (isEmpty) {
-                    stack.pop_back(); // Directory is now empty, safe to remove from stack
-                    if (rmdir(currentPath.c_str()) == 0) {
-                        // Note: Typically we don't log directory deletions, only files
-                        // If you want to log directory deletions too, uncomment the lines below:
-                        // if (needsLogging) {
-                        //     successfulDeletions.push_back(currentPath);
-                        // }
-                    } else {
-                        #if USING_LOGGING_DIRECTIVE
-                        if (!disableLogging)
-                            logMessage("Failed to delete directory: " + currentPath);
-                        #endif
-                    }
-                }
-            } else {
-                stack.pop_back(); // Unknown file type, just remove from stack
+            }
+            closedir(directory);
+            
+            if (foundSubdir) {
+                // Continue with the subdirectory
+                continue;
+            }
+            
+            if (foundFile) {
+                // We deleted files, re-scan this directory to check if empty
+                continue;
+            }
+            
+            // Directory is empty - delete it and move up
+            if (rmdir(currentDir.c_str()) != 0) {
                 #if USING_LOGGING_DIRECTIVE
                 if (!disableLogging)
-                    logMessage("Unknown file type: " + currentPath);
+                    logMessage("Failed to delete directory: " + currentDir);
                 #endif
             }
+            
+            // Check if we just deleted the root directory
+            if (currentDir == rootPath) break;
+            
+            // Move up, but NEVER go above rootPath
+            size_t pos = currentDir.find_last_of('/', currentDir.length() - 2);
+            if (pos != std::string::npos && pos >= rootPath.length() - 1) {
+                currentDir = currentDir.substr(0, pos + 1);
+            } else {
+                break; // Safety: don't go above root
+            }
         }
-    
-        // KEY OPTIMIZATION: Batch write all successful deletions to log file at the end
-        // This eliminates the overhead of logging inside the hot loop
+        
+        // Batch write all successful deletions to log file at the end
         if (needsLogging && !successfulDeletions.empty()) {
     #if !USING_FSTREAM_DIRECTIVE
             createDirectory(getParentDirFromPath(logSource));
@@ -415,57 +439,62 @@ namespace ult {
 
     // Helper function to reverse a log file safely
     void reverseLogFile(const std::string& logFilePath) {
-        std::vector<std::string> lines;
-    
-    #if !USING_FSTREAM_DIRECTIVE
-        FILE* file = fopen(logFilePath.c_str(), "r");
+        // First pass: count lines and build offset index
+        FILE* file = fopen(logFilePath.c_str(), "rb");
         if (!file) return;
-    
+        
         setvbuf(file, nullptr, _IOFBF, 8192);
-    
+        
+        std::vector<long> lineOffsets;
+        
+        lineOffsets.push_back(0); // First line starts at offset 0
+        
         static constexpr size_t BUFFER_SIZE = 8192;
         char buffer[BUFFER_SIZE];
-    
+        long currentOffset = 0;
+        
         while (fgets(buffer, BUFFER_SIZE, file)) {
-            size_t len = strlen(buffer);
-            if (len > 0 && buffer[len - 1] == '\n') buffer[len - 1] = '\0';
-            lines.emplace_back(buffer); // std::string constructor ensures proper termination
+            currentOffset = ftell(file);
+            lineOffsets.push_back(currentOffset);
         }
+        
+        // Remove the last offset (it's past EOF)
+        if (!lineOffsets.empty()) lineOffsets.pop_back();
+        
+        if (lineOffsets.empty()) {
+            fclose(file);
+            return;
+        }
+        
+        // Create temp file
+        std::string tempPath = logFilePath + ".tmp";
+        FILE* outFile = fopen(tempPath.c_str(), "wb");
+        if (!outFile) {
+            fclose(file);
+            return;
+        }
+        
+        setvbuf(outFile, nullptr, _IOFBF, 8192);
+        
+        // Second pass: write lines in reverse order
+        for (auto it = lineOffsets.rbegin(); it != lineOffsets.rend(); ++it) {
+            fseek(file, *it, SEEK_SET);
+            if (fgets(buffer, BUFFER_SIZE, file)) {
+                // Remove trailing newline if present
+                size_t len = strlen(buffer);
+                if (len > 0 && buffer[len - 1] == '\n') buffer[len - 1] = '\0';
+                
+                fprintf(outFile, "%s\n", buffer);
+            }
+        }
+        
+        fflush(outFile);
+        fclose(outFile);
         fclose(file);
-    
-        FILE* outFile = fopen(logFilePath.c_str(), "w");
-        if (outFile) {
-            setvbuf(outFile, nullptr, _IOFBF, 8192);
-            for (auto it = lines.rbegin(); it != lines.rend(); ++it) {
-                // Use fprintf instead of fputs to avoid any residual buffer issues
-                fprintf(outFile, "%s\n", it->c_str());
-            }
-            fflush(outFile);
-            fclose(outFile);
-        }
-    #else
-        std::ifstream file(logFilePath);
-        if (!file.is_open()) return;
-    
-        static char readBuffer[8192];
-        file.rdbuf()->pubsetbuf(readBuffer, sizeof(readBuffer));
-    
-        std::string line;
-        while (std::getline(file, line)) lines.push_back(std::move(line));
-        file.close();
-    
-        std::ofstream outFile(logFilePath);
-        if (outFile.is_open()) {
-            static char writeBuffer[8192];
-            outFile.rdbuf()->pubsetbuf(writeBuffer, sizeof(writeBuffer));
-    
-            for (auto it = lines.rbegin(); it != lines.rend(); ++it) {
-                outFile << *it << '\n';
-            }
-            outFile.flush();
-            outFile.close();
-        }
-    #endif
+        
+        // Replace original with temp
+        remove(logFilePath.c_str());
+        rename(tempPath.c_str(), logFilePath.c_str());
     }
     
     void moveDirectory(const std::string& sourcePath, const std::string& destinationPath,
@@ -487,142 +516,125 @@ namespace ult {
         }
     
         bool needsLogging = !logSource.empty() || !logDestination.empty();
-
-        {
-            std::vector<std::pair<std::string, std::string>> stack;
-            std::vector<std::string> directoriesToRemove;
         
-            stack.push_back({sourcePath, destinationPath});
-        
-        #if !USING_FSTREAM_DIRECTIVE
-            FILE* logSrcFile = nullptr;
-            FILE* logDestFile = nullptr;
-        
-            if (needsLogging && !logSource.empty()) {
-                createDirectory(getParentDirFromPath(logSource));
-                logSrcFile = fopen(logSource.c_str(), "w");
-                if (logSrcFile) setvbuf(logSrcFile, nullptr, _IOFBF, 8192);
-            }
-            if (needsLogging && !logDestination.empty()) {
-                createDirectory(getParentDirFromPath(logDestination));
-                logDestFile = fopen(logDestination.c_str(), "w");
-                if (logDestFile) setvbuf(logDestFile, nullptr, _IOFBF, 8192);
-            }
-        #else
-            std::unique_ptr<std::ofstream> logSrcFile, logDestFile;
-            static char srcBuffer[8192], destBuffer[8192];
-        
-            if (needsLogging && !logSource.empty()) {
-                createDirectory(getParentDirFromPath(logSource));
-                logSrcFile = std::make_unique<std::ofstream>(logSource);
-                if (logSrcFile->is_open()) logSrcFile->rdbuf()->pubsetbuf(srcBuffer, sizeof(srcBuffer));
-            }
-            if (needsLogging && !logDestination.empty()) {
-                createDirectory(getParentDirFromPath(logDestination));
-                logDestFile = std::make_unique<std::ofstream>(logDestination);
-                if (logDestFile->is_open()) logDestFile->rdbuf()->pubsetbuf(destBuffer, sizeof(destBuffer));
-            }
-        #endif
-        
-            std::string fullPathSrc, fullPathDst;
-            //fullPathSrc.reserve(1024);
-            //fullPathDst.reserve(1024);
-        
-            dirent* entry;
-            DIR* dir;
-            const char* name;
-        
-            std::string currentSource, currentDestination;
-            while (!stack.empty()) {
-                std::tie(currentSource, currentDestination) = stack.back();
-                stack.pop_back();
-        
-                dir = opendir(currentSource.c_str());
-                if (!dir) {
-        #if USING_LOGGING_DIRECTIVE
-                    if (!disableLogging) logMessage("Failed to open source directory: " + currentSource);
-        #endif
-                    continue;
-                }
-        
-                while ((entry = readdir(dir)) != nullptr) {
-                    name = entry->d_name;
-                    if (name[0] == '.' && (name[1] == '\0' || (name[1] == '.' && name[2] == '\0'))) continue;
-        
-                    fullPathSrc.assign(currentSource);
-                    if (!fullPathSrc.empty() && fullPathSrc.back() != '/') fullPathSrc += '/';
-                    fullPathSrc += name;
-        
-                    fullPathDst.assign(currentDestination);
-                    if (!fullPathDst.empty() && fullPathDst.back() != '/') fullPathDst += '/';
-                    fullPathDst += name;
-        
-                    if (entry->d_type == DT_DIR) {
-                        if (mkdir(fullPathDst.c_str(), 0777) != 0 && errno != EEXIST) {
-        #if USING_LOGGING_DIRECTIVE
-                            if (!disableLogging) logMessage("Failed to create destination directory: " + fullPathDst);
-        #endif
-                            continue;
-                        }
-                        stack.emplace_back(fullPathSrc, fullPathDst);
-                        directoriesToRemove.emplace_back(fullPathSrc);
-        
-                        if (needsLogging) {
-        #if !USING_FSTREAM_DIRECTIVE
-                            if (logSrcFile) fprintf(logSrcFile, "%s/\n", fullPathSrc.c_str()), fflush(logSrcFile);
-                            if (logDestFile) fprintf(logDestFile, "%s/\n", fullPathDst.c_str()), fflush(logDestFile);
-        #else
-                            if (logSrcFile && logSrcFile->is_open()) { *logSrcFile << fullPathSrc << "/\n"; logSrcFile->flush(); }
-                            if (logDestFile && logDestFile->is_open()) { *logDestFile << fullPathDst << "/\n"; logDestFile->flush(); }
-        #endif
-                        }
-                    } else {
-                        remove(fullPathDst.c_str());
-                        if (rename(fullPathSrc.c_str(), fullPathDst.c_str()) == 0) {
-                            if (needsLogging) {
-        #if !USING_FSTREAM_DIRECTIVE
-                                if (logSrcFile) fprintf(logSrcFile, "%s\n", fullPathSrc.c_str()), fflush(logSrcFile);
-                                if (logDestFile) fprintf(logDestFile, "%s\n", fullPathDst.c_str()), fflush(logDestFile);
-        #else
-                                if (logSrcFile && logSrcFile->is_open()) { *logSrcFile << fullPathSrc << '\n'; logSrcFile->flush(); }
-                                if (logDestFile && logDestFile->is_open()) { *logDestFile << fullPathDst << '\n'; logDestFile->flush(); }
-        #endif
-                            }
-                        } else {
-        #if USING_LOGGING_DIRECTIVE
-                            if (!disableLogging) logMessage("Failed to move: " + fullPathSrc);
-        #endif
-                        }
-                    }
-                }
-                closedir(dir);
-            }
-        
-        #if !USING_FSTREAM_DIRECTIVE
-            if (logSrcFile) fclose(logSrcFile);
-            if (logDestFile) fclose(logDestFile);
-        #else
-            if (logSrcFile) { logSrcFile->flush(); logSrcFile->close(); }
-            if (logDestFile) { logDestFile->flush(); logDestFile->close(); }
-        #endif
-        
-            // Clean up directories
-            for (auto it = directoriesToRemove.rbegin(); it != directoriesToRemove.rend(); ++it) {
-                if (rmdir(it->c_str()) != 0) {
-        #if USING_LOGGING_DIRECTIVE
-                    if (!disableLogging) logMessage("Failed to delete source directory: " + *it);
-        #endif
-                }
-            }
-        
-            if (rmdir(sourcePath.c_str()) != 0) {
-        #if USING_LOGGING_DIRECTIVE
-                if (!disableLogging) logMessage("Failed to delete source directory: " + sourcePath);
-        #endif
-            }
+        // Open log files once at the start
+        FILE* logSrcFile = nullptr;
+        FILE* logDestFile = nullptr;
+    
+        if (needsLogging && !logSource.empty()) {
+            createDirectory(getParentDirFromPath(logSource));
+            logSrcFile = fopen(logSource.c_str(), "w");
+            if (logSrcFile) setvbuf(logSrcFile, nullptr, _IOFBF, 8192);
+        }
+        if (needsLogging && !logDestination.empty()) {
+            createDirectory(getParentDirFromPath(logDestination));
+            logDestFile = fopen(logDestination.c_str(), "w");
+            if (logDestFile) setvbuf(logDestFile, nullptr, _IOFBF, 8192);
         }
     
-        // Safely reverse logs now
+        // Recursive helper that moves files/dirs and logs in post-order (deepest first)
+        std::function<void(const std::string&, const std::string&)> moveRecursive = 
+            [&](const std::string& srcPath, const std::string& dstPath) {
+            
+            DIR* dir = opendir(srcPath.c_str());
+            if (!dir) {
+    #if USING_LOGGING_DIRECTIVE
+                if (!disableLogging) logMessage("Failed to open source directory: " + srcPath);
+    #endif
+                return;
+            }
+    
+            //bool hasContent = false;
+            dirent* entry;
+            
+            while ((entry = readdir(dir)) != nullptr) {
+                const char* name = entry->d_name;
+                if (name[0] == '.' && (name[1] == '\0' || (name[1] == '.' && name[2] == '\0'))) {
+                    continue;
+                }
+    
+                //hasContent = true;
+    
+                // Build full paths
+                std::string fullSrcPath = srcPath;
+                if (!fullSrcPath.empty() && fullSrcPath.back() != '/') fullSrcPath += '/';
+                fullSrcPath += name;
+    
+                std::string fullDstPath = dstPath;
+                if (!fullDstPath.empty() && fullDstPath.back() != '/') fullDstPath += '/';
+                fullDstPath += name;
+    
+                // Use d_type if available
+    #ifdef _DIRENT_HAVE_D_TYPE
+                if (entry->d_type == DT_DIR) {
+                    // Create destination directory
+                    if (mkdir(fullDstPath.c_str(), 0777) != 0 && errno != EEXIST) {
+    #if USING_LOGGING_DIRECTIVE
+                        if (!disableLogging) logMessage("Failed to create destination directory: " + fullDstPath);
+    #endif
+                        continue;
+                    }
+    
+                    // Recurse into subdirectory
+                    moveRecursive(fullSrcPath, fullDstPath);
+    
+                    // Remove the now-empty source directory
+                    if (rmdir(fullSrcPath.c_str()) != 0) {
+    #if USING_LOGGING_DIRECTIVE
+                        if (!disableLogging) logMessage("Failed to delete source directory: " + fullSrcPath);
+    #endif
+                    }
+    
+                    // Log after processing (post-order)
+                    if (needsLogging) {
+                        if (logSrcFile) {
+                            fprintf(logSrcFile, "%s/\n", fullSrcPath.c_str());
+                        }
+                        if (logDestFile) {
+                            fprintf(logDestFile, "%s/\n", fullDstPath.c_str());
+                        }
+                    }
+                    continue;
+                } else if (entry->d_type != DT_UNKNOWN && entry->d_type != DT_REG) {
+                    // Skip non-regular files (symlinks, devices, etc.)
+                    continue;
+                }
+    #endif
+                // Move regular file
+                remove(fullDstPath.c_str());
+                if (rename(fullSrcPath.c_str(), fullDstPath.c_str()) == 0) {
+                    if (needsLogging) {
+                        if (logSrcFile) {
+                            fprintf(logSrcFile, "%s\n", fullSrcPath.c_str());
+                        }
+                        if (logDestFile) {
+                            fprintf(logDestFile, "%s\n", fullDstPath.c_str());
+                        }
+                    }
+                } else {
+    #if USING_LOGGING_DIRECTIVE
+                    if (!disableLogging) logMessage("Failed to move: " + fullSrcPath);
+    #endif
+                }
+            }
+            closedir(dir);
+        };
+    
+        // Start the recursive move
+        moveRecursive(sourcePath, destinationPath);
+    
+        // Close log files
+        if (logSrcFile) fclose(logSrcFile);
+        if (logDestFile) fclose(logDestFile);
+    
+        // Remove the top-level source directory
+        if (rmdir(sourcePath.c_str()) != 0) {
+    #if USING_LOGGING_DIRECTIVE
+            if (!disableLogging) logMessage("Failed to delete source directory: " + sourcePath);
+    #endif
+        }
+    
+        // Reverse logs to get shallowest-first order
         if (needsLogging) {
             if (!logSource.empty()) reverseLogFile(logSource);
             if (!logDestination.empty()) reverseLogFile(logDestination);
@@ -1025,45 +1037,65 @@ namespace ult {
     
         if (S_ISDIR(statbuf.st_mode)) {
             long long totalSize = 0;
-            std::queue<std::string> directories;
-            directories.push(path);
-            std::string currentPath, newPath;
     
-            while (!directories.empty()) {
-                currentPath = directories.front();
-                directories.pop();
-    
-                DIR* dir = opendir(currentPath.c_str());
-                if (!dir) {
-                    continue; // Cannot open directory, skip it
-                }
-    
-                dirent* entry;
-                while ((entry = readdir(dir)) != nullptr) {
-                    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-                        continue; // Skip "." and ".."
-                    }
-                    newPath = currentPath + "/" + entry->d_name;
-    
-                    if (lstat(newPath.c_str(), &statbuf) != 0) {
-                        continue; // Cannot stat file, skip it
-                    }
-    
-                    if (S_ISREG(statbuf.st_mode)) {
-                        totalSize += statbuf.st_size;
-                    } else if (S_ISDIR(statbuf.st_mode)) {
-                        directories.push(newPath); // Push subdirectory onto queue for processing
-                    }
-                }
-                closedir(dir);
+            DIR* dir = opendir(path.c_str());
+            if (!dir) {
+                return 0; // Cannot open directory
             }
+    
+            // Calculate base path with slash for efficient concatenation
+            bool needsSlash = (!path.empty() && path.back() != '/');
+            
+            dirent* entry;
+            while ((entry = readdir(dir)) != nullptr) {
+                // Fast check for "." and ".."
+                if (entry->d_name[0] == '.') {
+                    if (entry->d_name[1] == '\0' || 
+                        (entry->d_name[1] == '.' && entry->d_name[2] == '\0')) {
+                        continue;
+                    }
+                }
+                
+                // Build the full path
+                std::string fullPath = path;
+                if (needsSlash) fullPath += '/';
+                fullPath += entry->d_name;
+    
+                // Use d_type if available (much faster than lstat)
+    #ifdef _DIRENT_HAVE_D_TYPE
+                if (entry->d_type != DT_UNKNOWN) {
+                    if (entry->d_type == DT_REG) {
+                        // Regular file - get size
+                        if (lstat(fullPath.c_str(), &statbuf) == 0) {
+                            totalSize += statbuf.st_size;
+                        }
+                    } else if (entry->d_type == DT_DIR) {
+                        // Directory - recurse
+                        totalSize += getTotalSize(fullPath);
+                    }
+                    // Ignore other types (symlinks, devices, etc.)
+                    continue;
+                }
+    #endif
+                // Fallback to lstat if d_type unavailable or unknown
+                if (lstat(fullPath.c_str(), &statbuf) != 0) {
+                    continue; // Cannot stat file, skip it
+                }
+    
+                if (S_ISREG(statbuf.st_mode)) {
+                    totalSize += statbuf.st_size;
+                } else if (S_ISDIR(statbuf.st_mode)) {
+                    totalSize += getTotalSize(fullPath);
+                }
+            }
+            closedir(dir);
     
             return totalSize;
         }
     
         return 0; // Non-file/directory entries
     }
-    
+        
     /**
      * @brief Copies a file or directory from the source path to the destination path.
      *
@@ -1079,189 +1111,182 @@ namespace ult {
         bool isTopLevelCall = totalBytesCopied == nullptr;
         long long tempBytesCopied = 0;
     
-        // Batch logging optimization - collect successful operations instead of logging immediately
-        std::vector<std::string> successfulSources, successfulDestinations;
         bool needsLogging = !logSource.empty() || !logDestination.empty();
-        bool filesCopied = false;
     
         if (isTopLevelCall) {
             totalSize = getTotalSize(fromPath);
             totalBytesCopied = &tempBytesCopied;
         }
     
-        if (toPath.back() != '/') {
-            // If toPath is a file, create its parent directory and copy the file
-            createDirectory(getParentDirFromPath(toPath));
-            copySingleFile(fromPath, toPath, *totalBytesCopied, totalSize, logSource, logDestination);
+        // Check abort flag
+        if (abortFileOp.load(std::memory_order_acquire)) {
+            copyPercentage.store(-1, std::memory_order_release);
             return;
         }
     
-        // Ensure the toPath directory exists
-        createDirectory(toPath);
-    
-        std::vector<std::pair<std::string, std::string>> directories;
-        directories.emplace_back(fromPath, toPath); // Use emplace_back for efficiency
-    
-        size_t currentDirectoryIndex = 0;
-        
-        // Pre-declare strings to avoid repeated allocations
-        std::string filename, toFilePath, toDirPath, currentFromPath, currentToPath;
-        std::string subFromPath, subToPath;
-    
         struct stat fromStat;
-    
-        while (currentDirectoryIndex < directories.size()) {
-            if (abortFileOp.load(std::memory_order_acquire)) {
-                copyPercentage.store(-1, std::memory_order_release);
-                return;
-            }
-            
-            // Use structured binding more efficiently
-            const auto& [currentFrom, currentTo] = directories[currentDirectoryIndex++];
-            currentFromPath = currentFrom;
-            currentToPath = currentTo;
-    
-            if (stat(currentFromPath.c_str(), &fromStat) != 0) {
-                #if USING_LOGGING_DIRECTIVE
-                if (!disableLogging)
-                    logMessage("Failed to get stat of " + currentFromPath);
-                #endif
-                continue;
-            }
-    
-            if (S_ISREG(fromStat.st_mode)) {
-                // If it's a regular file, copy it to the toPath directory
-                filename = getNameFromPath(currentFromPath);
-                
-                // More efficient path building
-                toFilePath.assign(getParentDirFromPath(currentToPath));
-                toFilePath += '/';
-                toFilePath += filename;
-                
-                createDirectory(getParentDirFromPath(toFilePath)); // Ensure the parent directory exists
-                copySingleFile(currentFromPath, toFilePath, *totalBytesCopied, totalSize, logSource, logDestination);
-                
-                // Mark that files were copied
-                filesCopied = true;
-    
-                if (totalSize > 0) {
-                    copyPercentage.store(static_cast<int>((*totalBytesCopied * 100) / totalSize), std::memory_order_release); // Update progress
-                }
-            } else if (S_ISDIR(fromStat.st_mode)) {
-                // If it's a directory, iterate over its contents and add them to the vector for processing
-                DIR* dir = opendir(currentFromPath.c_str());
-                if (!dir) {
-                    #if USING_LOGGING_DIRECTIVE
-                    if (!disableLogging)
-                        logMessage("Failed to open directory: " + currentFromPath);
-                    #endif
-                    continue;
-                }
-    
-                bool hasContent = false;
-                // Cache current path lengths for efficient string building
-                dirent* entry;
-                while ((entry = readdir(dir)) != nullptr) {
-                    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
-                    
-                    hasContent = true;
-                    
-                    // More efficient path building
-                    subFromPath.clear();
-                    subFromPath.assign(currentFromPath);
-                    subFromPath += '/';
-                    subFromPath += entry->d_name;
-                    
-                    subToPath.clear();
-                    subToPath.assign(currentToPath);
-                    subToPath += '/';
-                    subToPath += entry->d_name;
-                    
-                    directories.emplace_back(std::move(subFromPath), std::move(subToPath)); // Use move semantics
-                }
-                closedir(dir);
-                
-                // Log this directory if it has content and we need logging
-                if (hasContent && needsLogging) {
-                    successfulSources.push_back(currentFromPath + "/");
-                    successfulDestinations.push_back(currentToPath + "/");
-                }
-            }
+        if (stat(fromPath.c_str(), &fromStat) != 0) {
+            #if USING_LOGGING_DIRECTIVE
+            if (!disableLogging)
+                logMessage("Failed to get stat of " + fromPath);
+            #endif
+            return;
         }
     
-        // Batch write all successful operations to log files at the end
-        if (isTopLevelCall && needsLogging && filesCopied && !successfulSources.empty()) {
+        if (S_ISREG(fromStat.st_mode)) {
+            // It's a regular file
+            if (toPath.back() == '/') {
+                // toPath is a directory, copy file into it
+                std::string filename = getNameFromPath(fromPath);
+                std::string toFilePath = toPath + filename;
+                
+                createDirectory(toPath);
+                copySingleFile(fromPath, toFilePath, *totalBytesCopied, totalSize, logSource, logDestination);
+            } else {
+                // toPath is a file path, copy directly
+                createDirectory(getParentDirFromPath(toPath));
+                copySingleFile(fromPath, toPath, *totalBytesCopied, totalSize, logSource, logDestination);
+            }
+    
+            if (totalSize > 0) {
+                copyPercentage.store(static_cast<int>((*totalBytesCopied * 100) / totalSize), std::memory_order_release);
+            }
+        } else if (S_ISDIR(fromStat.st_mode)) {
+            // It's a directory
+            std::string actualToPath = toPath;
+            
+            // Ensure toPath ends with /
+            if (actualToPath.back() != '/') {
+                actualToPath += '/';
+            }
+            
+            // Create the destination directory
+            createDirectory(actualToPath);
+    
+            // Open and iterate through the directory
+            DIR* dir = opendir(fromPath.c_str());
+            if (!dir) {
+                #if USING_LOGGING_DIRECTIVE
+                if (!disableLogging)
+                    logMessage("Failed to open directory: " + fromPath);
+                #endif
+                return;
+            }
+    
+            bool hasContent = false;
+            dirent* entry;
+            while ((entry = readdir(dir)) != nullptr) {
+                if (abortFileOp.load(std::memory_order_acquire)) {
+                    closedir(dir);
+                    copyPercentage.store(-1, std::memory_order_release);
+                    return;
+                }
+    
+                if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) continue;
+                
+                hasContent = true;
+                
+                // Build paths for recursion - ensure fromPath has trailing slash
+                std::string fromWithSlash = fromPath;
+                if (fromWithSlash.back() != '/') {
+                    fromWithSlash += '/';
+                }
+                
+                std::string subFromPath = fromWithSlash + entry->d_name;
+                std::string subToPath = actualToPath + entry->d_name;
+                
+                // Check if this entry is a directory and add trailing slash if so
+                struct stat entryStat;
+                if (stat(subFromPath.c_str(), &entryStat) == 0 && S_ISDIR(entryStat.st_mode)) {
+                    subToPath += '/';
+                }
+                
+                // Recursive call - this will write logs in DFS order (deepest first)
+                copyFileOrDirectory(subFromPath, subToPath, totalBytesCopied, totalSize, logSource, logDestination);
+            }
+            closedir(dir);
+            
+            // Log this directory AFTER processing its contents (post-order traversal)
+            if (hasContent && needsLogging) {
+                std::string logFromPath = fromPath;
+                if (logFromPath.back() != '/') logFromPath += '/';
+                
+                std::string logToPath = actualToPath;
+                
     #if !USING_FSTREAM_DIRECTIVE
-            if (!logSource.empty()) {
-                createDirectory(getParentDirFromPath(logSource));
-                if (FILE* logFile = fopen(logSource.c_str(), "a")) {
-                    for (auto it = successfulSources.rbegin(); it != successfulSources.rend(); ++it) {
-                        writeLog(logFile, *it);
+                if (!logSource.empty()) {
+                    createDirectory(getParentDirFromPath(logSource));
+                    if (FILE* logFile = fopen(logSource.c_str(), "a")) {
+                        writeLog(logFile, logFromPath);
+                        fclose(logFile);
                     }
-                    fclose(logFile);
+                    #if USING_LOGGING_DIRECTIVE
+                    else {
+                        if (!disableLogging)
+                            logMessage("Failed to open source log file: " + logSource);
+                    }
+                    #endif
                 }
-                #if USING_LOGGING_DIRECTIVE
-                else {
-                    if (!disableLogging)
-                        logMessage("Failed to open source log file: " + logSource);
-                }
-                #endif
-            }
     
-            if (!logDestination.empty()) {
-                createDirectory(getParentDirFromPath(logDestination));
-                if (FILE* logFile = fopen(logDestination.c_str(), "a")) {
-                    for (auto it = successfulDestinations.rbegin(); it != successfulDestinations.rend(); ++it) {
-                        writeLog(logFile, *it);
+                if (!logDestination.empty()) {
+                    createDirectory(getParentDirFromPath(logDestination));
+                    if (FILE* logFile = fopen(logDestination.c_str(), "a")) {
+                        writeLog(logFile, logToPath);
+                        fclose(logFile);
                     }
-                    fclose(logFile);
+                    #if USING_LOGGING_DIRECTIVE
+                    else {
+                        if (!disableLogging)
+                            logMessage("Failed to open destination log file: " + logDestination);
+                    }
+                    #endif
                 }
-                #if USING_LOGGING_DIRECTIVE
-                else {
-                    if (!disableLogging)
-                        logMessage("Failed to open destination log file: " + logDestination);
-                }
-                #endif
-            }
     #else
-            if (!logSource.empty()) {
-                createDirectory(getParentDirFromPath(logSource));
-                std::ofstream logSourceFile(logSource, std::ios::app);
-                if (logSourceFile.is_open()) {
-                    for (auto it = successfulSources.rbegin(); it != successfulSources.rend(); ++it) {
-                        writeLog(logSourceFile, *it);
+                if (!logSource.empty()) {
+                    createDirectory(getParentDirFromPath(logSource));
+                    std::ofstream logSourceFile(logSource, std::ios::app);
+                    if (logSourceFile.is_open()) {
+                        writeLog(logSourceFile, logFromPath);
+                        logSourceFile.close();
                     }
-                    logSourceFile.close();
+                    #if USING_LOGGING_DIRECTIVE
+                    else {
+                        if (!disableLogging)
+                            logMessage("Failed to open source log file: " + logSource);
+                    }
+                    #endif
                 }
-                #if USING_LOGGING_DIRECTIVE
-                else {
-                    if (!disableLogging)
-                        logMessage("Failed to open source log file: " + logSource);
-                }
-                #endif
-            }
     
-            if (!logDestination.empty()) {
-                createDirectory(getParentDirFromPath(logDestination));
-                std::ofstream logDestFile(logDestination, std::ios::app);
-                if (logDestFile.is_open()) {
-                    for (auto it = successfulDestinations.rbegin(); it != successfulDestinations.rend(); ++it) {
-                        writeLog(logDestFile, *it);
+                if (!logDestination.empty()) {
+                    createDirectory(getParentDirFromPath(logDestination));
+                    std::ofstream logDestFile(logDestination, std::ios::app);
+                    if (logDestFile.is_open()) {
+                        writeLog(logDestFile, logToPath);
+                        logDestFile.close();
                     }
-                    logDestFile.close();
+                    #if USING_LOGGING_DIRECTIVE
+                    else {
+                        if (!disableLogging)
+                            logMessage("Failed to open destination log file: " + logDestination);
+                    }
+                    #endif
                 }
-                #if USING_LOGGING_DIRECTIVE
-                else {
-                    if (!disableLogging)
-                        logMessage("Failed to open destination log file: " + logDestination);
-                }
-                #endif
-            }
     #endif
+            }
         }
     
         if (isTopLevelCall) {
-            copyPercentage.store(100, std::memory_order_release); // Set progress to 100% on completion of top-level call
+            copyPercentage.store(100, std::memory_order_release);
+            
+            // Reverse the log files to match original behavior (shallowest directories first)
+            if (needsLogging) {
+                if (!logSource.empty()) {
+                    reverseLogFile(logSource);
+                }
+                if (!logDestination.empty()) {
+                    reverseLogFile(logDestination);
+                }
+            }
         }
     }
 

@@ -13,7 +13,7 @@
  *   altered or removed.
  *
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2024 ppkantorski
+ *  Copyright (c) 2023-2025 ppkantorski
  ********************************************************************************/
 
 
@@ -39,6 +39,11 @@ namespace ult {
     
     extern const std::string ROOT_PATH;
     extern const std::string SETTINGS_PATH;
+    
+    extern const std::string NX_OVLLOADER_PATH;
+    extern const std::string OVL_HEAP_CONFIG_PATH;
+    extern const std::string OVL_EXIT_FLAG_PATH;
+
     extern const std::string ULTRAHAND_CONFIG_INI_PATH;
     //extern const std::string TESLA_CONFIG_INI_PATH;
     extern const std::string LANG_PATH;
@@ -63,7 +68,8 @@ namespace ult {
     extern const std::string PACKAGE_FILENAME;
     
     extern const std::string DOWNLOADS_PATH;
-    extern const std::string EXPANSION_PATH;
+
+    //extern const std::string EXPANSION_PATH;
     extern const std::string FUSE_DATA_INI_PATH;
     extern const std::string PACKAGE_PATH;
     extern const std::string OVERLAY_PATH;
@@ -83,12 +89,13 @@ namespace ult {
     extern const std::string INCLUDED_WALLPAPER_FOLDER_URL;
     extern const std::string LANGUAGE_FOLDER_URL;
     extern const std::string LATEST_RELEASE_INFO_URL;
-    extern const std::string NX_OVLLOADER_ZIP_URL;
-    extern const std::string NX_OVLLOADER_PLUS_ZIP_URL;
+    extern const std::string LATEST_UPDATER_INI_URL;
+    //extern const std::string NX_OVLLOADER_ZIP_URL;
+    //extern const std::string NX_OVLLOADER_PLUS_ZIP_URL;
     extern const std::string OLD_NX_OVLLOADER_ZIP_URL;
-    extern const std::string OLD_NX_OVLLOADER_PLUS_ZIP_URL;
+    //extern const std::string OLD_NX_OVLLOADER_PLUS_ZIP_URL;
     extern const std::string UPDATER_PAYLOAD_URL;
-    extern const std::string SOUND_EFFECTS_URL;
+    //extern const std::string SOUND_EFFECTS_URL;
     
     extern const std::string LAUNCH_ARGS_STR;
     extern const std::string USE_LAUNCH_ARGS_STR;
@@ -167,6 +174,7 @@ namespace ult {
     extern const std::string INPROGRESS_SYMBOL;
     extern const std::string STAR_SYMBOL;
     extern const std::string DIVIDER_SYMBOL;
+    extern const std::string NOTIFY_HEADER;
 
     extern const std::vector<std::string> THROBBER_SYMBOLS;
 

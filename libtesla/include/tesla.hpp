@@ -15,7 +15,7 @@
  *   Note: Please be aware that this notice cannot be altered or removed. It is a part
  *   of the project's documentation and must remain intact.
  *
- *  Copyright (c) 2024 ppkantorski
+ *  Copyright (c) 2023-2025 ppkantorski
  ********************************************************************************/
 
 /**
@@ -207,9 +207,11 @@ inline std::atomic<bool> triggerSettingsSound{false};
 inline std::atomic<bool> triggerMoveSound{false};
 inline std::atomic<bool> disableSound{false};
 //inline std::atomic<bool> clearSoundCacheNow{false};
+inline std::atomic<bool> reloadIfDockedChangedNow{false};
 inline std::atomic<bool> reloadSoundCacheNow{false};
 
 // Haptic triggering variables
+inline std::atomic<bool> triggerInitHaptics{false};
 inline std::atomic<bool> triggerRumbleClick{false};
 inline std::atomic<bool> triggerRumbleDoubleClick{false};
 
@@ -324,6 +326,11 @@ static inline bool amsVersionAtLeast(uint8_t major, uint8_t minor, uint8_t patch
 }
 
 static bool requiresLNY2 = false;
+
+
+
+
+
 
 
 namespace tsl {
@@ -2203,78 +2210,105 @@ namespace tsl {
             }
             
             inline void drawCircle(const s32 centerX, const s32 centerY, const u16 radius, const bool filled, const Color& color) {
-                s32 x = radius;
-                s32 y = 0;
-                s32 radiusError = 0;
-                s32 xChange = 1 - (radius << 1);
-                s32 yChange = 0;
-                s32 prevX = x;
-                const u8 base_alpha = color.a;
+                const float r_f = static_cast<float>(radius);
+                const float r2 = r_f * r_f;
+                const u8 base_a = color.a;
+                const bool full_opacity = (base_a == 0xFF);
                 
-                while (x >= y) {
-                    if (filled) {
-                        for (s32 i = centerX - x; i <= centerX + x; i++) {
-                            this->setPixelBlendDst(i, centerY + y, color);
-                            this->setPixelBlendDst(i, centerY - y, color);
-                        }
-                        
-                        for (s32 i = centerX - y; i <= centerX + y; i++) {
-                            this->setPixelBlendDst(i, centerY + x, color);
-                            this->setPixelBlendDst(i, centerY - x, color);
-                        }
-                        
-                        // Add AA pixel when x steps down (smooths the jaggy)
-                        if (x < prevX) {
-                            Color aa = color;
-                            aa.a = base_alpha >> 1; // 50% alpha
-                            
-                            // Smooth horizontal spans
-                            this->setPixelBlendDst(centerX + x + 1, centerY + y, aa);
-                            this->setPixelBlendDst(centerX - x - 1, centerY + y, aa);
-                            this->setPixelBlendDst(centerX + x + 1, centerY - y, aa);
-                            this->setPixelBlendDst(centerX - x - 1, centerY - y, aa);
-                            
-                            // Smooth vertical spans
-                            this->setPixelBlendDst(centerX + y, centerY + x + 1, aa);
-                            this->setPixelBlendDst(centerX - y, centerY + x + 1, aa);
-                            this->setPixelBlendDst(centerX + y, centerY - x - 1, aa);
-                            this->setPixelBlendDst(centerX - y, centerY - x - 1, aa);
-                        }
-                    } else {
-                        this->setPixelBlendDst(centerX + x, centerY + y, color);
-                        this->setPixelBlendDst(centerX + y, centerY + x, color);
-                        this->setPixelBlendDst(centerX - y, centerY + x, color);
-                        this->setPixelBlendDst(centerX - x, centerY + y, color);
-                        this->setPixelBlendDst(centerX - x, centerY - y, color);
-                        this->setPixelBlendDst(centerX - y, centerY - x, color);
-                        this->setPixelBlendDst(centerX + y, centerY - x, color);
-                        this->setPixelBlendDst(centerX + x, centerY - y, color);
-                        
-                        // AA for outline jaggies
-                        if (x < prevX) {
-                            Color aa = color;
-                            aa.a = base_alpha >> 1;
-                            
-                            this->setPixelBlendDst(centerX + x + 1, centerY + y, aa);
-                            this->setPixelBlendDst(centerX - x - 1, centerY + y, aa);
-                            this->setPixelBlendDst(centerX + x + 1, centerY - y, aa);
-                            this->setPixelBlendDst(centerX - x - 1, centerY - y, aa);
-                            this->setPixelBlendDst(centerX + y, centerY + x + 1, aa);
-                            this->setPixelBlendDst(centerX - y, centerY + x + 1, aa);
-                            this->setPixelBlendDst(centerX + y, centerY - x - 1, aa);
-                            this->setPixelBlendDst(centerX - y, centerY - x - 1, aa);
-                        }
-                    }
+                const s32 bound = radius + 2;
+                const s32 clip_left = std::max(0, centerX - bound);
+                const s32 clip_right = std::min(static_cast<s32>(cfg::FramebufferWidth), centerX + bound);
+                const s32 clip_top = std::max(0, centerY - bound);
+                const s32 clip_bottom = std::min(static_cast<s32>(cfg::FramebufferHeight), centerY + bound);
+                
+                // 8-sample pattern (better than 4-sample, captures diagonals better)
+                const float offset = 0.353553f; // sqrt(2)/4, keeps samples equidistant
+                const float samples[8][2] = {
+                    {-offset, -offset}, {offset, -offset},  // Diagonal
+                    {-offset, offset},  {offset, offset},   // Diagonal
+                    {-0.5f, 0.0f},     {0.5f, 0.0f},       // Horizontal edge
+                    {0.0f, -0.5f},     {0.0f, 0.5f}        // Vertical edge
+                };
+                
+                for (s32 yc = clip_top; yc < clip_bottom; ++yc) {
+                    const float py = static_cast<float>(yc - centerY) + 0.5f;
+                    const float py_sq = py * py;
                     
-                    prevX = x;
-                    y++;
-                    radiusError += yChange;
-                    yChange += 2;
-                    
-                    if (((radiusError << 1) + xChange) > 0) {
-                        x--;
-                        radiusError += xChange;
-                        xChange += 2;
+                    for (s32 xc = clip_left; xc < clip_right; ++xc) {
+                        const float px = static_cast<float>(xc - centerX) + 0.5f;
+                        const float px_sq = px * px;
+                        const float center_d2 = px_sq + py_sq;
+                        
+                        // Quick reject for pixels far from edge
+                        if (filled) {
+                            if (center_d2 <= r2 - r_f) {
+                                // Definitely inside
+                                const u32 off = this->getPixelOffset(xc, yc);
+                                if (off != UINT32_MAX) {
+                                    if (full_opacity) this->setPixelAtOffset(off, color);
+                                    else this->setPixelBlendDst(xc, yc, color);
+                                }
+                                continue;
+                            } else if (center_d2 > r2 + r_f) {
+                                // Definitely outside
+                                continue;
+                            }
+                            
+                            // On the edge - use 8-sample supersampling
+                            u32 inside_count = 0;
+                            for (u32 s = 0; s < 8; ++s) {
+                                const float sx = px + samples[s][0];
+                                const float sy = py + samples[s][1];
+                                if (sx*sx + sy*sy <= r2) {
+                                    inside_count++;
+                                }
+                            }
+                            
+                            if (inside_count > 0) {
+                                const u32 off = this->getPixelOffset(xc, yc);
+                                if (off != UINT32_MAX) {
+                                    Color c = color;
+                                    c.a = static_cast<u8>((base_a * inside_count + 4) / 8); // +4 for rounding
+                                    this->setPixelBlendDst(xc, yc, c);
+                                }
+                            }
+                        } else {
+                            // Outline
+                            const float inner_r2 = (r_f - 1.0f) * (r_f - 1.0f);
+                            
+                            if (center_d2 >= inner_r2 + r_f && center_d2 <= r2 - r_f) {
+                                // Definitely in ring
+                                const u32 off = this->getPixelOffset(xc, yc);
+                                if (off != UINT32_MAX) {
+                                    if (full_opacity) this->setPixelAtOffset(off, color);
+                                    else this->setPixelBlendDst(xc, yc, color);
+                                }
+                                continue;
+                            } else if (center_d2 < inner_r2 - r_f || center_d2 > r2 + r_f) {
+                                // Definitely outside ring
+                                continue;
+                            }
+                            
+                            // On edge - use 8-sample supersampling
+                            u32 inside_count = 0;
+                            for (u32 s = 0; s < 8; ++s) {
+                                const float sx = px + samples[s][0];
+                                const float sy = py + samples[s][1];
+                                const float sd2 = sx*sx + sy*sy;
+                                if (sd2 >= inner_r2 && sd2 <= r2) {
+                                    inside_count++;
+                                }
+                            }
+                            
+                            if (inside_count > 0) {
+                                const u32 off = this->getPixelOffset(xc, yc);
+                                if (off != UINT32_MAX) {
+                                    Color c = color;
+                                    c.a = static_cast<u8>((base_a * inside_count + 4) / 8);
+                                    this->setPixelBlendDst(xc, yc, c);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2406,141 +2440,126 @@ namespace tsl {
             struct HorizontalSpan {
                 s32 start_x, end_x;
             };
-
-            // Optimized processRoundedRectChunk - Same output, faster execution
-            static void processRoundedRectChunk(Renderer* self, const s32 x, const s32 y, const s32 w, const s32 h, 
-                                               const s32 radius, const Color& color, const s32 startRow, const s32 endRow) {
+            
+            // Helper function - defined outside, compiler will inline
+            static inline void sampleAndBlendArcPixel(Renderer* self, s32 xp, s32 yc, 
+                                                      int px2, int cx2, int sx, int py2, int cy2, int sy,
+                                                      long long r2_scaled, const Color& color, u8 base_a)
+            {
+                int hits = 0;
+                long long dx1 = px2 + sx - cx2;
+                long long dx2 = px2 - sx - cx2;
+                long long dy1 = py2 + sy - cy2;
+                long long dy2 = py2 - sy - cy2;
+                
+                if (dx1*dx1 + dy1*dy1 <= r2_scaled) ++hits;
+                if (dx1*dx1 + dy2*dy2 <= r2_scaled) ++hits;
+                if (dx2*dx2 + dy1*dy1 <= r2_scaled) ++hits;
+                if (dx2*dx2 + dy2*dy2 <= r2_scaled) ++hits;
+                
+                if (hits == 4) {
+                    self->setPixelBlendDst(xp, yc, color);
+                } else if (hits > 0) {
+                    u8 a = (base_a * hits + 2) >> 2;
+                    if (a) {
+                        Color c = color;
+                        c.a = a;
+                        self->setPixelBlendDst(xp, yc, c);
+                    }
+                }
+            }
+            
+            static void processRoundedRectChunk(Renderer* self, const s32 x, const s32 y, const s32 w, const s32 h,
+                                                const s32 radius, const Color& color,
+                                                const s32 startRow, const s32 endRow)
+            {
+                if (radius <= 0) return;
+            
                 const s32 x_end = x + w;
                 const s32 y_end = y + h;
-                const s32 clip_x = std::max(0, x);
-                const s32 clip_x_end = std::min(static_cast<s32>(cfg::FramebufferWidth), x_end);
-                const s32 corner_x_left = x + radius;
-                const s32 corner_x_right = x_end - radius - 1;
-                const s32 corner_y_top = y + radius;
-                const s32 corner_y_bottom = y_end - radius - 1;
-                const float r_f = static_cast<float>(radius);
-                const float r2 = r_f * r_f;
-                const float aa_thresh = r2 + 2.0f * r_f + 1.0f;
+            
+                const s32 clip_x     = std::max(0, x);
+                const s32 clip_x_end = std::min<s32>(cfg::FramebufferWidth, x_end);
+            
+                const s32 left_arc_end    = x + radius - 1;
+                const s32 right_arc_start = x_end - radius;
+                const s32 top_arc_end     = y + radius - 1;
+                const s32 bottom_arc_start = y_end - radius;
+            
+                const int cx2_left  = 2 * (x + radius);
+                const int cx2_right = 2 * (x_end - radius);
+                const int cy2_top    = 2 * (y + radius);
+                const int cy2_bottom = 2 * (y_end - radius);
+            
+                const long long r2_scaled = 4LL * radius * radius;
+                const long long reject_threshold = (2LL*radius + 2)*(2LL*radius + 2);
+            
                 const u8 base_a = color.a;
             
-                // SIMD arrays - pre-filled once
+                // Pre-compute sample offsets (constant per corner)
+                const int sx_left   = ((x + radius)     & 1) ? -1 : 1;
+                const int sx_right  = ((x_end - radius) & 1) ? -1 : 1;
+                const int sy_top    = ((y + radius)     & 1) ? -1 : 1;
+                const int sy_bottom = ((y_end - radius) & 1) ? -1 : 1;
+            
                 alignas(64) u8 redArray[512], greenArray[512], blueArray[512], alphaArray[512];
-                const uint8x16_t red_vec = vdupq_n_u8(color.r);
-                const uint8x16_t green_vec = vdupq_n_u8(color.g);
-                const uint8x16_t blue_vec = vdupq_n_u8(color.b);
-                const uint8x16_t alpha_vec = vdupq_n_u8(color.a);
-                
-                for (s32 i = 0; i < 512; i += 16) {
-                    vst1q_u8(&redArray[i], red_vec);
-                    vst1q_u8(&greenArray[i], green_vec);
-                    vst1q_u8(&blueArray[i], blue_vec);
-                    vst1q_u8(&alphaArray[i], alpha_vec);
+                const uint8x16_t rv = vdupq_n_u8(color.r);
+                const uint8x16_t gv = vdupq_n_u8(color.g);
+                const uint8x16_t bv = vdupq_n_u8(color.b);
+                const uint8x16_t av = vdupq_n_u8(color.a);
+                for (int i = 0; i < 512; i += 16) {
+                    vst1q_u8(redArray + i, rv);
+                    vst1q_u8(greenArray + i, gv);
+                    vst1q_u8(blueArray + i, bv);
+                    vst1q_u8(alphaArray + i, av);
                 }
-                
+            
                 for (s32 yc = startRow; yc < endRow; ++yc) {
                     if (yc < y || yc >= y_end) continue;
+            
+                    const bool is_top = (yc <= top_arc_end);
+                    const bool in_arc_rows = is_top || (yc >= bottom_arc_start);
                     
-                    const bool in_corners = yc < corner_y_top || yc > corner_y_bottom;
-                    
-                    if (!in_corners) {
-                        // Pure middle section - fastest path
-                        const s32 span_start = std::max(x, clip_x);
-                        const s32 span_end = std::min(x_end, clip_x_end);
-                        
-                        if (span_start < span_end) {
-                            for (s32 xp = span_start; xp < span_end; xp += 512) {
-                                self->setPixelBlendDstBatch(xp, yc, redArray, greenArray, blueArray, alphaArray, 
-                                                           std::min(512, span_end - xp));
-                            }
-                        }
-                    } else {
-                        // Corner rows
-                        const float dy = (yc < corner_y_top) ? static_cast<float>(corner_y_top - yc) : 
-                                                                 static_cast<float>(yc - corner_y_bottom);
-                        const float dy_sq = dy * dy;
-                        
-                        if (dy_sq > aa_thresh) continue;
-                        
-                        const s32 span_start = std::max(x, clip_x);
-                        const s32 span_end = std::min(x_end, clip_x_end);
-                        s32 xp = span_start;
-                        
-                        // Left corner/edge region
-                        if (xp <= corner_x_left) {
-                            const s32 left_end = std::min(corner_x_left + 1, span_end);
-                            const float dy_half = dy - 0.5f;
-                            const float dy_half_sq = dy_half * dy_half;
-                            
-                            for (; xp < left_end; ++xp) {
-                                const float dx = static_cast<float>(corner_x_left - xp);
-                                const float dx_sq = dx * dx;
-                                const float d2 = dx_sq + dy_sq;
-                                
-                                if (d2 <= r2) {
-                                    self->setPixelBlendDst(xp, yc, color);
-                                } else if (d2 <= aa_thresh) {
-                                    const float dx_half = dx - 0.5f;
-                                    const float dx_half_sq = dx_half * dx_half;
-                                    
-                                    float cov = 0.0f;
-                                    if (dx_sq + dy_sq <= r2) cov += 0.25f;
-                                    if (dx_half_sq + dy_sq <= r2) cov += 0.25f;
-                                    if (dx_sq + dy_half_sq <= r2) cov += 0.25f;
-                                    if (dx_half_sq + dy_half_sq <= r2) cov += 0.25f;
-                                    
-                                    const u8 aa = static_cast<u8>((base_a * static_cast<u8>(cov * 15.0f + 0.5f)) / 15);
-                                    if (aa > 0) {
-                                        Color c = color;
-                                        c.a = aa;
-                                        self->setPixelBlendDst(xp, yc, c);
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // Middle section - batch fast path
-                        const s32 mid_start = std::max(corner_x_left + 1, xp);
-                        const s32 mid_end = std::min(corner_x_right, span_end);
-                        
-                        if (mid_start < mid_end) {
-                            for (s32 batch_x = mid_start; batch_x < mid_end; batch_x += 512) {
-                                self->setPixelBlendDstBatch(batch_x, yc, redArray, greenArray, blueArray, alphaArray,
-                                                           std::min(512, mid_end - batch_x));
-                            }
-                            xp = mid_end;
-                        }
-                        
-                        // Right corner/edge region
-                        if (xp >= corner_x_right && xp < span_end) {
-                            const float dy_half = dy - 0.5f;
-                            const float dy_half_sq = dy_half * dy_half;
-                            
-                            for (; xp < span_end; ++xp) {
-                                const float dx = static_cast<float>(xp - corner_x_right);
-                                const float dx_sq = dx * dx;
-                                const float d2 = dx_sq + dy_sq;
-                                
-                                if (d2 <= r2) {
-                                    self->setPixelBlendDst(xp, yc, color);
-                                } else if (d2 <= aa_thresh) {
-                                    const float dx_half = dx - 0.5f;
-                                    const float dx_half_sq = dx_half * dx_half;
-                                    
-                                    float cov = 0.0f;
-                                    if (dx_sq + dy_sq <= r2) cov += 0.25f;
-                                    if (dx_half_sq + dy_sq <= r2) cov += 0.25f;
-                                    if (dx_sq + dy_half_sq <= r2) cov += 0.25f;
-                                    if (dx_half_sq + dy_half_sq <= r2) cov += 0.25f;
-                                    
-                                    const u8 aa = static_cast<u8>((base_a * static_cast<u8>(cov * 15.0f + 0.5f)) / 15);
-                                    if (aa > 0) {
-                                        Color c = color;
-                                        c.a = aa;
-                                        self->setPixelBlendDst(xp, yc, c);
-                                    }
-                                }
-                            }
-                        }
+                    if (!in_arc_rows) {
+                        s32 xs = std::max(clip_x, x);
+                        s32 xe = std::min(clip_x_end, x_end);
+                        for (s32 xp = xs; xp < xe; xp += 512)
+                            self->setPixelBlendDstBatch(xp, yc, redArray, greenArray, blueArray, alphaArray,
+                                                        std::min(512, xe - xp));
+                        continue;
+                    }
+            
+                    const int cy2 = is_top ? cy2_top : cy2_bottom;
+                    const int py2 = 2 * yc + 1;
+                    const int sy = is_top ? sy_top : sy_bottom;
+            
+                    // Quick row reject
+                    const long long dy = py2 - cy2;
+                    if (dy * dy > reject_threshold) continue;
+            
+                    const s32 xe = std::min(clip_x_end, x_end);
+                    s32 xp = std::max(clip_x, x);
+            
+                    // Left arc
+                    for (; xp <= left_arc_end && xp < xe; ++xp) {
+                        sampleAndBlendArcPixel(self, xp, yc, 2*xp + 1, cx2_left, sx_left, 
+                                               py2, cy2, sy, r2_scaled, color, base_a);
+                    }
+            
+                    // Middle flat
+                    s32 mid_start = std::max(xp, left_arc_end + 1);
+                    s32 mid_end   = std::min(xe, right_arc_start);
+                    if (mid_start < mid_end) {
+                        for (s32 bx = mid_start; bx < mid_end; bx += 512)
+                            self->setPixelBlendDstBatch(bx, yc, redArray, greenArray, blueArray, alphaArray,
+                                                        std::min(512, mid_end - bx));
+                    }
+            
+                    // Right arc
+                    xp = std::max(xp, right_arc_start);
+                    for (; xp < xe; ++xp) {
+                        sampleAndBlendArcPixel(self, xp, yc, 2*xp + 1, cx2_right, sx_right,
+                                               py2, cy2, sy, r2_scaled, color, base_a);
                     }
                 }
             }
@@ -2990,59 +3009,83 @@ namespace tsl {
                         
                         pixel8: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel7: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel6: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel5: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel4: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel3: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel2: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px++, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            px++; src += 4;
                         }
                         pixel1: {
                             u8 alpha = src[3] >> 4;
-                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                           static_cast<u8>(src[2] >> 4), alpha};
-                            setPixelBlendSrc(px, rowY, a(c)); src += 4;
+                            if (alpha > 0) {
+                                alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                                const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                               static_cast<u8>(src[2] >> 4), alpha};
+                                setPixelBlendSrc(px, rowY, a(c));
+                            }
+                            src += 4;
                         }
                     }
                     return;
@@ -3065,10 +3108,13 @@ namespace tsl {
                         }
                         
                         u8 alpha = src[3] >> 4;
-                        alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
-                        const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
-                                       static_cast<u8>(src[2] >> 4), alpha};
-                        setPixelBlendSrc(px++, rowY, c);
+                        if (alpha > 0) {
+                            alpha = (alpha < alphaLimit) ? alpha : alphaLimit;
+                            const Color c = {static_cast<u8>(src[0] >> 4), static_cast<u8>(src[1] >> 4), 
+                                           static_cast<u8>(src[2] >> 4), alpha};
+                            setPixelBlendSrc(px, rowY, c);
+                        }
+                        px++;
                         src += 4;
                     }
                 }
@@ -4758,7 +4804,7 @@ namespace tsl {
                 renderer->enableScissoring(0, 88, tsl::cfg::FramebufferWidth, tsl::cfg::FramebufferHeight - 73 - 97 +2+5);
                 
                 if (!hideTableBackground)
-                    renderer->drawRoundedRect(this->getX() + 4+2, this->getY()-4-1, this->getWidth() +2 + 1, this->getHeight() + 20 - endGap+2, 10.0, aWithOpacity(tableBGColor));
+                    renderer->drawRoundedRect(this->getX() + 4+2, this->getY()-4-1, this->getWidth() +2 + 1, this->getHeight() + 20 - endGap+2, 12.0, aWithOpacity(tableBGColor));
                 
                 m_renderFunc(renderer, this->getX() + 4, this->getY(), this->getWidth() + 4, this->getHeight());
                 
@@ -5027,7 +5073,7 @@ namespace tsl {
             
                     if (ult::touchingMenu.load(std::memory_order_acquire) && (ult::inMainMenu.load(std::memory_order_acquire) ||
                         (ult::inHiddenMode.load(std::memory_order_acquire) && !ult::inSettingsMenu.load(std::memory_order_acquire) && !ult::inSubSettingsMenu.load(std::memory_order_acquire)))) {
-                        renderer->drawRoundedRect(0.0f + 7, 12.0f, 245.0f - 13, 73.0f, 10.0f, a(clickColor));
+                        renderer->drawRoundedRect(0.0f + 7, 12.0f, 245.0f - 13, 73.0f, 12.0f, a(clickColor));
                     }
                     
                     x = 20;
@@ -5234,13 +5280,13 @@ namespace tsl {
                 
                 // Draw back button if touched
                 if (ult::touchingBack) {
-                    renderer->drawRoundedRect(buttonStartX+2 - _halfGap, buttonY, _backWidth-1, 73.0f, 10.0f, a(clickColor));
+                    renderer->drawRoundedRect(buttonStartX+2 - _halfGap, buttonY, _backWidth-1, 73.0f, 12.0f, a(clickColor));
                 }
                 
                 // Draw select button (to the right of back) if touched
                 if (ult::touchingSelect.load(std::memory_order_acquire) && !m_noClickableItems) {
                     renderer->drawRoundedRect(buttonStartX+2 - _halfGap + _backWidth+1, buttonY,
-                                              _selectWidth-2, 73.0f, 10.0f, a(clickColor));
+                                              _selectWidth-2, 73.0f, 12.0f, a(clickColor));
                 }
                 
             #if IS_LAUNCHER_DIRECTIVE
@@ -5271,7 +5317,7 @@ namespace tsl {
                 
                         renderer->drawRoundedRect(nextX, buttonY,
                                                   _nextPageWidth-2,
-                                                  73.0f, 10.0f, a(clickColor));
+                                                  73.0f, 12.0f, a(clickColor));
                     }
                 }
             #endif
@@ -5532,13 +5578,13 @@ namespace tsl {
                 
                     // Draw back button rectangle
                     if (ult::touchingBack.load(std::memory_order_acquire)) {
-                        renderer->drawRoundedRect(buttonStartX+2 - _halfGap, buttonY, _backWidth-1, 73.0f, 10.0f, a(clickColor));
+                        renderer->drawRoundedRect(buttonStartX+2 - _halfGap, buttonY, _backWidth-1, 73.0f, 12.0f, a(clickColor));
                     }
                 
                     // Draw select button rectangle (starts right after back button)
                     if (ult::touchingSelect.load(std::memory_order_acquire) && !m_noClickableItems) {
                         renderer->drawRoundedRect(buttonStartX+2 - _halfGap + _backWidth+1, buttonY,
-                                                  _selectWidth-2, 73.0f, 10.0f, a(clickColor));
+                                                  _selectWidth-2, 73.0f, 12.0f, a(clickColor));
                     }
                 }
                 
@@ -5721,13 +5767,13 @@ namespace tsl {
             
                 // Draw back button rectangle
                 if (ult::touchingBack.load(std::memory_order_acquire)) {
-                    renderer->drawRoundedRect(buttonStartX+2 - _halfGap, buttonY, _backWidth-1, 73.0f, 10.0f, a(clickColor));
+                    renderer->drawRoundedRect(buttonStartX+2 - _halfGap, buttonY, _backWidth-1, 73.0f, 12.0f, a(clickColor));
                 }
             
                 // Draw select button rectangle
                 if (ult::touchingSelect.load(std::memory_order_acquire)) {
                     renderer->drawRoundedRect(buttonStartX+2 - _halfGap + _backWidth+1, buttonY,
-                                              _selectWidth-2, 73.0f, 10.0f, a(clickColor));
+                                              _selectWidth-2, 73.0f, 12.0f, a(clickColor));
                 }
             
                 // Draw bottom text
@@ -7610,7 +7656,11 @@ namespace tsl {
             u32 width, height;
             u64 m_touchStartTime_ns;
             bool isLocked = false;
-        
+            bool m_shortThresholdCrossed = false;
+            #if IS_LAUNCHER_DIRECTIVE
+            bool m_longThresholdCrossed = false;
+            #endif
+
         #if IS_LAUNCHER_DIRECTIVE
             ListItem(const std::string& text, const std::string& value = "", bool isMini = false, bool useScriptKey = true)
                 : Element(), m_text(text), m_value(value), m_listItemHeight(isMini ? tsl::style::MiniListItemDefaultHeight : tsl::style::ListItemDefaultHeight) {
@@ -7729,19 +7779,42 @@ namespace tsl {
                 if (event == TouchEvent::Touch) [[likely]] {
                     if ((m_flags.m_touched = inBounds(currX, currY))) [[likely]] {
                         m_touchStartTime_ns = armTicksToNs(armGetSystemTick());
+                        m_shortThresholdCrossed = false;
+                        #if IS_LAUNCHER_DIRECTIVE
+                        m_longThresholdCrossed = false;
+                        #endif
                     }
                     return false;
                 }
-        
+            
+                if (event == TouchEvent::Hold && m_flags.m_touched) [[likely]] {
+                    const u64 touchDuration_ns = armTicksToNs(armGetSystemTick()) - m_touchStartTime_ns;
+                    const float touchDurationInSeconds = static_cast<float>(touchDuration_ns) * 1e-9f;
+                    
+                #if IS_LAUNCHER_DIRECTIVE
+                    if (!m_longThresholdCrossed && touchDurationInSeconds >= 1.0f && 
+                        (ult::inMainMenu.load(std::memory_order_acquire) || (ult::inHiddenMode.load(std::memory_order_acquire) && !ult::inSettingsMenu.load(std::memory_order_acquire) && !ult::inSubSettingsMenu.load(std::memory_order_acquire)))) [[unlikely]] {
+                        m_longThresholdCrossed = true;
+                        triggerRumbleClick.store(true, std::memory_order_release);
+                    } else
+                #endif
+                    if (!m_shortThresholdCrossed && touchDurationInSeconds >= 0.5f) [[unlikely]] {
+                        m_shortThresholdCrossed = true;
+                        triggerRumbleClick.store(true, std::memory_order_release);
+                    }
+                    return false;
+                }
+            
                 if (event == TouchEvent::Release && m_flags.m_touched) [[likely]] {
                     m_flags.m_touched = false;
                     if (Element::getInputMode() == InputMode::Touch) [[likely]] {
-        #if IS_LAUNCHER_DIRECTIVE
-                        const s64 keyToUse = determineKeyOnTouchRelease(m_flags.m_useScriptKey);
-        #else
-                        const s64 keyToUse = determineKeyOnTouchRelease(false);
-        #endif
-                        const bool handled = onClick(keyToUse);
+                        const bool handled = onClick(determineKeyOnTouchRelease(
+                            #if IS_LAUNCHER_DIRECTIVE
+                            m_flags.m_useScriptKey
+                            #else
+                            false
+                            #endif
+                        ));
                         m_clickAnimationProgress = 0;
                         return handled;
                     }
@@ -8111,12 +8184,12 @@ namespace tsl {
                 const float touchDurationInSeconds = static_cast<float>(touchDuration_ns) * 1e-9f;
                 
                 #if IS_LAUNCHER_DIRECTIVE
-                if (touchDurationInSeconds >= 0.8f) [[unlikely]] {
+                if (touchDurationInSeconds >= 1.0f) [[unlikely]] {
                     ult::longTouchAndRelease.store(true, std::memory_order_release);
                     return useScriptKey ? SCRIPT_KEY : STAR_KEY;
                 }
                 #endif
-                if (touchDurationInSeconds >= 0.3f) [[unlikely]] {
+                if (touchDurationInSeconds >= 0.5f) [[unlikely]] {
                     ult::shortTouchAndRelease.store(true, std::memory_order_release);
                     return useScriptKey ? SCRIPT_KEY : SETTINGS_KEY;
                 }
@@ -8149,367 +8222,143 @@ namespace tsl {
         };
 
         /**
-         * @brief A item that goes into a list (this version uses value and faint color sourcing)
-         *
+         * @brief A wrapper item that extends ListItem with custom color support for inputs
+         *        (this version uses value and faint color sourcing)
          */
-        class ListItemV2 : public Element {
+        class ListItemV2 : public ListItem {
         public:
-            u32 width, height;
-            u64 m_touchStartTime_ns;  // Track the time when touch starts
-        
             /**
              * @brief Constructor
              *
              * @param text Initial description text
+             * @param value Initial value text
+             * @param valueColor Color to use for the value when not faint
+             * @param faintColor Color to use for the value when faint
+             * @param isMini Whether to use mini list item height
+             * @param useScriptKey Whether to use script key (launcher only)
              */
-            ListItemV2(const std::string& text, const std::string& value = "", Color valueColor = onTextColor, Color faintColor = offTextColor)
-                : Element(), m_text(text), m_value(value), m_valueColor{valueColor}, m_faintColor{faintColor} {
-            }
-            virtual ~ListItemV2() {}
-        
-                    
-            virtual void draw(gfx::Renderer *renderer) override {
-                static float lastBottomBound;
-                bool useClickTextColor = false;
-                if (this->m_touched && Element::getInputMode() == InputMode::Touch) {
-                    if (ult::touchInBounds) {
-                        //renderer->drawRect(ELEMENT_BOUNDS(this), a(clickColor));
-                        renderer->drawRect( this->getX()+4, this->getY(), this->getWidth()-8, this->getHeight(), a(clickColor));
-                        useClickTextColor = true;
-                    }
-                    //renderer->drawRect(ELEMENT_BOUNDS(this), tsl::style::color::ColorClickAnimation);
-                }
-            
-                // Calculate vertical offset to center the text
-                const s32 yOffset = (tsl::style::ListItemDefaultHeight - this->m_listItemHeight) / 2;
-            
-                if (this->m_maxWidth == 0) {
-                    if (this->m_value.length() > 0) {
-                        //std::tie(width, height) = renderer->drawString(this->m_value, false, 0, 0, 20, a(tsl::style::color::ColorTransparent));
-                        //auto valueWidth = renderer->getTextDimensions(this->m_value, false, 20).first;
-                        width = renderer->getTextDimensions(this->m_value, false, 20).first;
-                        this->m_maxWidth = this->getWidth() - width - 70 +4;
-                    } else {
-                        this->m_maxWidth = this->getWidth() - 40 -10 -12;
-                    }
-                    
-                    //std::tie(width, height) = renderer->drawString(this->m_text, false, 0, 0, 23, a(tsl::style::color::ColorTransparent));
-                    //auto textWidth = renderer->getTextDimensions(this->m_text, false, 23).first;
-                    width = renderer->getTextDimensions(this->m_text, false, 23).first;
-                    this->m_trunctuated = width > this->m_maxWidth+20;
-                    
-                    if (this->m_trunctuated) {
-                        this->m_scrollText = this->m_text + "        ";
-                        //std::tie(width, height) = renderer->drawString(this->m_scrollText, false, 0, 0, 23, a(tsl::style::color::ColorTransparent));
-                        //auto scrollWidth = renderer->getTextDimensions(this->m_scrollText, false, 23).first;
-                        width = renderer->getTextDimensions(this->m_scrollText, false, 23).first;
-                        this->m_scrollText += this->m_text;
-                        this->m_textWidth = width;
-                        
-                        this->m_ellipsisText = renderer->limitStringLength(this->m_text, false, 23, this->m_maxWidth);
-                    } else {
-                        this->m_textWidth = width;
-                    }
-                }
+        #if IS_LAUNCHER_DIRECTIVE
+            ListItemV2(const std::string& text, 
+                       const std::string& value = "", 
+                       Color valueColor = onTextColor, 
+                       Color faintColor = offTextColor,
+                       bool isMini = false,
+                       bool useScriptKey = true)
+                : ListItem(text, value, isMini, useScriptKey),
+                  m_valueColorOverride(valueColor),
+                  m_faintColorOverride(faintColor),
+                  m_hasColorOverrides(true) {
                 
-                if (lastBottomBound !=  this->getTopBound())
-                    renderer->drawRect(this->getX()+4, this->getTopBound(), this->getWidth()+6 +4, 1, a(separatorColor));
-                renderer->drawRect(this->getX()+4, this->getBottomBound(), this->getWidth()+6 +4, 1, a(separatorColor));
-            
-                lastBottomBound = this->getBottomBound();
-                
-            
-                if (this->m_trunctuated) {
-                    if (this->m_focused) {
-                        if (this->m_value.length() > 0)
-                            renderer->enableScissoring(this->getX()+6, 97, this->m_maxWidth + 30 -3, tsl::cfg::FramebufferHeight-73-97);
-                        else
-                            renderer->enableScissoring(this->getX()+6, 97, this->m_maxWidth + 40 +9, tsl::cfg::FramebufferHeight-73-97);
-                        renderer->drawString(this->m_scrollText, false, this->getX() + 20-1 - this->m_scrollOffset, this->getY() + 45 - yOffset, 23, selectedTextColor);
-                        renderer->disableScissoring();
-                        
-                        // Handle scrolling with frame rate compensation
-                        const u64 currentTime_ns = armTicksToNs(armGetSystemTick());
-                        const u64 elapsed_ns = currentTime_ns - this->timeIn_ns;
-                        
-                        // Frame rate compensation - cache calculations to reduce stutter
-                        static u64 lastUpdateTime = 0;
-                        static float cachedScrollOffset = 0.0f;
-                        
-                        // Pre-compute constants as statics to avoid recalculation
-                        static bool constantsInitialized = false;
-                        static double totalCycleDuration;
-                        static double delayDuration;
-                        static double scrollDuration;
-                        static double accelTime;
-                        static double constantVelocityTime;
-                        static double maxVelocity;
-                        static double accelDistance;
-                        static double constantVelocityDistance;
-                        static double minScrollDistance;
-                        static double invAccelTime;  // 1/accelTime for multiplication instead of division
-                        static double invDecelTime;  // 1/decelTime for multiplication instead of division
-                        static double invBillion;    // 1/1000000000.0 for ns to seconds conversion
-                        
-                        if (!constantsInitialized || minScrollDistance != static_cast<double>(this->m_textWidth)) {
-                            // Constants for velocity-based scrolling
-                            delayDuration = 2.0;
-                            static constexpr double pauseDuration = 1.0;
-                            maxVelocity = 166.0;
-                            accelTime = 0.5;
-                            static constexpr double decelTime = 0.5;
-                            
-                            // Pre-calculate derived constants
-                            minScrollDistance = static_cast<double>(this->m_textWidth);
-                            accelDistance = 0.5 * maxVelocity * accelTime;
-                            const double decelDistance = 0.5 * maxVelocity * decelTime;
-                            constantVelocityDistance = std::max(0.0, minScrollDistance - accelDistance - decelDistance);
-                            constantVelocityTime = constantVelocityDistance / maxVelocity;
-                            scrollDuration = accelTime + constantVelocityTime + decelTime;
-                            totalCycleDuration = delayDuration + scrollDuration + pauseDuration;
-                            
-                            // Pre-calculate reciprocals for faster division
-                            invAccelTime = 1.0 / accelTime;
-                            invDecelTime = 1.0 / decelTime;
-                            invBillion = 1.0 / 1000000000.0;
-                            
-                            constantsInitialized = true;
-                        }
-                        
-                        // Fast ns to seconds conversion
-                        const double elapsed_seconds = static_cast<double>(elapsed_ns) * invBillion;
-                        
-                        // Update at consistent intervals regardless of frame rate
-                        if (currentTime_ns - lastUpdateTime >= 8333333ULL) { // ~120 FPS update rate
-                            // Use std::fmod for modulo - it's optimized and faster than loops
-                            const double cyclePosition = std::fmod(elapsed_seconds, totalCycleDuration);
-                            
-                            if (cyclePosition < delayDuration) {
-                                // Delay phase - no scrolling
-                                cachedScrollOffset = 0.0f;
-                            } else if (cyclePosition < delayDuration + scrollDuration) {
-                                // Scrolling phase - velocity-based movement
-                                const double scrollTime = cyclePosition - delayDuration;
-                                double distance;
-                                
-                                if (scrollTime <= accelTime) {
-                                    // Acceleration phase - quadratic ease-in
-                                    const double t = scrollTime * invAccelTime;  // Multiply instead of divide
-                                    const double smoothT = t * t;
-                                    distance = smoothT * accelDistance;
-                                } else if (scrollTime <= accelTime + constantVelocityTime) {
-                                    // Constant velocity phase
-                                    const double constantTime = scrollTime - accelTime;
-                                    distance = accelDistance + (constantTime * maxVelocity);
-                                } else {
-                                    // Deceleration phase - quadratic ease-out
-                                    const double decelStartTime = accelTime + constantVelocityTime;
-                                    const double t = (scrollTime - decelStartTime) * invDecelTime;  // Multiply instead of divide
-                                    const double oneMinusT = 1.0 - t;
-                                    const double smoothT = 1.0 - oneMinusT * oneMinusT;  // Avoid repeated calculation
-                                    distance = accelDistance + constantVelocityDistance + (smoothT * (minScrollDistance - accelDistance - constantVelocityDistance));
-                                }
-                                
-                                // Use branchless min with conditional move behavior
-                                cachedScrollOffset = static_cast<float>(distance < minScrollDistance ? distance : minScrollDistance);
-                            } else {
-                                // Pause phase - stay at end
-                                cachedScrollOffset = static_cast<float>(this->m_textWidth);
-                            }
-                            
-                            lastUpdateTime = currentTime_ns;
-                        }
-                        
-                        // Use cached value for consistent display
-                        this->m_scrollOffset = cachedScrollOffset;
-                        
-                        // Reset timer when cycle completes
-                        if (elapsed_seconds >= totalCycleDuration) {
-                            this->timeIn_ns = currentTime_ns;
-                        }
-                    } else {
-                        renderer->drawString(this->m_ellipsisText, false, this->getX() + 20-1, this->getY() + 45 - yOffset, 23, !useClickTextColor ? defaultTextColor : clickTextColor);
-                    }
-                } else {
-                    // Render the text with special character handling
-                #if IS_LAUNCHER_DIRECTIVE
-                    static const std::vector<std::string> specialChars = {ult::STAR_SYMBOL};
-                #else
-                    static const std::vector<std::string> specialChars = {};
-                #endif
-                    renderer->drawStringWithColoredSections(this->m_text, false, specialChars, this->getX() + 20-1, this->getY() + 45 - yOffset, 23,
-                        (this->m_focused ? (!useClickTextColor ? selectedTextColor : clickTextColor) : (!useClickTextColor ? defaultTextColor : clickTextColor)),
-                        (this->m_focused ? starColor : selectionStarColor)
-                    );
-                }
-                
-                
-                // CUSTOM SECTION START (modification for submenu footer color)
-                const s32 xPosition = this->getX() + this->m_maxWidth + 44 + 3;
-                const s32 yPosition = this->getY() + 45 - yOffset;
-                static constexpr s32 fontSize = 20;
-            
-            
-                //static bool lastRunningInterpreter = ult::runningInterpreter.load(std::memory_order_acquire);
-            
-                // Determine text color
-                const auto textColor = this->m_faint ? a(m_faintColor) : a(m_valueColor);
-                
-                if (this->m_value != ult::INPROGRESS_SYMBOL) {
-                    // Draw the string with the determined text color
-                    renderer->drawString(this->m_value, false, xPosition, yPosition, fontSize, textColor);
-                } else {
-                    static size_t throbberCounter = 0;
-
-                    
-                    // Reset counter to prevent overflow (every full cycle)
-                    if (throbberCounter >= 10 * ult::THROBBER_SYMBOLS.size()) {
-                        throbberCounter = 0;
-                    }
-                    
-                    // Get current throbber symbol (changes every 10 frames)
-                    const size_t symbolIndex = (throbberCounter / 10) % ult::THROBBER_SYMBOLS.size();
-                    const std::string& currentSymbol = ult::THROBBER_SYMBOLS[symbolIndex];
-                    
-                    // Instance-specific counter for independent throbber animation
-                    ++throbberCounter;
-
-                    renderer->drawString(currentSymbol, false, xPosition, yPosition, fontSize, textColor);
-                }
-                //lastRunningInterpreter = ult::runningInterpreter.load(std::memory_order_acquire);
+                // Set the custom value color on the base ListItem
+                setValueColor(valueColor);
             }
-        
-            virtual void layout(u16 parentX, u16 parentY, u16 parentWidth, u16 parentHeight) override {
-                this->setBoundaries(this->getX()+2+1, this->getY(), this->getWidth()+8+1, m_listItemHeight);
-            }
-        
-            virtual bool onClick(u64 keys) override {
-                if (keys & KEY_A) {
-                    this->triggerClickAnimation();
-                }
-                else if (keys & (KEY_UP | KEY_DOWN | KEY_LEFT | KEY_RIGHT))
-                    this->m_clickAnimationProgress = 0;
-        
-                return Element::onClick(keys);
-            }
-        
-            virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) override {
-                if (event == TouchEvent::Touch)
-                    this->m_touched = this->inBounds(currX, currY);
-        
-                if (event == TouchEvent::Release && this->m_touched) {
-                    this->m_touched = false;
-        
-                    if (Element::getInputMode() == InputMode::Touch) {
-                        const bool handled = this->onClick(KEY_A);
-        
-                        this->m_clickAnimationProgress = 0;
-                        return handled;
-                    }
-                }
+        #else
+            ListItemV2(const std::string& text, 
+                       const std::string& value = "", 
+                       Color valueColor = onTextColor, 
+                       Color faintColor = offTextColor,
+                       bool isMini = false)
+                : ListItem(text, value, isMini),
+                  m_valueColorOverride(valueColor),
+                  m_faintColorOverride(faintColor),
+                  m_hasColorOverrides(true) {
                 
-                
-                return false;
+                // Set the custom value color on the base ListItem
+                setValueColor(valueColor);
             }
+        #endif
         
-        
-            virtual void setFocused(bool state) override {
-                this->m_scroll = false;
-                this->m_scrollOffset = 0;
-                this->timeIn_ns = armTicksToNs(armGetSystemTick());
-                Element::setFocused(state);
-            }
-        
-            virtual Element* requestFocus(Element *oldFocus, FocusDirection direction) override {
-                return this;
-            }
+            virtual ~ListItemV2() = default;
         
             /**
-             * @brief Sets the left hand description text of the list item
-             *
-             * @param text Text
-             */
-            inline void setText(const std::string& text) {
-                this->m_text = text;
-                this->m_scrollText = "";
-                this->m_ellipsisText = "";
-                this->m_maxWidth = 0;
-            }
-        
-            /**
-             * @brief Sets the right hand value text of the list item
-             *
-             * @param value Text
-             * @param faint Should the text be drawn in a glowing green or a faint gray
+             * @brief Override setValue to maintain custom color behavior
              */
             inline void setValue(const std::string& value, bool faint = false) {
-                this->m_value = value;
-                this->m_faint = faint;
-                this->m_maxWidth = 0;
+                // Call parent implementation
+                ListItem::setValue(value, faint);
+                
+                // Re-apply color override based on faint state
+                if (m_hasColorOverrides) {
+                    setValueColor(faint ? m_faintColorOverride : m_valueColorOverride);
+                }
             }
         
             /**
-             * @brief Sets the value color
-             *
-             * @param value_color color of the value
+             * @brief Set custom value color
              */
-            inline void setValueColor(Color value_color) {
-                this->m_valueColor = value_color;
+            inline void setValueColorOverride(Color color) {
+                m_valueColorOverride = color;
+                m_hasColorOverrides = true;
+                // Update the base class if not currently faint
+                if (!m_flags.m_faint) {
+                    setValueColor(color);
+                }
             }
         
             /**
-             * @brief Sets the faint color
-             *
-             * @param faint_color color of the faint
+             * @brief Set custom faint color
              */
-            inline void setFaintColor(Color faint_color) {
-                this->m_faintColor = faint_color;
+            inline void setFaintColorOverride(Color color) {
+                m_faintColorOverride = color;
+                m_hasColorOverrides = true;
+                // Update the base class if currently faint
+                if (m_flags.m_faint) {
+                    setValueColor(color);
+                }
             }
         
             /**
-             * @brief Gets the left hand description text of the list item
-             *
-             * @return Text
+             * @brief Get the current value color override
              */
-            inline const std::string& getText() const {
-                return this->m_text;
+            inline Color getValueColorOverride() const {
+                return m_valueColorOverride;
             }
         
             /**
-             * @brief Gets the right hand value text of the list item
-             *
-             * @return Value
+             * @brief Get the current faint color override
              */
-            inline const std::string& getValue() {
-                return this->m_value;
+            inline Color getFaintColorOverride() const {
+                return m_faintColorOverride;
+            }
+        
+            /**
+             * @brief Clear color overrides and revert to default behavior
+             */
+            inline void clearColorOverrides() {
+                m_hasColorOverrides = false;
+                clearValueColor();
             }
         
         protected:
-            u64 timeIn_ns;
+            Color m_valueColorOverride;
+            Color m_faintColorOverride;
+            bool m_hasColorOverrides;
+        };
         
-            std::string m_text;
-            std::string m_value;
-            std::string m_scrollText;
-            std::string m_ellipsisText;
-            u32 m_listItemHeight = tsl::style::ListItemDefaultHeight;
         
+        /**
+         * @brief Mini version of ListItemV2
+         */
+        class MiniListItemV2 : public ListItemV2 {
+        public:
         #if IS_LAUNCHER_DIRECTIVE
-            bool m_useScriptKey = false;
+            MiniListItemV2(const std::string& text, 
+                           const std::string& value = "", 
+                           Color valueColor = onTextColor, 
+                           Color faintColor = offTextColor,
+                           bool useScriptKey = false)
+                : ListItemV2(text, value, valueColor, faintColor, true, useScriptKey) {
+            }
+        #else
+            MiniListItemV2(const std::string& text, 
+                           const std::string& value = "", 
+                           Color valueColor = onTextColor, 
+                           Color faintColor = offTextColor)
+                : ListItemV2(text, value, valueColor, faintColor, true) {
+            }
         #endif
-            Color m_valueColor;
-            Color m_faintColor;
         
-            bool m_scroll = false;
-            bool m_trunctuated = false;
-            bool m_faint = false;
-        
-            bool m_touched = false;
-        
-            u16 m_maxScroll = 0;
-            u16 m_scrollOffset = 0;
-            u32 m_maxWidth = 0;
-            u32 m_textWidth = 0;
-            u16 m_scrollAnimationCounter = 0;
+            virtual ~MiniListItemV2() {}
         };
 
         /**
@@ -8990,28 +8839,46 @@ namespace tsl {
             }
 
             virtual bool handleInput(u64 keysDown, u64 keysHeld, const HidTouchState &touchPos, HidAnalogStickState leftJoyStick, HidAnalogStickState rightJoyStick) override {
+                static s16 lastHapticSegment = -1;
+                
                 if (keysHeld & KEY_LEFT && keysHeld & KEY_RIGHT)
                     return true;
-
+                
                 if (keysHeld & KEY_LEFT) {
                     if (this->m_value > 0) {
                         this->m_value--;
                         this->m_valueChangedListener(this->m_value);
+                        
+                        // Calculate current segment (0-10 for 11 segments)
+                        const s16 currentSegment = (this->m_value * 10) / 100;
+                        if (this->m_value == 0 || currentSegment != lastHapticSegment) {
+                            lastHapticSegment = currentSegment;
+                            triggerNavigationFeedback();
+                        }
+                        
                         return true;
                     }
                 }
-
+                
                 if (keysHeld & KEY_RIGHT) {
                     if (this->m_value < 100) {
                         this->m_value++;
                         this->m_valueChangedListener(this->m_value);
+                        
+                        // Calculate current segment (0-10 for 11 segments)
+                        const s16 currentSegment = (this->m_value * 10) / 100;
+                        if (this->m_value == 0 || currentSegment != lastHapticSegment) {
+                            lastHapticSegment = currentSegment;
+                            triggerNavigationFeedback();
+                        }
+                        
                         return true;
                     }
                 }
-
+                
                 return false;
             }
-
+            
             virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) override {
                 const u16 trackBarWidth = this->getWidth() - 95;
                 const u16 handlePos = (trackBarWidth * (this->m_value - 0)) / (100 - 0);
@@ -9019,11 +8886,12 @@ namespace tsl {
                 const s32 circleCenterY = this->getY() + 40 + 16 - 1;
                 static constexpr s32 circleRadius = 16;
                 static bool triggerOnce = true;
-
+                static s16 lastHapticSegment = -1;
                 const bool touchInCircle = (std::abs(initialX - circleCenterX) <= circleRadius) && (std::abs(initialY - circleCenterY) <= circleRadius);
                 
                 if (event == TouchEvent::Release) {
                     triggerOnce = true;
+                    lastHapticSegment = -1; // Reset for next touch
                     triggerRumbleDoubleClick.store(true, std::memory_order_release);
                     triggerOffSound.store(true, std::memory_order_release);
                     touchInSliderBounds = false;
@@ -9036,9 +8904,8 @@ namespace tsl {
                         triggerRumbleClick.store(true, std::memory_order_release);
                         triggerOnSound.store(true, std::memory_order_release);
                     }
-
                     touchInSliderBounds = true;
-                    //if (currX > this->getLeftBound() + 50 && currX < this->getRightBound() && currY > this->getTopBound() && currY < this->getBottomBound()) {
+                    
                     s16 newValue = (static_cast<float>(currX - (this->getX() + 60)) / static_cast<float>(this->getWidth() - 95)) * 100;
                     
                     if (newValue < 0) {
@@ -9046,19 +8913,26 @@ namespace tsl {
                     } else if (newValue > 100) {
                         newValue = 100;
                     }
-        
+            
                     if (newValue != this->m_value) {
                         this->m_value = newValue;
                         this->m_valueChangedListener(this->getProgress());
+                        
+                        // Calculate which 10% segment we're in (0-10 for 11 segments)
+                        const s16 currentSegment = (newValue * 10) / 100;
+                        
+                        // Trigger haptics when crossing into a new 10% segment OR at value 0
+                        if (newValue == 0 || currentSegment != lastHapticSegment) {
+                            lastHapticSegment = currentSegment;
+                            triggerNavigationFeedback();
+                        }
                     }
-        
+            
                     return true;
-                    //}
                 }
             
                 return false;
             }
-
 
             // Define drawBar function outside the draw method
             void drawBar(gfx::Renderer *renderer, s32 x, s32 y, u16 width, Color& color, bool isRounded = true) {
@@ -9391,29 +9265,31 @@ namespace tsl {
                         triggerRumbleClick.store(true, std::memory_order_release);
                         triggerOnSound.store(true, std::memory_order_release);
                     }
-
-                    touchInSliderBounds = true;
-                    //if (currY > this->getTopBound() && currY < this->getBottomBound()) {
-                    s16 newValue = (static_cast<float>(currX - (this->getX() + 60)) / static_cast<float>(this->getWidth() - 95)) * 100;
         
-                    if (newValue < 0) {
+                    touchInSliderBounds = true;
+                    
+                    // Add 0.5 for rounding to nearest step instead of truncating
+                    float rawValue = (static_cast<float>(currX - (this->getX() + 60)) / static_cast<float>(this->getWidth() - 95)) * 100;
+                    s16 newValue;
+        
+                    if (rawValue < 0) {
                         newValue = 0;
-                    } else if (newValue > 100) {
+                    } else if (rawValue > 100) {
                         newValue = 100;
                     } else {
-                        newValue = std::round(newValue / (100.0F / (this->m_numSteps - 1))) * (100.0F / (this->m_numSteps - 1));
+                        // Round to nearest step with 0.5 offset for proper snapping
+                        newValue = std::round((rawValue + 0.5f) / (100.0F / (this->m_numSteps - 1))) * (100.0F / (this->m_numSteps - 1));
+                        // Clamp after rounding
+                        newValue = std::min(std::max(newValue, s16(0)), s16(100));
                     }
         
                     if (newValue != this->m_value) {
-                        //triggerRumbleClick.store(true, std::memory_order_release);
-                        //triggerNavigationSound.store(true, std::memory_order_release);
                         triggerNavigationFeedback();
                         this->m_value = newValue;
                         this->m_valueChangedListener(this->getProgress());
                     }
         
                     return true;
-                    //}
                 }
             
                 return false;
@@ -9630,6 +9506,8 @@ namespace tsl {
          */
         class TrackBarV2 : public Element {
         public:
+            using SimpleValueChangeCallback = std::function<void(s16 value, s16 index)>;
+
             u64 lastUpdate_ns;
         
             Color highlightColor = {0xf, 0xf, 0xf, 0xf};
@@ -9713,6 +9591,12 @@ namespace tsl {
             }
         
             inline void updateAndExecute(bool updateIni = true) {
+                if (m_simpleCallback) {
+                    m_simpleCallback(m_value, m_index);
+                    return;
+                }
+
+
                 if (m_packagePath.empty()) {
                     return;
                 }
@@ -9789,11 +9673,8 @@ namespace tsl {
                 }
             
                 if ((keysDown & KEY_A) && !(keysHeld & ~KEY_A & ALL_KEYS_MASK)) {
-                    //triggerRumbleClick.store(true, std::memory_order_release);
-                    //triggerEnterSound.store(true, std::memory_order_release);
                     triggerEnterFeedback();
                     
-
                     if (!m_unlockedTrackbar) {
                         ult::atomicToggle(ult::allowSlide);
                         m_holding = false;
@@ -9804,11 +9685,6 @@ namespace tsl {
                     }
                     return true;
                 }
-
-                //if (keysDown & KEY_B && !(keysHeld & ~KEY_B & ALL_KEYS_MASK)) {
-                //    triggerRumbleDoubleClick.store(true, std::memory_order_release);
-                //    triggerExitSound.store(true, std::memory_order_release);
-                //}
             
                 if ((keysDown & SCRIPT_KEY) && !(keysHeld & ~SCRIPT_KEY & ALL_KEYS_MASK)) {
                     if (m_scriptKeyListener) {
@@ -9818,14 +9694,15 @@ namespace tsl {
                 }
             
                 if (ult::allowSlide.load(std::memory_order_acquire) || m_unlockedTrackbar) {
+                    static s16 lastHapticSegment = -1;
+                    
                     // Handle key release
                     if (((keysReleased & KEY_LEFT) || (keysReleased & KEY_RIGHT))) {
+                        lastHapticSegment = -1; // Reset for next interaction
+                        
                         // If we were holding and repeating, just stop
                         if (m_wasLastHeld) {
                             m_wasLastHeld = false;
-                            //triggerNavigationSound.store(true, std::memory_order_release);
-                            //triggerRumbleClick.store(true, std::memory_order_release);
-
                             m_holding = false;
                             updateAndExecute();
                             lastUpdate_ns = armTicksToNs(armGetSystemTick());
@@ -9834,8 +9711,6 @@ namespace tsl {
                         // If it was a quick tap (no repeat happened), handle the single tick
                         else if (m_holding) {
                             m_holding = false;
-                            //triggerNavigationSound.store(true, std::memory_order_release);
-                            //triggerRumbleClick.store(true, std::memory_order_release);
                             updateAndExecute();
                             lastUpdate_ns = armTicksToNs(armGetSystemTick());
                             return true;
@@ -9851,6 +9726,7 @@ namespace tsl {
                     // Handle initial key press
                     if (keysDown & KEY_LEFT || keysDown & KEY_RIGHT) {
                         triggerRumbleClick.store(true, std::memory_order_release);
+                        
                         // Start tracking the hold
                         m_holding = true;
                         m_wasLastHeld = false;
@@ -9863,11 +9739,25 @@ namespace tsl {
                             this->m_value--;
                             this->m_valueChangedListener(this->m_value);
                             updateAndExecute(false);
+                            
+                            // Calculate and store initial segment (0-10 for 11 segments)
+                            const s16 currentSegment = (this->m_index * 10) / (m_numSteps - 1);
+                            if (this->m_index == 0 || currentSegment != lastHapticSegment) {
+                                lastHapticSegment = currentSegment;
+                                triggerNavigationFeedback();
+                            }
                         } else if (keysDown & KEY_RIGHT && this->m_value < m_maxValue) {
                             this->m_index++;
                             this->m_value++;
                             this->m_valueChangedListener(this->m_value);
                             updateAndExecute(false);
+                            
+                            // Calculate and store initial segment (0-10 for 11 segments)
+                            const s16 currentSegment = (this->m_index * 10) / (m_numSteps - 1);
+                            if (this->m_index == 0 || currentSegment != lastHapticSegment) {
+                                lastHapticSegment = currentSegment;
+                                triggerNavigationFeedback();
+                            }
                         }
                         return true;
                     }
@@ -9881,20 +9771,8 @@ namespace tsl {
                         // Calculate interval with acceleration
                         static constexpr u64 initialInterval_ns = 67000000ULL;  // ~67ms
                         static constexpr u64 shortInterval_ns = 10000000ULL;    // ~10ms
-                        static constexpr u64 transitionPoint_ns = 1000000000ULL; // 2 seconds
-                        
-                        // Trigger navigation sound every 100ms while holding
-                        static u64 lastNavigationSound_ns = 0;
-                        if (currentTime_ns - lastNavigationSound_ns >= 150'000'000ULL) { // 100ms
-                            if (this->m_value > m_minValue && this->m_value < m_maxValue) {
-                                //triggerRumbleClick.store(true, std::memory_order_release);
-                                //triggerNavigationSound.store(true, std::memory_order_release);
-                                triggerNavigationFeedback();
-                                
-                            }
-                            lastNavigationSound_ns = currentTime_ns;
-                        }
-
+                        static constexpr u64 transitionPoint_ns = 1000000000ULL; // 1 second
+            
                         // If we haven't passed the initial delay, don't repeat yet
                         if (holdDuration_ns < initialDelay_ns) {
                             return true;
@@ -9912,6 +9790,14 @@ namespace tsl {
                                 if (m_executeOnEveryTick) {
                                     updateAndExecute(false);
                                 }
+                                
+                                // Calculate current segment (0-10 for 11 segments) and trigger haptics on segment change
+                                const s16 currentSegment = (this->m_index * 10) / (m_numSteps - 1);
+                                if (this->m_index == 0 || currentSegment != lastHapticSegment) {
+                                    lastHapticSegment = currentSegment;
+                                    triggerNavigationFeedback();
+                                }
+                                
                                 lastUpdate_ns = currentTime_ns;
                                 m_wasLastHeld = true;
                                 return true;
@@ -9924,6 +9810,14 @@ namespace tsl {
                                 if (m_executeOnEveryTick) {
                                     updateAndExecute(false);
                                 }
+                                
+                                // Calculate current segment (0-10 for 11 segments) and trigger haptics on segment change
+                                const s16 currentSegment = (this->m_index * 10) / (m_numSteps - 1);
+                                if (this->m_index == 0 || currentSegment != lastHapticSegment) {
+                                    lastHapticSegment = currentSegment;
+                                    triggerNavigationFeedback();
+                                }
+                                
                                 lastUpdate_ns = currentTime_ns;
                                 m_wasLastHeld = true;
                                 return true;
@@ -9936,7 +9830,7 @@ namespace tsl {
                 
                 return false;
             }
-
+                        
             virtual bool onTouch(TouchEvent event, s32 currX, s32 currY, s32 prevX, s32 prevY, s32 initialX, s32 initialY) override {
                 const u16 trackBarWidth = this->getWidth() - 95;
                 const u16 handlePos = (trackBarWidth * (this->m_value - m_minValue)) / (m_maxValue - m_minValue);
@@ -9944,24 +9838,54 @@ namespace tsl {
                 const s32 circleCenterY = this->getY() + 40 + 16 - 1;
                 static constexpr s32 circleRadius = 16;
                 static bool triggerOnce = true;
+                static s16 lastHapticSegment = -1;
+                static bool wasOriginallyLocked = false;
                 
                 const bool touchInCircle = (std::abs(initialX - circleCenterX) <= circleRadius) && (std::abs(initialY - circleCenterY) <= circleRadius);
                 
-                if (!m_unlockedTrackbar && !ult::allowSlide.load(std::memory_order_acquire)) {
-
+                // Handle touch start
+                if (event == TouchEvent::Touch && touchInCircle) {
+                    // Remember if it was locked before we touched it
+                    wasOriginallyLocked = !m_unlockedTrackbar && !ult::allowSlide.load(std::memory_order_acquire);
+                    
+                    // Temporarily unlock if it was locked
+                    if (wasOriginallyLocked) {
+                        ult::allowSlide.store(true, std::memory_order_release);
+                    }
+                }
+                
+                // Handle release
+                if (event == TouchEvent::Release) {
+                    triggerOnce = true;
+                    lastHapticSegment = -1;
+                    
+                    // Re-lock if it was originally locked
+                    if (wasOriginallyLocked) {
+                        ult::allowSlide.store(false, std::memory_order_release);
+                        wasOriginallyLocked = false;
+                    }
+                    
+                    if (touchInSliderBounds) {
+                        updateAndExecute();
+                        touchInSliderBounds = false;
+                        triggerRumbleDoubleClick.store(true, std::memory_order_release);
+                        triggerOffSound.store(true, std::memory_order_release);
+                    }
                     return false;
                 }
                 
-                if ((touchInCircle || touchInSliderBounds)) {
+                const bool isUnlocked = m_unlockedTrackbar || ult::allowSlide.load(std::memory_order_acquire);
+                
+                if ((touchInCircle || touchInSliderBounds) && isUnlocked) {
                     touchInSliderBounds = true;
-
                     if (triggerOnce) {
                         triggerOnce = false;
                         triggerRumbleClick.store(true, std::memory_order_release);
                         triggerOnSound.store(true, std::memory_order_release);
                     }
                     
-                    const s16 newIndex = std::max(static_cast<s16>(0), std::min(static_cast<s16>((currX - (this->getX() + 59)) / static_cast<float>(this->getWidth() - 95) * (m_numSteps - 1)), static_cast<s16>(m_numSteps - 1)));
+                    // Add 0.5 to round to nearest step instead of truncating
+                    const s16 newIndex = std::max(static_cast<s16>(0), std::min(static_cast<s16>((currX - (this->getX() + 59)) / static_cast<float>(this->getWidth() - 95) * (m_numSteps - 1) + 0.5f), static_cast<s16>(m_numSteps - 1)));
                     const s16 newValue = m_minValue + newIndex * (static_cast<float>(m_maxValue - m_minValue) / (m_numSteps - 1));
                     
                     if (newValue != this->m_value || newIndex != this->m_index) {
@@ -9971,29 +9895,23 @@ namespace tsl {
                         if (m_executeOnEveryTick) {
                             updateAndExecute(false);
                         }
-                        if (m_usingStepTrackbar || m_usingNamedStepTrackbar) {
-                            //triggerRumbleClick.store(true, std::memory_order_release);
-                            //triggerNavigationSound.store(true, std::memory_order_release);
+                        
+                        // Calculate which 10% segment we're in (0-10 for 11 segments)
+                        const s16 currentSegment = (newIndex * 10) / (m_numSteps - 1);
+                        
+                        // Trigger haptics when crossing into a new 10% segment OR at index 0
+                        if (newIndex == 0 || currentSegment != lastHapticSegment) {
+                            lastHapticSegment = currentSegment;
                             triggerNavigationFeedback();
                         }
-                    } else {
-                        if (event == TouchEvent::Release) {
-                            triggerOnce = true;
-                            updateAndExecute();
-                            if (event == TouchEvent::Release)
-                                touchInSliderBounds = false;
-
-                            triggerRumbleDoubleClick.store(true, std::memory_order_release);
-                            triggerOffSound.store(true, std::memory_order_release);
-                        }
                     }
-        
+            
                     return true;
                 }
                 
                 return false;
             }
-        
+                        
             void drawBar(gfx::Renderer *renderer, s32 x, s32 y, u16 width, Color& color, bool isRounded = true) {
                 if (isRounded) {
                     renderer->drawUniformRoundedRect(x, y, width, 7, a(color));
@@ -10176,7 +10094,7 @@ namespace tsl {
                 
                 ult::onTrackBar.store(true, std::memory_order_release);
             
-                if (m_clickActive) {
+                if (m_clickActive && m_useClickAnimation) {
                     const u64 elapsedTime_ns = currentTime_ns - m_clickStartTime_ns;
             
                     auto clickAnimationProgress = tsl::style::ListItemHighlightLength * (1.0f - (static_cast<float>(elapsedTime_ns) / 500000000.0f));
@@ -10215,7 +10133,15 @@ namespace tsl {
             void setValueChangedListener(std::function<void(u8)> valueChangedListener) {
                 this->m_valueChangedListener = valueChangedListener;
             }
+
+            void setSimpleCallback(SimpleValueChangeCallback callback) {
+                m_simpleCallback = std::move(callback);
+            }
         
+            inline void disableClickAnimation() {
+                m_useClickAnimation = false;
+            }
+
         protected:
             std::string m_label;
             std::string m_packagePath;
@@ -10255,6 +10181,10 @@ namespace tsl {
             u64 m_prevKeysHeld = 0;
             bool m_wasLastHeld = false;
             bool m_drawFrameless = false;
+
+            bool m_useClickAnimation = true;
+
+            SimpleValueChangeCallback m_simpleCallback = nullptr;
         };
         
         
@@ -10410,7 +10340,17 @@ namespace tsl {
              */
             virtual void setProgress(u8 value) override {
                 value = std::min(value, u8(this->m_numSteps - 1));
-                this->m_value = value * (100 / (this->m_numSteps - 1));
+                this->m_index = value;
+                
+                // If using simple callback (modern API), use minValue/maxValue range
+                // Otherwise use legacy 0-100 range for config.ini compatibility
+                if (m_simpleCallback) {
+                    const float stepSize = static_cast<float>(m_maxValue - m_minValue) / (this->m_numSteps - 1);
+                    this->m_value = static_cast<s16>(std::round(m_minValue + m_index * stepSize));
+                } else {
+                    // Legacy behavior for command system
+                    this->m_value = value * (100 / (this->m_numSteps - 1));
+                }
             }
             
         //protected:
@@ -10580,15 +10520,15 @@ namespace tsl {
     
         void show(const std::string& msg, size_t fontSize = 26, u32 priority = 20,
                   const std::string& fileName = "", u32 durationMs = 2500,
-                  s32 promptWidth = 448, s32 promptHeight = 88)
+                  s32 promptWidth = 448, s32 promptHeight = 88, bool immediately = false)
         {
             if (msg.empty()) return;
-    
+        
             // Quick reject using atomics (fast-path)
             if (!enabled_.load(std::memory_order_acquire)) return;
             if (!ult::useNotifications) return;
             if (generation_ != notificationGeneration.load(std::memory_order_acquire)) return;
-    
+        
             NotificationData data;
             data.text = msg;
             data.fileName = fileName;
@@ -10596,23 +10536,37 @@ namespace tsl {
             data.promptWidth = std::clamp(promptWidth, s32(100), s32(1280));
             data.promptHeight = std::clamp(promptHeight, s32(50), s32(720));
             data.durationMs = std::clamp(durationMs, 500u, 30000u);
-            data.priority = priority;
+            data.priority = immediately ? 0 : priority;  // Priority 0 for immediate
             data.arrivalNs = armTicksToNs(armGetSystemTick());
-    
+        
             std::lock_guard<std::mutex> lg(state_mutex_);
-    
+        
             // Re-check under lock to avoid TOCTOU
             if (!enabled_.load(std::memory_order_acquire)) return;
             if (generation_ != notificationGeneration.load(std::memory_order_acquire)) return;
             if (pending_queue_.size() >= MAX_NOTIFS) return;
-    
+        
+            // If immediately = true and there's an active notification, force it to complete
+            if (immediately && is_active_ && current_state_.state != PromptState::Inactive) {
+                // Delete current notification's file if exists
+                const std::string fileToDelete = current_state_.fileName;
+                if (!fileToDelete.empty()) {
+                    std::lock_guard<std::mutex> lg(notificationJsonMutex);
+                    const std::string fullPath = ult::NOTIFICATIONS_PATH + fileToDelete;
+                    remove(fullPath.c_str());
+                }
+                
+                // Reset current state
+                current_state_ = NotificationState{};
+                is_active_ = false;
+            }
+        
             pending_queue_.push(data);
-    
+        
             if (!is_active_) {
                 startNext_NoLock();
-                //pending_event_fire_.store(true, std::memory_order_release);
                 eventFire(&notificationEvent);
-
+        
                 #if IS_STATUS_MONITOR_DIRECTIVE
                 if (isRendering) {
                     isRendering = false;
@@ -10622,6 +10576,11 @@ namespace tsl {
                 }
                 #endif
             }
+        }
+        
+        // Immediate notification function - shows immediately with highest priority
+        void showNow(const std::string& msg, size_t fontSize = 26) {
+            show(msg, fontSize, 0, "", 2500, 448, 88, true);
         }
     
 
@@ -11188,7 +11147,18 @@ namespace tsl {
          *
          */
         void show() {
+            if (ult::useHapticFeedback) {
+                if (!ult::isHidden.load(std::memory_order_acquire)) {
+                    triggerInitHaptics.store(true, std::memory_order_release);
+                }
+            }
             
+
+            // reinitialize audio for changes from handheld to docked and vise versa
+            if (!ult::limitedMemory && ult::useSoundEffects)
+                reloadIfDockedChangedNow.store(true, std::memory_order_release);
+                //ult::AudioPlayer::reloadIfDockedChanged();
+
 
             if (this->m_disableNextAnimation) {
                 this->m_animationCounter = MAX_ANIMATION_COUNTER;
@@ -11198,15 +11168,15 @@ namespace tsl {
                 this->m_fadeInAnimationPlaying = true;
                 this->m_animationCounter = 0;
             }
+            
+            this->onShow();
 
             ult::isHidden.store(false);
-            this->onShow();
-            triggerRumbleClick.store(true, std::memory_order_release);
-
-            // reinitialize audio for changes from handheld to docked and vise versa
-            if (ult::expandedMemory && ult::useSoundEffects)
-                ult::AudioPlayer::reloadIfDockedChanged();
             
+            if (ult::useHapticFeedback) {
+                triggerRumbleClick.store(true, std::memory_order_release);
+            }
+
             //if (auto& currGui = this->getCurrentGui(); currGui != nullptr) // TESTING DISABLED (EFFECTS NEED TO BE VERIFIED)
             //    currGui->restoreFocus();
         }
@@ -12115,10 +12085,34 @@ namespace tsl {
             const bool menuTouched = (touchPos.x > ult::layerEdge+7U && touchPos.x <= menuRightEdge && touchPos.y > 10U && touchPos.y <= 83U) &&
                                      (initialTouchPos.x > ult::layerEdge+7U && initialTouchPos.x <= menuRightEdge && initialTouchPos.y > 10U && initialTouchPos.y <= 83U);
             
-            ult::touchingBack.store(backTouched, std::memory_order_release);
-            ult::touchingSelect.store(selectTouched, std::memory_order_release);
-            ult::touchingNextPage.store(nextPageTouched, std::memory_order_release);
-            ult::touchingMenu.store(menuTouched, std::memory_order_release);
+            //ult::touchingBack.store(backTouched, std::memory_order_release);
+            //ult::touchingSelect.store(selectTouched, std::memory_order_release);
+            //ult::touchingNextPage.store(nextPageTouched, std::memory_order_release);
+            //ult::touchingMenu.store(menuTouched, std::memory_order_release);
+
+            // Only update and trigger rumble on state changes
+            bool shouldTriggerRumble = false;
+            
+            if (backTouched != ult::touchingBack.exchange(backTouched, std::memory_order_acq_rel)) {
+                if (backTouched) shouldTriggerRumble = true;
+            }
+            
+            if (selectTouched != ult::touchingSelect.exchange(selectTouched, std::memory_order_acq_rel)) {
+                if (selectTouched) shouldTriggerRumble = true;
+            }
+            
+            if (nextPageTouched != ult::touchingNextPage.exchange(nextPageTouched, std::memory_order_acq_rel)) {
+                if (nextPageTouched) shouldTriggerRumble = true;
+            }
+            
+            if (menuTouched != ult::touchingMenu.exchange(menuTouched, std::memory_order_acq_rel)) {
+                if (menuTouched && (ult::inMainMenu.load(std::memory_order_acquire) || (ult::inHiddenMode.load(std::memory_order_acquire) && !ult::inSettingsMenu.load(std::memory_order_acquire) && !ult::inSubSettingsMenu.load(std::memory_order_acquire)))) shouldTriggerRumble = true;
+            }
+            
+            if (shouldTriggerRumble) {
+                triggerRumbleClick.store(true, std::memory_order_release);
+            }
+
             
             if (touchDetected) {
                 // Update lastSimulatedTouch with current touch states
@@ -12151,7 +12145,10 @@ namespace tsl {
                         ult::touchInBounds = (initialTouchPos.y <= footerY && initialTouchPos.y > 73U && 
                                             initialTouchPos.x <= ult::layerEdge + cfg::FramebufferWidth - 30U && 
                                             initialTouchPos.x > 40U + ult::layerEdge);
-                        if (ult::touchInBounds) currentGui->removeFocus();
+                        if (ult::touchInBounds) {
+                            triggerRumbleClick.store(true, std::memory_order_release);
+                            currentGui->removeFocus();
+                        }
                     }
                     touchEvent = elm::TouchEvent::Touch;
                 }
@@ -12575,6 +12572,7 @@ namespace tsl {
             }, ULTRAHAND_CONFIG_FILE);
         }
         
+        static auto currentUnderscanPixels = std::make_pair(0, 0);
 
         /**
          * @brief Background event polling loop thread
@@ -12585,7 +12583,7 @@ namespace tsl {
             requiresLNY2 = amsVersionAtLeast(1,10,0);     // Detect if using HOS 21+
 
             // Initialize the audio service
-            if (ult::useSoundEffects && ult::expandedMemory) {
+            if (ult::useSoundEffects && !ult::limitedMemory) {
                 ult::AudioPlayer::initialize();
             }
 
@@ -12641,7 +12639,7 @@ namespace tsl {
             padUpdate(&pad_p1);
             padUpdate(&pad_handheld);
 
-            //ult::initRumble(); // initialize rumble
+            //ult::initHaptics(); // initialize rumble
             
             enum WaiterObject {
                 WaiterObject_HomeButton,
@@ -12698,8 +12696,8 @@ namespace tsl {
             
             while (shData->running.load(std::memory_order_acquire)) {
 
-                const u64 nowTick = armGetSystemTick();
-                const u64 nowNs = armTicksToNs(nowTick);
+                u64 nowTick = armGetSystemTick();
+                u64 nowNs = armTicksToNs(nowTick);
                 
                 
                 
@@ -12742,7 +12740,7 @@ namespace tsl {
                     }
                     
                     if (firstUnderscanCheck || (nowNs - lastUnderscanCheckNs) >= UNDERSCAN_INTERVAL_NS) {
-                        const auto currentUnderscanPixels = tsl::gfx::getUnderscanPixels();
+                        currentUnderscanPixels = tsl::gfx::getUnderscanPixels();
                     
                         if (firstUnderscanCheck || currentUnderscanPixels != lastUnderscanPixels) {
                             // Update layer dimensions without destroying state
@@ -12906,37 +12904,61 @@ namespace tsl {
                     }
 
 
+                    if (ult::useHapticFeedback) {
+                        // Process ongoing rumbles
+                        if (ult::clickActive.load(std::memory_order_acquire))
+                            ult::processRumbleStop(nowNs);
+                        if (ult::doubleClickActive.load(std::memory_order_acquire))
+                            ult::processRumbleDoubleClick(nowNs);
+                    }
+
                     if (ult::launchingOverlay.load(std::memory_order_acquire))
                         break;
                     std::scoped_lock lock(shData->dataMutex);
                     if (ult::launchingOverlay.load(std::memory_order_acquire))
                         break;
 
+                    // Repoll after lock
+                    nowTick = armGetSystemTick();
+                    nowNs = armTicksToNs(nowTick);
+                    
                     // Flush any pending rumble triggers when feedback is off
-                    if (!ult::useHapticFeedback) {
-                        triggerRumbleClick.exchange(false, std::memory_order_acq_rel);
-                        triggerRumbleDoubleClick.exchange(false, std::memory_order_acq_rel);
-                    } else {
-                        ult::checkAndReinitRumble();
+                    if (ult::useHapticFeedback) {
+                        if (!triggerInitHaptics.load(std::memory_order_acquire))
+                            ult::checkAndReinitHaptics();
+                        else
+                            ult::initHaptics();
                         
-                        if (triggerRumbleDoubleClick.exchange(false)) {
-                            if (!ult::doubleClickActive.load(std::memory_order_acquire)) {
+                        // Double-click takes priority
+                        if (triggerRumbleDoubleClick.exchange(false, std::memory_order_acq_rel)) {
+                            if (!ult::clickActive.load(std::memory_order_acquire) && !ult::doubleClickActive.load(std::memory_order_acquire)) {
                                 ult::rumbleDoubleClick();
                             }
-                            triggerRumbleClick.exchange(false);
-                        } else if (triggerRumbleClick.exchange(false)) {
-                            ult::rumbleClick();
+                            // Clear any pending single click since double-click supersedes it
+                            triggerRumbleClick.exchange(false, std::memory_order_acq_rel);
+                        } 
+
+                        if (triggerRumbleClick.exchange(false, std::memory_order_acq_rel)) {
+                            // Only start single click if nothing else is active
+                            if (!ult::clickActive.load(std::memory_order_acquire) && !ult::doubleClickActive.load(std::memory_order_acquire)) {
+                                ult::rumbleClick();
+                            }
+                            //triggerRumbleDoubleClick.exchange(false, std::memory_order_acq_rel);
                         }
                         
-                        //const u64 _nowNs = armTicksToNs(armGetSystemTick());
-
-                        ult::processRumbleStop(nowNs);
-                        ult::processRumbleDoubleClick(nowNs);
+                        // Process ongoing rumbles
+                        if (ult::clickActive.load(std::memory_order_acquire))
+                            ult::processRumbleStop(nowNs);
+                        if (ult::doubleClickActive.load(std::memory_order_acquire))
+                            ult::processRumbleDoubleClick(nowNs);
+                    } else {
+                        triggerRumbleClick.exchange(false, std::memory_order_acq_rel);
+                        triggerRumbleDoubleClick.exchange(false, std::memory_order_acq_rel);
                     }
                     
                     // Flush any pending sound triggers when effects are off
 
-                    if (ult::expandedMemory) {
+                    if (!ult::limitedMemory) {
                         if (!ult::useSoundEffects || disableSound.load(std::memory_order_acquire)) {
                             triggerNavigationSound.exchange(false, std::memory_order_acq_rel);
                             triggerEnterSound.exchange(false, std::memory_order_acq_rel);
@@ -12947,6 +12969,9 @@ namespace tsl {
                             triggerSettingsSound.exchange(false, std::memory_order_acq_rel);
                             triggerMoveSound.exchange(false, std::memory_order_acq_rel);
                         } else {
+                            if (reloadIfDockedChangedNow.exchange(false, std::memory_order_acq_rel)) {
+                                ult::AudioPlayer::reloadIfDockedChanged();
+                            }
                             if (reloadSoundCacheNow.exchange(false, std::memory_order_acq_rel)) {
                                 ult::AudioPlayer::reloadAllSounds();
                             }
@@ -13565,17 +13590,41 @@ namespace tsl {
 
     #if IS_STATUS_MONITOR_DIRECTIVE
         leventClear(&renderingStopEvent);
-    #endif
+        // Status monitor will load heap settings directly in main, so bypass here in loop
+    #else
+
+        ult::currentHeapSize = ult::getCurrentHeapSize();
+        ult::expandedMemory = ult::currentHeapSize >= ult::OverlayHeapSize::Size_8MB;
+        ult::limitedMemory = ult::currentHeapSize == ult::OverlayHeapSize::Size_4MB;
+
 
         // Initialize buffer sizes based on expanded memory setting
         if (ult::expandedMemory) {
-            ult::COPY_BUFFER_SIZE = 262144;
-            ult::HEX_BUFFER_SIZE = 8192;
-            ult::UNZIP_READ_BUFFER = 262144;
-            ult::UNZIP_WRITE_BUFFER = 131072;
-            ult::DOWNLOAD_READ_BUFFER = 262144/2;
-            ult::DOWNLOAD_WRITE_BUFFER = 131072;
+            ult::furtherExpandedMemory = ult::currentHeapSize > ult::OverlayHeapSize::Size_8MB;
+            
+            if (!ult::furtherExpandedMemory) {
+                ult::loaderTitle += "+";
+                ult::COPY_BUFFER_SIZE = 262144;
+                ult::HEX_BUFFER_SIZE = 8192;
+                ult::UNZIP_READ_BUFFER = 262144;
+                ult::UNZIP_WRITE_BUFFER = 131072;
+                ult::DOWNLOAD_READ_BUFFER = 131072;
+                ult::DOWNLOAD_WRITE_BUFFER = 131072;
+            } else {
+                ult::loaderTitle += "×";
+                ult::COPY_BUFFER_SIZE = 262144*2;
+                ult::HEX_BUFFER_SIZE = 8192;
+                ult::UNZIP_READ_BUFFER = 262144*2;
+                ult::UNZIP_WRITE_BUFFER = 131072*4;
+                ult::DOWNLOAD_READ_BUFFER = 131072*4;
+                ult::DOWNLOAD_WRITE_BUFFER = 131072*4;
+            }
+        } else if (ult::limitedMemory) {
+            ult::loaderTitle += "-";
+            ult::DOWNLOAD_READ_BUFFER = 16*1024;
+            ult::UNZIP_READ_BUFFER = 16*1024;
         }
+    #endif
     
         if (argc > 0) {
             //g_overlayFilename = ult::getNameFromPath(argv[0]);
@@ -14090,7 +14139,8 @@ extern "C" {
         //});
 
         //requiresLNY2 = amsVersionAtLeast(1,9,0);     // Detect if using HOS 21+
-        
+        //ult::currentHeapSize = ult::getCurrentHeapSize();
+        //ult::expandedMemory = ult::currentHeapSize >= ult::OverlayHeapSize::Size_8MB;
 
         #if IS_STATUS_MONITOR_DIRECTIVE
         Service *plSrv = plGetServiceSession();
@@ -14113,8 +14163,8 @@ extern "C" {
         delete tsl::notification;
         eventClose(&tsl::notificationEvent);
 
-        //deinitRumble();
-        if (ult::expandedMemory)
+        //deinitHaptics();
+        if (!ult::limitedMemory)
             ult::AudioPlayer::exit();
 
         

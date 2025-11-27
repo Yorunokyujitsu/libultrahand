@@ -14,7 +14,7 @@
  *   of the project's documentation and must remain intact.
  * 
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2024 ppkantorski
+ *  Copyright (c) 2023-2025 ppkantorski
  ********************************************************************************/
 
 #include <ini_funcs.hpp>
@@ -445,7 +445,8 @@ namespace ult {
      * @brief Parses an INI file and retrieves key-value pairs from a specific section.
      *
      * This function reads the contents of an INI file located at the specified path,
-     * and returns the key-value pairs within a specific section.
+     * and returns the key-value pairs within a specific section. Lines starting with
+     * # or ; are treated as comments and ignored.
      *
      * @param configIniPath The path to the INI file to be parsed.
      * @param sectionName The name of the section to retrieve key-value pairs from.
@@ -488,6 +489,9 @@ namespace ult {
             trim(line);
             
             if (line.empty()) continue;
+            
+            // Skip comment lines
+            if (line[0] == '#' || line[0] == ';') continue;
             
             if (line[0] == '[' && line.back() == ']') {
                 // Compare section directly without extraction
@@ -535,6 +539,9 @@ namespace ult {
             
             if (line.empty()) continue;
             
+            // Skip comment lines
+            if (line[0] == '#' || line[0] == ';') continue;
+            
             if (line[0] == '[' && line.back() == ']') {
                 inTargetSection = (line.size() - 2 == sectionName.size() && 
                                  line.compare(1, line.size() - 2, sectionName) == 0);
@@ -557,7 +564,6 @@ namespace ult {
     
         return sectionData;
     }
-    
     
     
     /**

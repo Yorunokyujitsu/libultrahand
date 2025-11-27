@@ -15,7 +15,7 @@
  *   altered or removed.
  *
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2024 ppkantorski
+ *  Copyright (c) 2023-2025 ppkantorski
  ********************************************************************************/
 
 #include <tsl_utils.hpp>
@@ -133,29 +133,14 @@ namespace ult {
     u16 activeHeaderHeight = 97;
 
     bool consoleIsDocked() {
-        Result rc;
+        Result rc = apmInitialize();
+        if (R_FAILED(rc)) return false;
+        
         ApmPerformanceMode perfMode = ApmPerformanceMode_Invalid;
-    
-        // Initialize the APM service
-        rc = apmInitialize();
-        if (R_FAILED(rc)) {
-            return false;  // Fail early if initialization fails
-        }
-    
-        // Get the current performance mode
         rc = apmGetPerformanceMode(&perfMode);
-        apmExit();  // Clean up the APM service
-    
-        if (R_FAILED(rc)) {
-            return false;  // Fail early if performance mode check fails
-        }
-    
-        // Check if the performance mode indicates docked state
-        if (perfMode == ApmPerformanceMode_Boost) {
-            return true;  // System is docked (boost mode active)
-        }
-    
-        return false;  // Not docked (normal mode or handheld)
+        apmExit();
+        
+        return R_SUCCEEDED(rc) && (perfMode == ApmPerformanceMode_Boost);
     }
     
     //static bool pminfoInitialized = false;
@@ -336,7 +321,7 @@ namespace ult {
     //bool progressAnimation = false;
     bool disableTransparency = false;
     //bool useCustomWallpaper = false;
-    bool useMemoryExpansion = false;
+    //bool useMemoryExpansion = false;
     bool useOpaqueScreenshots = false;
     
     std::atomic<bool> onTrackBar(false);
@@ -473,7 +458,7 @@ namespace ult {
     std::string HIDE_OVERLAY = "오버레이 숨김";
     std::string HIDE_PACKAGE = "패키지 숨김";
     std::string LAUNCH_ARGUMENTS = "인수 실행";
-    std::string FORCE_LNY2_SUPPORT = "LNY2 강제 지원";
+    std::string FORCE_AMS110_SUPPORT = "AMS110 강제 지원";
     std::string QUICK_LAUNCH = "빠른 실행";
     std::string BOOT_COMMANDS = "Boot 커맨드";
     std::string EXIT_COMMANDS = "Exit 커맨드";
@@ -528,8 +513,17 @@ namespace ult {
     std::string NOTICE = "안내";
     std::string UTILIZES = "2MB 활용";
 
-    std::string MEMORY_EXPANSION = "여유 ";
-    std::string REBOOT_REQUIRED = "적용을 위해, 재부팅이 필요합니다";
+
+    std::string OVERLAY_MEMORY = "오버레이 메모리";
+    std::string NOT_ENOUGH_MEMORY = "메모리가 부족합니다.";
+    std::string WALLPAPER_SUPPORT_DISABLED = "배경화면 비활성화";
+    std::string SOUND_SUPPORT_DISABLED = "사운드 비활성화";
+    std::string WALLPAPER_SUPPORT_ENABLED = "배경화면 활성화";
+    std::string SOUND_SUPPORT_ENABLED = "사운드 활성화";
+    std::string EXIT_OVERLAY_SYSTEM = "오버레이 종료";
+
+    //std::string MEMORY_EXPANSION = "여유 ";
+    //std::string REBOOT_REQUIRED = "적용을 위해, 재부팅이 필요합니다";
     std::string LOCAL_IP = "로컬 IP";
     std::string WALLPAPER = "배경";
     std::string THEME = "테마";
@@ -573,10 +567,14 @@ namespace ult {
 
     std::string ULTRAHAND_HAS_STARTED = "Ultrahand 시작됨";
     std::string NEW_UPDATE_IS_AVAILABLE = "새로운 버전이 있습니다!";
-    std::string REBOOT_IS_REQUIRED = "재부팅이 필요합니다";
-    std::string HOLD_A_TO_DELETE = "\uE0E0 홀드하여 삭제";
+    //std::string REBOOT_IS_REQUIRED = "재부팅이 필요합니다";
+    //std::string HOLD_A_TO_DELETE = "\uE0E0 홀드하여 삭제";
+    std::string DELETE_PACKAGE = "패키지 삭제";
+    std::string DELETE_OVERLAY = "오버레이 삭제";
     std::string SELECTION_IS_EMPTY = "비어 있음";
     std::string FORCED_SUPPORT_WARNING = "강제 지원은 위험할 수 있습니다";
+    std::string TASK_IS_COMPLETE = "작업 완료!";
+    std::string TASK_HAS_FAILED = "작업 실패";
 
 
     //std::string PACKAGE_VERSIONS = "패키지 버전";
@@ -776,6 +774,7 @@ namespace ult {
     std::string SYSPATCH = "패치 시스템";
     #endif
 
+    std::string SYSTEM_RAM = "시스템 RAM";
     std::string FREE = "여유";
 
     std::string DEFAULT_CHAR_WIDTH = "0.33";
@@ -873,7 +872,7 @@ namespace ult {
         HIDE_OVERLAY = "오버레이 숨김";
         HIDE_PACKAGE = "패키지 숨김";
         LAUNCH_ARGUMENTS = "인수 실행";
-        FORCE_LNY2_SUPPORT = "LNY2 강제 지원";
+        FORCE_LNY2_SUPPORT = "AMS110 강제 지원";
         QUICK_LAUNCH = "빠른 실행";
         BOOT_COMMANDS = "Boot 커맨드";
         EXIT_COMMANDS = "Exit 커맨드";
@@ -926,9 +925,19 @@ namespace ult {
         STORAGE = "저장소";
         NOTICE = "안내";
         UTILIZES = "2MB 활용";
+        SYSTEM_RAM = "시스템 RAM";
         FREE = "여유";
-        MEMORY_EXPANSION = "확장";
-        REBOOT_REQUIRED = "적용을 위해, 재부팅이 필요합니다";
+        
+        OVERLAY_MEMORY = "오버레이 메모리";
+        NOT_ENOUGH_MEMORY = "메모리가 부족합니다.";
+        WALLPAPER_SUPPORT_DISABLED = "배경화면 비활성화";
+        SOUND_SUPPORT_DISABLED = "사운드 비활성화";
+        WALLPAPER_SUPPORT_ENABLED = "배경화면 활성화";
+        SOUND_SUPPORT_ENABLED = "사운드 활성화";
+        EXIT_OVERLAY_SYSTEM = "오버레이 종료";
+
+        //MEMORY_EXPANSION = "확장";
+        //REBOOT_REQUIRED = "적용을 위해, 재부팅이 필요합니다";
         LOCAL_IP = "로컬 IP";
         WALLPAPER = "배경";
         THEME = "테마";
@@ -1174,10 +1183,14 @@ namespace ult {
 
         ULTRAHAND_HAS_STARTED = "Ultrahand 시작됨";
         NEW_UPDATE_IS_AVAILABLE = "새로운 버전이 있습니다!";
-        REBOOT_IS_REQUIRED = "재부팅이 필요합니다";
-        HOLD_A_TO_DELETE = " 홀드하여 삭제";
+        //REBOOT_IS_REQUIRED = "재부팅이 필요합니다";
+        //HOLD_A_TO_DELETE = " 홀드하여 삭제";
+        DELETE_PACKAGE = "패키지 삭제";
+        DELETE_OVERLAY = "오버레이 삭제";
         SELECTION_IS_EMPTY = "비어 있음";
         FORCED_SUPPORT_WARNING = "강제 지원은 위험할 수 있습니다";
+        TASK_IS_COMPLETE = "작업 완료!";
+        TASK_HAS_FAILED = "작업 실패";
 
         //EMPTY = "비어 있음";
     
@@ -1272,7 +1285,7 @@ namespace ult {
             {"HIDE_PACKAGE", &HIDE_PACKAGE},
             {"HIDE_OVERLAY", &HIDE_OVERLAY},
             {"LAUNCH_ARGUMENTS", &LAUNCH_ARGUMENTS},
-            {"FORCE_LNY2_SUPPORT", &FORCE_LNY2_SUPPORT},
+            {"FORCE_AMS110_SUPPORT", &FORCE_AMS110_SUPPORT},
             {"QUICK_LAUNCH", &QUICK_LAUNCH},
             {"BOOT_COMMANDS", &BOOT_COMMANDS},
             {"EXIT_COMMANDS", &EXIT_COMMANDS},
@@ -1327,8 +1340,16 @@ namespace ult {
             {"NOTICE", &NOTICE},
             {"UTILIZES", &UTILIZES},
 
-            {"MEMORY_EXPANSION", &MEMORY_EXPANSION},
-            {"REBOOT_REQUIRED", &REBOOT_REQUIRED},
+            {"OVERLAY_MEMORY", &OVERLAY_MEMORY},
+            {"NOT_ENOUGH_MEMORY", &NOT_ENOUGH_MEMORY},
+            {"WALLPAPER_SUPPORT_DISABLED", &WALLPAPER_SUPPORT_DISABLED},
+            {"SOUND_SUPPORT_DISABLED", &SOUND_SUPPORT_DISABLED},
+            {"WALLPAPER_SUPPORT_ENABLED", &WALLPAPER_SUPPORT_ENABLED},
+            {"SOUND_SUPPORT_ENABLED", &SOUND_SUPPORT_ENABLED},
+            {"EXIT_OVERLAY_SYSTEM", &EXIT_OVERLAY_SYSTEM},
+
+            //{"MEMORY_EXPANSION", &MEMORY_EXPANSION},
+            //{"REBOOT_REQUIRED", &REBOOT_REQUIRED},
             {"LOCAL_IP", &LOCAL_IP},
             {"WALLPAPER", &WALLPAPER},
             {"THEME", &THEME},
@@ -1373,10 +1394,14 @@ namespace ult {
 
             {"ULTRAHAND_HAS_STARTED", &ULTRAHAND_HAS_STARTED},
             {"NEW_UPDATE_IS_AVAILABLE", &NEW_UPDATE_IS_AVAILABLE},
-            {"REBOOT_IS_REQUIRED", &REBOOT_IS_REQUIRED},
-            {"HOLD_A_TO_DELETE", &HOLD_A_TO_DELETE},
+            //{"REBOOT_IS_REQUIRED", &REBOOT_IS_REQUIRED},
+            //{"HOLD_A_TO_DELETE", &HOLD_A_TO_DELETE},
+            {"DELETE_PACKAGE", &DELETE_PACKAGE},
+            {"DELETE_OVERLAY", &DELETE_OVERLAY},
             {"SELECTION_IS_EMPTY", &SELECTION_IS_EMPTY},
             {"FORCED_SUPPORT_WARNING", &FORCED_SUPPORT_WARNING},
+            {"TASK_IS_COMPLETE", &TASK_IS_COMPLETE},
+            {"TASK_HAS_FAILED", &TASK_HAS_FAILED},
 
             //{"PACKAGE_VERSIONS", &PACKAGE_VERSIONS},
             //{"PROGRESS_ANIMATION", &PROGRESS_ANIMATION},
@@ -1574,6 +1599,7 @@ namespace ult {
             {"SYSPATCH", &SYSPATCH},
             #endif
 
+            {"SYSTEM_RAM", &SYSTEM_RAM},
             {"FREE", &FREE},
             
             {"DEFAULT_CHAR_WIDTH", &DEFAULT_CHAR_WIDTH},
@@ -2399,9 +2425,114 @@ namespace ult {
     
     bool cleanVersionLabels, hideOverlayVersions, hidePackageVersions, useLibultrahandTitles, useLibultrahandVersions, usePackageTitles, usePackageVersions;
     
+
+
+        
+    // Helper function to convert MB to bytes
+    u64 mbToBytes(u32 mb) {
+        return static_cast<u64>(mb) * 0x100000;
+    }
+    
+    // Helper function to convert bytes to MB
+    u32 bytesToMB(u64 bytes) {
+        return static_cast<u32>(bytes / 0x100000);
+    }
+    
+
+    // Helper function to get version-appropriate default heap size
+    static OverlayHeapSize getDefaultHeapSize() {
+        if (hosversionAtLeast(21, 0, 0)) {
+            return OverlayHeapSize::Size_4MB;  // HOS 21.0.0+
+        } else if (hosversionAtLeast(20, 0, 0)) {
+            return OverlayHeapSize::Size_6MB;  // HOS 20.0.0+
+        } else {
+            return OverlayHeapSize::Size_8MB;  // Older versions
+        }
+    }
+    
+    // Implementation
+    OverlayHeapSize getCurrentHeapSize() {
+        // Fast path: return cached value if already loaded
+        if (heapSizeCache.initialized) {
+            return heapSizeCache.cachedSize;
+        }
+        
+        // Slow path: read from file (only happens once)
+        FILE* f = fopen(ult::OVL_HEAP_CONFIG_PATH.c_str(), "rb");
+        if (!f) {
+            // No config file - use version-specific default
+            heapSizeCache.cachedSize = getDefaultHeapSize();
+            heapSizeCache.initialized = true;
+            return heapSizeCache.cachedSize;
+        }
+        
+        u64 size;
+        if (fread(&size, sizeof(size), 1, f) == 1) {
+            constexpr u64 twoMB = 0x200000;
+            // Only accept multiples of 2MB, excluding 2MB itself
+            if (size != twoMB && size % twoMB == 0) {
+                heapSizeCache.cachedSize = static_cast<OverlayHeapSize>(size);
+                fclose(f);
+                heapSizeCache.initialized = true;
+                return heapSizeCache.cachedSize;
+            }
+        }
+        
+        // Invalid or no data in config - use version-specific default
+        fclose(f);
+        heapSizeCache.cachedSize = getDefaultHeapSize();
+        heapSizeCache.initialized = true;
+        return heapSizeCache.cachedSize;
+    }
+    
+    // Update the global default too
+    OverlayHeapSize currentHeapSize = getDefaultHeapSize();
+    
+    bool setOverlayHeapSize(OverlayHeapSize heapSize) {
+        ult::createDirectory(ult::NX_OVLLOADER_PATH);
+        
+        FILE* f = fopen(ult::OVL_HEAP_CONFIG_PATH.c_str(), "wb");
+        if (!f) return false;
+        
+        const u64 size = static_cast<u64>(heapSize);
+        const bool success = (fwrite(&size, sizeof(size), 1, f) == 1);
+        fclose(f);
+        
+        // Update cache on successful write
+        if (success) {
+            heapSizeCache.cachedSize = heapSize;
+            heapSizeCache.initialized = true;
+        }
+        
+        return success;
+    }
+    
+    
+    // Implementation
+    bool requestOverlayExit() {
+        ult::createDirectory(ult::NX_OVLLOADER_PATH);
+        
+        FILE* f = fopen(ult::OVL_EXIT_FLAG_PATH.c_str(), "wb");
+        if (!f) return false;
+        
+        // Write a single byte (flag file just needs to exist)
+        u8 flag = 1;
+        bool success = (fwrite(&flag, 1, 1, f) == 1);
+        fclose(f);
+
+
+        deleteFileOrDirectory(NOTIFICATIONS_FLAG_FILEPATH);
+        
+        return success;
+    }
+
+
     const std::string loaderInfo = envGetLoaderInfo();
-    const std::string loaderTitle = extractTitle(loaderInfo);
-    const bool expandedMemory = (loaderTitle == "nx-ovlloader+");
+    std::string loaderTitle = extractTitle(loaderInfo);
+
+    bool expandedMemory = false;
+    bool furtherExpandedMemory = false;
+    bool limitedMemory = false;
     
     std::string versionLabel;
     
@@ -2435,9 +2566,10 @@ namespace ult {
     
     
     // Number of renderer threads to use
-    const unsigned numThreads = expandedMemory ? 4 : 0;
+    const unsigned numThreads = 4;//expandedMemory ? 4 : 0;
     std::vector<std::thread> renderThreads(numThreads);
-    const s32 bmpChunkSize = (numThreads > 0) ? ((720 + numThreads - 1) / numThreads) : 0;
+
+    const s32 bmpChunkSize = ((720 + numThreads - 1) / numThreads);
     std::atomic<s32> currentRow;
     
     //std::atomic<unsigned int> barrierCounter{0};

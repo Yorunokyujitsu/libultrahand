@@ -18,7 +18,7 @@
  *   altered or removed.
  *
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2024 ppkantorski
+ *  Copyright (c) 2023-2025 ppkantorski
  ********************************************************************************/
 
 
@@ -232,7 +232,7 @@ namespace ult {
     //bool progressAnimation = false;
     extern bool disableTransparency;
     //bool useCustomWallpaper = false;
-    extern bool useMemoryExpansion;
+    //extern bool useMemoryExpansion;
     extern bool useOpaqueScreenshots;
     
     extern std::atomic<bool> onTrackBar;
@@ -376,7 +376,7 @@ namespace ult {
     extern std::string HIDE_OVERLAY;
     extern std::string HIDE_PACKAGE;
     extern std::string LAUNCH_ARGUMENTS;
-    extern std::string FORCE_LNY2_SUPPORT;
+    extern std::string FORCE_AMS110_SUPPORT;
     extern std::string QUICK_LAUNCH;
     extern std::string BOOT_COMMANDS;
     extern std::string EXIT_COMMANDS;
@@ -432,8 +432,16 @@ namespace ult {
     extern std::string NOTICE;
     extern std::string UTILIZES;
 
-    extern std::string MEMORY_EXPANSION;
-    extern std::string REBOOT_REQUIRED;
+    extern std::string OVERLAY_MEMORY;
+    extern std::string NOT_ENOUGH_MEMORY;
+    extern std::string WALLPAPER_SUPPORT_DISABLED;
+    extern std::string SOUND_SUPPORT_DISABLED;
+    extern std::string WALLPAPER_SUPPORT_ENABLED;
+    extern std::string SOUND_SUPPORT_ENABLED;
+    extern std::string EXIT_OVERLAY_SYSTEM;
+
+    //extern std::string MEMORY_EXPANSION;
+    //extern std::string REBOOT_REQUIRED;
     extern std::string LOCAL_IP;
     extern std::string WALLPAPER;
     extern std::string THEME;
@@ -478,10 +486,15 @@ namespace ult {
 
     extern std::string ULTRAHAND_HAS_STARTED;
     extern std::string NEW_UPDATE_IS_AVAILABLE;
-    extern std::string REBOOT_IS_REQUIRED;
-    extern std::string HOLD_A_TO_DELETE;
+    //extern std::string REBOOT_IS_REQUIRED;
+    //extern std::string HOLD_A_TO_DELETE;
+
+    extern std::string DELETE_PACKAGE;
+    extern std::string DELETE_OVERLAY;
     extern std::string SELECTION_IS_EMPTY;
     extern std::string FORCED_SUPPORT_WARNING;
+    extern std::string TASK_IS_COMPLETE;
+    extern std::string TASK_HAS_FAILED;
 
     //extern std::string PACKAGE_VERSIONS;
     //extern std::string PROGRESS_ANIMATION;
@@ -679,6 +692,7 @@ namespace ult {
     extern std::string SYSPATCH;
     #endif
 
+    extern std::string SYSTEM_RAM;
     extern std::string FREE;
 
     extern std::string DEFAULT_CHAR_WIDTH;
@@ -908,9 +922,44 @@ namespace ult {
     
     extern bool cleanVersionLabels, hideOverlayVersions, hidePackageVersions, useLibultrahandTitles, useLibultrahandVersions, usePackageTitles, usePackageVersions;
     
+
+
+    // nx-ovlloader settings
+    enum class OverlayHeapSize : u64 {
+        Size_4MB = 0x400000,
+        Size_6MB = 0x600000,
+        Size_8MB = 0x800000
+    };
+    
+    // Static cache
+    static struct {
+        bool initialized = false;
+        OverlayHeapSize cachedSize = OverlayHeapSize::Size_6MB;
+        u64 customSizeMB = 0;  // NEW: store custom size in MB
+    } heapSizeCache;
+    
+
+    // Helper function to convert MB to bytes
+    extern u64 mbToBytes(u32 mb);
+    
+    // Helper function to convert bytes to MB
+    extern u32 bytesToMB(u64 bytes);
+
+    // Implementation
+    OverlayHeapSize getCurrentHeapSize();
+    
+    extern OverlayHeapSize currentHeapSize;
+    
+    bool setOverlayHeapSize(OverlayHeapSize heapSize);
+    
+    // Implementation
+    bool requestOverlayExit();
+
     extern const std::string loaderInfo;
-    extern const std::string loaderTitle;
-    extern const bool expandedMemory;
+    extern std::string loaderTitle;
+    extern bool expandedMemory;
+    extern bool furtherExpandedMemory;
+    extern bool limitedMemory;
     
     extern std::string versionLabel;
     
