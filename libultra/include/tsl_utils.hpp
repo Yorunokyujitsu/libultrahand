@@ -612,6 +612,9 @@ namespace ult {
     extern std::string APPLET_MEMORY_KEY;
     extern std::string APPLET_HB_MENU_ICON;
     extern std::string APPLET_HB_MENU_KEY;
+    extern std::string S_LANG_PATCH;
+    extern std::string S_TRANSLATE;
+    extern std::string S_LANG;
     extern std::string APPLET_ALBUM;
     extern std::string APPLET_USER;
     extern std::string APPLET_KEY_HOLD;

@@ -694,6 +694,9 @@ namespace ult {
     std::string APPLET_MEMORY_KEY = "기본:  (앨범) +  홀드";
     std::string APPLET_HB_MENU_ICON = "진입 아이콘";
     std::string APPLET_HB_MENU_KEY = "진입 커맨드";
+    std::string S_LANG_PATCH = "한글 패치";
+    std::string S_TRANSLATE = "번역 업데이트";
+    std::string S_LANG = "ko";
     std::string APPLET_ALBUM = "앨범";
     std::string APPLET_USER = "유저";
     std::string APPLET_KEY_HOLD = "홀드";
@@ -1078,6 +1081,9 @@ namespace ult {
         APPLET_MEMORY_KEY = "기본:  (앨범) +  홀드";
         APPLET_HB_MENU_ICON = "진입 아이콘";
         APPLET_HB_MENU_KEY = "진입 커맨드";
+        S_LANG_PATCH = "한글 패치";
+        S_TRANSLATE = "번역 업데이트";
+        S_LANG = "ko";
         APPLET_ALBUM = "앨범";
         APPLET_USER = "유저";
         APPLET_KEY_HOLD = "홀드";
@@ -1519,6 +1525,9 @@ namespace ult {
             {"APPLET_MEMORY_KEY", &APPLET_MEMORY_KEY},
             {"APPLET_HB_MENU_ICON", &APPLET_HB_MENU_ICON},
             {"APPLET_HB_MENU_KEY", &APPLET_HB_MENU_KEY},
+            {"S_LANG_PATCH", &S_LANG_PATCH},
+            {"S_TRANSLATE", &S_TRANSLATE},
+            {"S_LANG", &S_LANG},
             {"APPLET_ALBUM", &APPLET_ALBUM},
             {"APPLET_USER", &APPLET_USER},
             {"APPLET_KEY_HOLD", &APPLET_KEY_HOLD},
@@ -1763,9 +1772,28 @@ namespace ult {
         else {
             // Direct comparison for launcher replacements
             switch (text.length()) {
+                case 5:
+                    if (text == "LAKKA") {
+                        text = LAKKA;
+                    }
+                    break;
                 case 6:
                     if (text == "Reboot") {
                         text = REBOOT;
+                    }
+                    else if (text == "UBUNTU") {
+                        text = UBUNTU;
+                    }
+                    break;
+                case 7:
+                    if (text == "CFWBOOT") {
+                        text = CFWBOOT;
+                    }
+                    else if (text == "OFWBOOT") {
+                        text = OFWBOOT;
+                    }
+                    else if (text == "ANDROID") {
+                        text = ANDROID;
                     }
                     break;
                 case 8:
