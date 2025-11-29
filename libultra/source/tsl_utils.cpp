@@ -872,7 +872,7 @@ namespace ult {
         HIDE_OVERLAY = "오버레이 숨김";
         HIDE_PACKAGE = "패키지 숨김";
         LAUNCH_ARGUMENTS = "인수 실행";
-        FORCE_LNY2_SUPPORT = "AMS110 강제 지원";
+        FORCE_AMS110_SUPPORT = "AMS110 강제 지원";
         QUICK_LAUNCH = "빠른 실행";
         BOOT_COMMANDS = "Boot 커맨드";
         EXIT_COMMANDS = "Exit 커맨드";
