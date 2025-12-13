@@ -66,6 +66,7 @@ namespace ult {
         std::string color;
         std::string show_version;
         std::string show_widget;
+        std::string override;
         
         void clear() {
             title.clear();
@@ -77,6 +78,7 @@ namespace ult {
             color.clear();
             show_version.clear();
             show_widget.clear();
+            override.clear();
         }
     };
     
