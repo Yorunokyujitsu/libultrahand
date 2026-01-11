@@ -13,7 +13,7 @@
  *   of the project's documentation and must remain intact.
  * 
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2023-2025 ppkantorski
+ *  Copyright (c) 2023-2026 ppkantorski
  ********************************************************************************/
 
 #pragma once
@@ -66,6 +66,7 @@ namespace ult {
         std::string color;
         std::string show_version;
         std::string show_widget;
+        std::string override;
         
         void clear() {
             title.clear();
@@ -77,6 +78,7 @@ namespace ult {
             color.clear();
             show_version.clear();
             show_widget.clear();
+            override.clear();
         }
     };
     
