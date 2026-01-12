@@ -14,7 +14,7 @@
  *   of the project's documentation and must remain intact.
  * 
  *  Licensed under both GPLv2 and CC-BY-4.0
- *  Copyright (c) 2023-2025 ppkantorski
+ *  Copyright (c) 2023-2026 ppkantorski
  ********************************************************************************/
 
 #include <ini_funcs.hpp>
@@ -89,7 +89,8 @@ namespace ult {
             {";credits=", &packageHeader.credits},
             {";color=", &packageHeader.color},
             {";show_version=", &packageHeader.show_version},
-            {";show_widget=", &packageHeader.show_widget}
+            {";show_widget=", &packageHeader.show_widget},
+            {";override=", &packageHeader.override}
         };
         
         int fieldsFound = 0;
