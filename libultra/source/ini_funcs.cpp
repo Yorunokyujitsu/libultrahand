@@ -80,7 +80,8 @@ namespace ult {
             {";credits=", &packageHeader.credits},
             {";color=", &packageHeader.color},
             {";show_version=", &packageHeader.show_version},
-            {";show_widget=", &packageHeader.show_widget}
+            {";show_widget=", &packageHeader.show_widget},
+            {";override=", &packageHeader.override}
         };
         
         int fieldsFound = 0;

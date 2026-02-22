@@ -342,8 +342,9 @@ namespace ult {
         { HidNpadButton_Right, "DRIGHT", "\uE0EE" }, { HidNpadButton_Down, "DDOWN", "\uE0EC" },
         { HidNpadButton_A, "A", "\uE0E0" }, { HidNpadButton_B, "B", "\uE0E1" },
         { HidNpadButton_X, "X", "\uE0E2" }, { HidNpadButton_Y, "Y", "\uE0E3" },
-        { HidNpadButton_StickL, "LS", "\uE08A" }, { HidNpadButton_StickR, "RS", "\uE08B" },
-        { HidNpadButton_Minus, "MINUS", "\uE0B6" }, { HidNpadButton_Plus, "PLUS", "\uE0B5" }
+        // ASAP: Change button style.
+        { HidNpadButton_StickL, "LS", "\uE104" }, { HidNpadButton_StickR, "RS", "\uE105" },
+        { HidNpadButton_Minus, "MINUS", "\uE0F2" }, { HidNpadButton_Plus, "PLUS", "\uE0F1" }
     }};
 
     std::unordered_map<std::string, std::string> createButtonCharMap() {
@@ -548,9 +549,217 @@ namespace ult {
     std::string TASK_IS_COMPLETE;
     std::string TASK_HAS_FAILED;
     std::string REBOOT_TO;
+    std::string CFWBOOT;
+    std::string OFWBOOT;
+    std::string ANDROID;
+    std::string LAKKA;
+    std::string UBUNTU;
     std::string REBOOT;
     std::string SHUTDOWN;
+
+    /* ASAP Packages */
+    std::string UPDATE_ASAP_1;
+    std::string UPDATE_ASAP_2;
+    std::string UPDATE_ASAP_3;
+    std::string UPDATE_ASAP_4;
+    // Informations
+    std::string CFWBOOT_TITLE;
+    std::string HEKATE_TITLE;
+    std::string L4T_TITLE;
+    std::string VOLUME_INFO;
+    std::string LAUNCHER_INFO;
+    std::string CFWBOOT_INFO;
+    std::string HEKATE_INFO;
     std::string BOOT_ENTRY;
+    // Configs
+    std::string MAINMENU_INFO;
+    std::string INFO;
+    std::string ABOUT_INFO;
+    std::string OLD_DEVICE;
+    std::string NEW_DEVICE;
+    std::string DF_THEME;
+    std::string UPDATE_ULTRA_INFO;
+    std::string UPDATE_TEST_WARN;
+    std::string HIGHLIGHT_LINE;
+    std::string UPDATE_TEST_INFO;
+    std::string UPDATE_TEST_NOTICE;
+    // ETC.
+    std::string OVERRIDE_SELECTION;
+    std::string AUTO_SELECTION;
+    // Package-System Clock+
+    std::string ENABLED;
+    std::string SCPLUS_INFO;
+    std::string SC_STATUS;
+    std::string LDR_TOOL;
+    std::string LDR_INFO;
+    std::string TOOL_WARNING_1;
+    std::string TOOL_WARNING_2;
+    std::string CPU_VOLTAGE;
+    std::string CPU_INFO;
+    std::string CPU_CHART;
+    std::string USED;
+    // Package-Extra Setting+
+    std::string ES_DISABLED;
+    std::string CD_LAUNCHER;
+    std::string INSTALL_PATH;
+    std::string INSTALL_VER;
+    std::string RBOOT_OPTION;
+    std::string CD_LAUNCHER_INFO;
+    std::string AND_LCR_INFO;
+    std::string UBU_LCR_INFO;
+    std::string SET_OS_NAND;
+    std::string REBOOT_BOOTLOADER;
+    std::string USB_HS_INFO;
+    std::string DDR_INFO;
+    std::string UNSURE_INFO;
+    std::string SET_UBU_VER;
+    std::string EXTRA_SETTING;
+    std::string CFW_CFG;
+    std::string CFW_CFG_INFO;
+    std::string DEFAULT_NAND;
+    std::string DEFAULT_NAND_INFO;
+    std::string NO_EMUNAND;
+    std::string ADD_ENTRY;
+    std::string ADD_ENTRY_INFO;
+    std::string MOON_LAUNCHER;
+    std::string MOON_ENTRY;
+    std::string MOON_LAUNCHER_INFO;
+    std::string MOON_LAUNCHER_WARN_1;
+    std::string MOON_LAUNCHER_WARN_2;
+    std::string MOON_CFW;
+    std::string MOON_STOCK;
+    std::string MOON_ANDROID;
+    std::string MOON_LAKKA;
+    std::string MOON_UBUNTU;
+    std::string SYSTEM_CFG;
+    std::string SYSTEM_CFG_INFO;
+    std::string HEKATE_BOOT;
+    std::string HEKATE_BOOT_INFO;
+    std::string HEKATE_BACKLIGHT_INFO;
+    std::string HEKATE_BACKLIGHT;
+    std::string AUTO_HOS_OFF_SEC;
+    std::string AUTO_HOS_OFF_VAL;
+    std::string HEKATE_AUTO_HOS_OFF;
+    std::string BOOT_WAIT_SEC;
+    std::string BOOT_WAIT_VAL;
+    std::string HEKATE_BOOT_WAIT;
+    std::string BOOT_WAIT_SECOND;
+    std::string AUTOBOOT_CFW_SEC;
+    std::string AUTOBOOT_CFW_VAL;
+    std::string HEKATE_AUTOBOOT;
+    std::string SYSTEM_PAGE;
+    std::string DMNT_CHEAT;
+    std::string DMNT_TOGGLE;
+    std::string NO_GC_INFO;
+    std::string NO_GC_WARN;
+    std::string NO_GC;
+    std::string REC_INFO;
+    std::string REC_WARN;
+    std::string SYSMMC_ONLY;
+    std::string ENABLED_EMUMMC;
+    std::string EXOSPHERE_INFO;
+    std::string EXOSPHERE;
+    std::string DNS_INFO;
+    std::string DNS_MITM;
+    std::string APPLY_RESET_SEC;
+    std::string APPLY_RESET_VAL;
+    std::string APPLY_CFG;
+    std::string RESET_CFG;
+    std::string HB_MENU;
+    std::string HB_MENU_INFO;
+    std::string FULL_MEMORY;
+    std::string FULL_MEMORY_INFO;
+    std::string FULL_MEMORY_REC;
+    std::string FULL_MEMORY_FORWARDER_VAL;
+    std::string FULL_MEMORY_FORWARDER_CTN;
+    std::string FULL_MEMORY_KEY;
+    std::string APPLET_MEMORY;
+    std::string APPLET_MEMORY_INFO;
+    std::string APPLET_MEMORY_VAL;
+    std::string APPLET_MEMORY_KEY;
+    std::string APPLET_HB_MENU_ICON;
+    std::string APPLET_HB_MENU_KEY;
+    std::string S_LANG_PATCH;
+    std::string S_TRANSLATE;
+    std::string S_LANG;
+    std::string APPLET_ALBUM;
+    std::string APPLET_USER;
+    std::string APPLET_KEY_HOLD;
+    std::string APPLET_KEY_CLICK;
+    std::string SD_CLEANUP;
+    std::string SD_CLEANUP_INFO;
+    std::string NORMAL_DEVICE;
+    std::string PATCH_DEVICE;
+    std::string RAM_PATCH_WARN;
+    std::string RAM_PATCH;
+    // Package-Quick Guide+
+    std::string QUICK_GUIDE_INFO;
+    std::string QUICK_GUIDE;
+    std::string KEYMAP_INFO;
+    std::string KEY_MOVE;
+    std::string KEY_MENU;
+    std::string KEY_SELECT;
+    std::string KEYGAP_1;
+    std::string KEYGAP_2;
+    std::string KEYGAP_3;
+    std::string PACK_INFO;
+    std::string USEFUL;
+    std::string HIDE_SPHAIRA;
+    std::string FORWARDER_SPHAIRA;
+    std::string APP_INSTALL;
+    std::string PC_INSTALL;
+    std::string FTP_INSTALL;
+    std::string MTP_INSTALL;
+    std::string USB_INSTALL;
+    std::string HDD_INSTALL_1;
+    std::string HDD_INSTALL_2;
+    std::string ERROR_INFO;
+    std::string ALBUM_INFO;
+    std::string ALBUM_ERROR_1;
+    std::string ALBUM_ERROR_2;
+    std::string CPUDEAD_INFO;
+    std::string CPU_ERROR;
+    std::string SYSTEM_ERROR;
+    std::string MODULE_ERROR;
+    std::string MODULE_INFO_1;
+    std::string MODULE_INFO_2;
+    std::string MODULE_INFO_3;
+    std::string MODULE_INFO_4;
+    std::string SYSNAND_INFO;
+    std::string EMUNAND_INFO;
+    std::string NORMAL_ERROR;
+    std::string APP_MODULE_ERROR;
+    std::string SWITCH_MODULE_ERROR;
+    std::string PREV_PAGE;
+    std::string NEXT_PAGE;
+    std::string VER_ERR;
+    std::string SD_ERR;
+    std::string STORAGE_ERR;
+    std::string MISC_ERR;
+    std::string NSS_ERR;
+    std::string SERVER_ERR;
+    std::string NETWORK_ERR;
+    std::string FORWARDER_ERR;
+    std::string FORWARDER_INFO;
+    std::string APP_ERR;
+    std::string APP_MODULE;
+    std::string SCROLL;
+    std::string SWITCH_MODULE;
+    // Overlays-Custom infomation
+    std::string OVLSYSMODULE;
+    std::string EDIZON;
+    std::string EMUIIBO;
+    std::string FIZEAU;
+    std::string NXFANCONTROL;
+    std::string FPSLOCKER;
+    std::string LDNMITM;
+    std::string QUICKNTP;
+    std::string REVERSENX;
+    std::string STATUSMONITOR;
+    std::string STUDIOUSPANCAKE;
+    std::string SYSCLK;
+    std::string SYSDVR;
+    std::string SYSPATCH;
     #endif
 
     std::string INCOMPATIBLE_WARNING;
@@ -617,195 +826,402 @@ namespace ult {
 
     static constexpr LangEntry LANG_TABLE[] = {
         #if IS_LAUNCHER_DIRECTIVE
-        {&ENGLISH,                    "ENGLISH",                    "English"},
-        {&SPANISH,                    "SPANISH",                    "Spanish"},
-        {&FRENCH,                     "FRENCH",                     "French"},
-        {&GERMAN,                     "GERMAN",                     "German"},
-        {&JAPANESE,                   "JAPANESE",                   "Japanese"},
-        {&KOREAN,                     "KOREAN",                     "Korean"},
-        {&ITALIAN,                    "ITALIAN",                    "Italian"},
-        {&DUTCH,                      "DUTCH",                      "Dutch"},
-        {&PORTUGUESE,                 "PORTUGUESE",                 "Portuguese"},
-        {&RUSSIAN,                    "RUSSIAN",                    "Russian"},
-        {&UKRAINIAN,                  "UKRAINIAN",                  "Ukrainian"},
-        {&POLISH,                     "POLISH",                     "Polish"},
-        {&SIMPLIFIED_CHINESE,         "SIMPLIFIED_CHINESE",         "Simplified Chinese"},
-        {&TRADITIONAL_CHINESE,        "TRADITIONAL_CHINESE",        "Traditional Chinese"},
-        {&OVERLAYS,                   "OVERLAYS",                   "Overlays"},
-        {&OVERLAYS_ABBR,              "OVERLAYS_ABBR",              "Overlays"},
-        {&OVERLAY,                    "OVERLAY",                    "Overlay"},
+        {&ENGLISH,                    "ENGLISH",                    "영어"},
+        {&SPANISH,                    "SPANISH",                    "스페인어"},
+        {&FRENCH,                     "FRENCH",                     "프랑스어"},
+        {&GERMAN,                     "GERMAN",                     "독일어"},
+        {&JAPANESE,                   "JAPANESE",                   "일본어"},
+        {&KOREAN,                     "KOREAN",                     "한국어"},
+        {&ITALIAN,                    "ITALIAN",                    "이탈리아어"},
+        {&DUTCH,                      "DUTCH",                      "네덜란드어"},
+        {&PORTUGUESE,                 "PORTUGUESE",                 "포루투갈어"},
+        {&RUSSIAN,                    "RUSSIAN",                    "러시아어"},
+        {&UKRAINIAN,                  "UKRAINIAN",                  "우크라이나어"},
+        {&POLISH,                     "POLISH",                     "폴란드어"},
+        {&SIMPLIFIED_CHINESE,         "SIMPLIFIED_CHINESE",         "중국어 (간체)"},
+        {&TRADITIONAL_CHINESE,        "TRADITIONAL_CHINESE",        "중국어 (번체)"},
+        {&OVERLAYS,                   "OVERLAYS",                   "오버레이"},
+        {&OVERLAYS_ABBR,              "OVERLAYS_ABBR",              "오버레이"},
+        {&OVERLAY,                    "OVERLAY",                    "오버레이"},
         {&HIDDEN_OVERLAYS,            "HIDDEN_OVERLAYS",            "Hidden Overlays"},
-        {&PACKAGES,                   "PACKAGES",                   "Packages"},
-        {&PACKAGE,                    "PACKAGE",                    "Package"},
-        {&HIDDEN_PACKAGES,            "HIDDEN_PACKAGES",            "Hidden Packages"},
-        {&HIDDEN,                     "HIDDEN",                     "Hidden"},
-        {&HIDE_OVERLAY,               "HIDE_OVERLAY",               "Hide Overlay"},
-        {&HIDE_PACKAGE,               "HIDE_PACKAGE",               "Hide Package"},
-        {&LAUNCH_ARGUMENTS,           "LAUNCH_ARGUMENTS",           "Launch Arguments"},
-        {&FORCE_AMS110_SUPPORT,       "FORCE_AMS110_SUPPORT",       "Force AMS110+ Support"},
-        {&QUICK_LAUNCH,               "QUICK_LAUNCH",               "Quick Launch"},
-        {&BOOT_COMMANDS,              "BOOT_COMMANDS",              "Boot Commands"},
-        {&EXIT_COMMANDS,              "EXIT_COMMANDS",              "Exit Commands"},
-        {&ERROR_LOGGING,              "ERROR_LOGGING",              "Error Logging"},
-        {&COMMANDS,                   "COMMANDS",                   "Commands"},
-        {&SETTINGS,                   "SETTINGS",                   "Settings"},
-        {&FAVORITE,                   "FAVORITE",                   "Favorite"},
-        {&MAIN_SETTINGS,              "MAIN_SETTINGS",              "Main Settings"},
-        {&UI_SETTINGS,                "UI_SETTINGS",                "UI Settings"},
-        {&WIDGET,                     "WIDGET",                     "Widget"},
-        {&WIDGET_ITEMS,               "WIDGET_ITEMS",               "Widget Items"},
-        {&WIDGET_SETTINGS,            "WIDGET_SETTINGS",            "Widget Settings"},
-        {&CLOCK,                      "CLOCK",                      "Clock"},
-        {&BATTERY,                    "BATTERY",                    "Battery"},
-        {&SOC_TEMPERATURE,            "SOC_TEMPERATURE",            "SOC Temperature"},
-        {&PCB_TEMPERATURE,            "PCB_TEMPERATURE",            "PCB Temperature"},
-        {&BACKDROP,                   "BACKDROP",                   "Backdrop"},
-        {&DYNAMIC_COLORS,             "DYNAMIC_COLORS",             "Dynamic Colors"},
-        {&CENTER_ALIGNMENT,           "CENTER_ALIGNMENT",           "Center Alignment"},
-        {&EXTENDED_BACKDROP,          "EXTENDED_BACKDROP",          "Extended Backdrop"},
-        {&MISCELLANEOUS,              "MISCELLANEOUS",              "Miscellaneous"},
-        {&MENU_SETTINGS,              "MENU_SETTINGS",              "Menu Settings"},
-        {&USER_GUIDE,                 "USER_GUIDE",                 "User Guide"},
-        {&SHOW_HIDDEN,                "SHOW_HIDDEN",                "Show Hidden"},
-        {&SHOW_DELETE,                "SHOW_DELETE",                "Show Delete"},
-        {&SHOW_UNSUPPORTED,           "SHOW_UNSUPPORTED",           "Show Unsupported"},
-        {&PAGE_SWAP,                  "PAGE_SWAP",                  "Page Swap"},
-        {&RIGHT_SIDE_MODE,            "RIGHT_SIDE_MODE",            "Right-side Mode"},
-        {&OVERLAY_VERSIONS,           "OVERLAY_VERSIONS",           "Overlay Versions"},
-        {&PACKAGE_VERSIONS,           "PACKAGE_VERSIONS",           "Package Versions"},
-        {&CLEAN_VERSIONS,             "CLEAN_VERSIONS",             "Clean Versions"},
-        {&KEY_COMBO,                  "KEY_COMBO",                  "Key Combo"},
-        {&MODE,                       "MODE",                       "Mode"},
-        {&LAUNCH_MODES,               "LAUNCH_MODES",               "Launch Modes"},
-        {&LANGUAGE,                   "LANGUAGE",                   "Language"},
-        {&OVERLAY_INFO,               "OVERLAY_INFO",               "Overlay Info"},
-        {&SOFTWARE_UPDATE,            "SOFTWARE_UPDATE",            "Software Update"},
-        {&UPDATE_ULTRAHAND,           "UPDATE_ULTRAHAND",           "Update Ultrahand"},
-        {&SYSTEM,                     "SYSTEM",                     "System"},
-        {&DEVICE_INFO,                "DEVICE_INFO",                "Device Info"},
-        {&FIRMWARE,                   "FIRMWARE",                   "Firmware"},
-        {&BOOTLOADER,                 "BOOTLOADER",                 "Bootloader"},
-        {&HARDWARE,                   "HARDWARE",                   "Hardware"},
-        {&MEMORY,                     "MEMORY",                     "Memory"},
-        {&VENDOR,                     "VENDOR",                     "Vendor"},
-        {&MODEL,                      "MODEL",                      "Model"},
-        {&STORAGE,                    "STORAGE",                    "Storage"},
-        {&OVERLAY_MEMORY,             "OVERLAY_MEMORY",             "Overlay Memory"},
-        {&NOT_ENOUGH_MEMORY,          "NOT_ENOUGH_MEMORY",          "Not enough memory."},
-        {&WALLPAPER_SUPPORT_DISABLED, "WALLPAPER_SUPPORT_DISABLED", "Wallpaper support disabled."},
-        {&SOUND_SUPPORT_DISABLED,     "SOUND_SUPPORT_DISABLED",     "Sound support disabled."},
-        {&WALLPAPER_SUPPORT_ENABLED,  "WALLPAPER_SUPPORT_ENABLED",  "Wallpaper support enabled."},
-        {&SOUND_SUPPORT_ENABLED,      "SOUND_SUPPORT_ENABLED",      "Sound support enabled."},
-        {&EXIT_OVERLAY_SYSTEM,        "EXIT_OVERLAY_SYSTEM",        "Exit Overlay System"},
-        {&ULTRAHAND_ABOUT,            "ULTRAHAND_ABOUT",            "Ultrahand Overlay is a customizable overlay ecosystem for overlays, commands, hotkeys, and advanced system interaction."},
+        {&PACKAGES,                   "PACKAGES",                   "Package+"},
+        {&PACKAGE,                    "PACKAGE",                    "패키지"},
+        {&HIDDEN_PACKAGES,            "HIDDEN_PACKAGES",            "숨겨진 패키지"},
+        {&HIDDEN,                     "HIDDEN",                     "숨겨진 항목"},
+        {&HIDE_OVERLAY,               "HIDE_OVERLAY",               "오버레이 숨기기"},
+        {&HIDE_PACKAGE,               "HIDE_PACKAGE",               "패키지 숨기기"},
+        {&LAUNCH_ARGUMENTS,           "LAUNCH_ARGUMENTS",           "인수 실행"},
+        {&FORCE_AMS110_SUPPORT,       "FORCE_AMS110_SUPPORT",       "버전 강제 지원"},
+        {&QUICK_LAUNCH,               "QUICK_LAUNCH",               "빠른 실행"},
+        {&BOOT_COMMANDS,              "BOOT_COMMANDS",              "Boot 커맨드"},
+        {&EXIT_COMMANDS,              "EXIT_COMMANDS",              "Exit 커맨드"},
+        {&ERROR_LOGGING,              "ERROR_LOGGING",              "오류 로깅"},
+        {&COMMANDS,                   "COMMANDS",                   "커맨드"},
+        {&SETTINGS,                   "SETTINGS",                   "설정"},
+        {&FAVORITE,                   "FAVORITE",                   "즐겨찾기"},
+        {&MAIN_SETTINGS,              "MAIN_SETTINGS",              "메인 설정"},
+        {&UI_SETTINGS,                "UI_SETTINGS",                "UI 변경"},
+        {&WIDGET,                     "WIDGET",                     "위젯"},
+        {&WIDGET_ITEMS,               "WIDGET_ITEMS",               "위젯 아이템"},
+        {&WIDGET_SETTINGS,            "WIDGET_SETTINGS",            "위젯 설정"},
+        {&CLOCK,                      "CLOCK",                      "시각"},
+        {&BATTERY,                    "BATTERY",                    "배터리"},
+        {&SOC_TEMPERATURE,            "SOC_TEMPERATURE",            "SoC 온도"},
+        {&PCB_TEMPERATURE,            "PCB_TEMPERATURE",            "PCB 온도"},
+        {&BACKDROP,                   "BACKDROP",                   "배경"},
+        {&DYNAMIC_COLORS,             "DYNAMIC_COLORS",             "동적 색상"},
+        {&CENTER_ALIGNMENT,           "CENTER_ALIGNMENT",           "위젯 가운데 정렬"},
+        {&EXTENDED_BACKDROP,          "EXTENDED_BACKDROP",          "위젯 배경 확장"},
+        {&MISCELLANEOUS,              "MISCELLANEOUS",              "기타"},
+        {&MENU_SETTINGS,              "MENU_SETTINGS",              "메뉴 설정"},
+        {&USER_GUIDE,                 "USER_GUIDE",                 "사용 설명서"},
+        {&SHOW_HIDDEN,                "SHOW_HIDDEN",                "숨김 항목 표시"},
+        {&SHOW_DELETE,                "SHOW_DELETE",                "삭제 옵션 표시"},
+        {&SHOW_UNSUPPORTED,           "SHOW_UNSUPPORTED",           "미지원 항목 표시"},
+        {&PAGE_SWAP,                  "PAGE_SWAP",                  "페이지 교체"},
+        {&RIGHT_SIDE_MODE,            "RIGHT_SIDE_MODE",            "우측 배치"},
+        {&OVERLAY_VERSIONS,           "OVERLAY_VERSIONS",           "오버레이 버전"},
+        {&PACKAGE_VERSIONS,           "PACKAGE_VERSIONS",           "패키지 버전"},
+        {&CLEAN_VERSIONS,             "CLEAN_VERSIONS",             "정리된 버전"},
+        {&KEY_COMBO,                  "KEY_COMBO",                  "키 조합"},
+        {&MODE,                       "MODE",                       "모드"},
+        {&LAUNCH_MODES,               "LAUNCH_MODES",               "모드"},
+        {&LANGUAGE,                   "LANGUAGE",                   "언어"},
+        {&OVERLAY_INFO,               "OVERLAY_INFO",               "오버레이 정보"},
+        {&SOFTWARE_UPDATE,            "SOFTWARE_UPDATE",            "업데이트"},
+        {&UPDATE_ULTRAHAND,           "UPDATE_ULTRAHAND",           "업데이트"},
+        {&SYSTEM,                     "SYSTEM",                     "시스템 정보"},
+        {&DEVICE_INFO,                "DEVICE_INFO",                "기기 상세"},
+        {&FIRMWARE,                   "FIRMWARE",                   "펌웨어"},
+        {&BOOTLOADER,                 "BOOTLOADER",                 "부트로더"},
+        {&HARDWARE,                   "HARDWARE",                   "하드웨어"},
+        {&MEMORY,                     "MEMORY",                     "메모리"},
+        {&VENDOR,                     "VENDOR",                     "제조사"},
+        {&MODEL,                      "MODEL",                      "P/N"},
+        {&STORAGE,                    "STORAGE",                    "저장소"},
+        {&OVERLAY_MEMORY,             "OVERLAY_MEMORY",             "오버레이 메모리"},
+        {&NOT_ENOUGH_MEMORY,          "NOT_ENOUGH_MEMORY",          "메모리가 부족합니다."},
+        {&WALLPAPER_SUPPORT_DISABLED, "WALLPAPER_SUPPORT_DISABLED", "배경화면 비활성화"},
+        {&SOUND_SUPPORT_DISABLED,     "SOUND_SUPPORT_DISABLED",     "사운드 비활성화"},
+        {&WALLPAPER_SUPPORT_ENABLED,  "WALLPAPER_SUPPORT_ENABLED",  "배경화면 활성화"},
+        {&SOUND_SUPPORT_ENABLED,      "SOUND_SUPPORT_ENABLED",      "사운드 활성화"},
+        {&EXIT_OVERLAY_SYSTEM,        "EXIT_OVERLAY_SYSTEM",        "오버레이 종료"},
+        {&ULTRAHAND_ABOUT,            "ULTRAHAND_ABOUT",            "Ultrahand는 명령어, 오버레이, 단축키 및 고급 시스템 상호작용을 위한 커스터마이징 시스템입니다."},
         {&ULTRAHAND_CREDITS_START,    "ULTRAHAND_CREDITS_START",    "Special thanks to "},
         {&ULTRAHAND_CREDITS_END,      "ULTRAHAND_CREDITS_END",      " and many others. ♥"},
-        {&LOCAL_IP,                   "LOCAL_IP",                   "Local IP"},
-        {&WALLPAPER,                  "WALLPAPER",                  "Wallpaper"},
-        {&THEME,                      "THEME",                      "Theme"},
-        {&SOUNDS,                     "SOUNDS",                     "Sounds"},
-        {&DEFAULT,                    "DEFAULT",                    "default"},
-        {&ROOT_PACKAGE,               "ROOT_PACKAGE",               "Root Package"},
-        {&SORT_PRIORITY,              "SORT_PRIORITY",              "Sort Priority"},
-        {&OPTIONS,                    "OPTIONS",                    "Options"},
-        {&FAILED_TO_OPEN,             "FAILED_TO_OPEN",             "Failed to open file"},
-        {&LAUNCH_COMBOS,              "LAUNCH_COMBOS",              "Launch Combos"},
-        {&STARTUP_NOTIFICATION,       "STARTUP_NOTIFICATION",       "Startup Notification"},
-        {&EXTERNAL_NOTIFICATIONS,     "EXTERNAL_NOTIFICATIONS",     "External Notifications"},
-        {&HAPTIC_FEEDBACK,            "HAPTIC_FEEDBACK",            "Haptic Feedback"},
-        {&OPAQUE_SCREENSHOTS,         "OPAQUE_SCREENSHOTS",         "Opaque Screenshots"},
-        {&PACKAGE_INFO,               "PACKAGE_INFO",               "Package Info"},
-        {&_TITLE,                     "_TITLE",                     "Title"},
-        {&_VERSION,                   "_VERSION",                   "Version"},
-        {&_CREATOR,                   "_CREATOR",                   "Creator(s)"},
-        {&_ABOUT,                     "_ABOUT",                     "About"},
-        {&_CREDITS,                   "_CREDITS",                   "Credits"},
+        {&LOCAL_IP,                   "LOCAL_IP",                   "로컬 IP"},
+        {&WALLPAPER,                  "WALLPAPER",                  "배경"},
+        {&THEME,                      "THEME",                      "테마"},
+        {&SOUNDS,                     "SOUNDS",                     "사운드"},
+        {&DEFAULT,                    "DEFAULT",                    "기본"},
+        {&ROOT_PACKAGE,               "ROOT_PACKAGE",               "기본 패키지"},
+        {&SORT_PRIORITY,              "SORT_PRIORITY",              "우선순위 정렬"},
+        {&OPTIONS,                    "OPTIONS",                    "옵션"},
+        {&FAILED_TO_OPEN,             "FAILED_TO_OPEN",             "파일 열기 실패"},
+        {&LAUNCH_COMBOS,              "LAUNCH_COMBOS",              "실행 버튼"},
+        {&STARTUP_NOTIFICATION,       "STARTUP_NOTIFICATION",       "시작 알림"},
+        {&EXTERNAL_NOTIFICATIONS,     "EXTERNAL_NOTIFICATIONS",     "외부 알림"},
+        {&HAPTIC_FEEDBACK,            "HAPTIC_FEEDBACK",            "햅틱 피드백"},
+        {&OPAQUE_SCREENSHOTS,         "OPAQUE_SCREENSHOTS",         "스크린샷 배경"},
+        {&PACKAGE_INFO,               "PACKAGE_INFO",               "패키지 정보"},
+        {&_TITLE,                     "_TITLE",                     "이름"},
+        {&_VERSION,                   "_VERSION",                   "정보"},
+        {&_CREATOR,                   "_CREATOR",                   "개발자"},
+        {&_ABOUT,                     "_ABOUT",                     "설명"},
+        {&_CREDITS,                   "_CREDITS",                   "기여자"},
         {&USERGUIDE_OFFSET,           "USERGUIDE_OFFSET",           "177"},
-        {&SETTINGS_MENU,              "SETTINGS_MENU",              "Settings Menu"},
-        {&SCRIPT_OVERLAY,             "SCRIPT_OVERLAY",             "Script Overlay"},
-        {&STAR_FAVORITE,              "STAR_FAVORITE",              "Star/Favorite"},
-        {&APP_SETTINGS,               "APP_SETTINGS",               "App Settings"},
-        {&ON_MAIN_MENU,               "ON_MAIN_MENU",               "on Main Menu"},
-        {&ON_A_COMMAND,               "ON_A_COMMAND",               "on a command"},
-        {&ON_OVERLAY_PACKAGE,         "ON_OVERLAY_PACKAGE",         "on overlay/package"},
-        {&FEATURES,                   "FEATURES",                   "Features"},
-        {&SWIPE_TO_OPEN,              "SWIPE_TO_OPEN",              "Swipe to Open"},
-        {&THEME_SETTINGS,             "THEME_SETTINGS",             "Theme Settings"},
-        {&DYNAMIC_LOGO,               "DYNAMIC_LOGO",               "Dynamic Logo"},
-        {&SELECTION_BACKGROUND,       "SELECTION_BACKGROUND",       "Selection Background"},
-        {&SELECTION_TEXT,             "SELECTION_TEXT",             "Selection Text"},
-        {&SELECTION_VALUE,            "SELECTION_VALUE",            "Selection Value"},
-        {&LIBULTRAHAND_TITLES,        "LIBULTRAHAND_TITLES",        "libultrahand Titles"},
-        {&LIBULTRAHAND_VERSIONS,      "LIBULTRAHAND_VERSIONS",      "libultrahand Versions"},
-        {&PACKAGE_TITLES,             "PACKAGE_TITLES",             "Package Titles"},
-        {&ULTRAHAND_HAS_STARTED,      "ULTRAHAND_HAS_STARTED",      "Ultrahand has started."},
-        {&ULTRAHAND_HAS_RESTARTED,    "ULTRAHAND_HAS_RESTARTED",    "Ultrahand has restarted."},
-        {&NEW_UPDATE_IS_AVAILABLE,    "NEW_UPDATE_IS_AVAILABLE",    "New update is available!"},
-        {&DELETE_PACKAGE,             "DELETE_PACKAGE",             "Delete Package"},
-        {&DELETE_OVERLAY,             "DELETE_OVERLAY",             "Delete Overlay"},
-        {&SELECTION_IS_EMPTY,         "SELECTION_IS_EMPTY",         "Selection is empty!"},
-        {&FORCED_SUPPORT_WARNING,     "FORCED_SUPPORT_WARNING",     "Forcing support can be dangerous."},
-        {&TASK_IS_COMPLETE,           "TASK_IS_COMPLETE",           "Task is complete!"},
-        {&TASK_HAS_FAILED,            "TASK_HAS_FAILED",            "Task has failed."},
-        {&REBOOT_TO,                  "REBOOT_TO",                  "Reboot To"},
-        {&REBOOT,                     "REBOOT",                     "Reboot"},
-        {&SHUTDOWN,                   "SHUTDOWN",                   "Shutdown"},
-        {&BOOT_ENTRY,                 "BOOT_ENTRY",                 "Boot Entry"},
+        {&SETTINGS_MENU,              "SETTINGS_MENU",              "설정 메뉴"},
+        {&SCRIPT_OVERLAY,             "SCRIPT_OVERLAY",             "오버레이 스크립트"},
+        {&STAR_FAVORITE,              "STAR_FAVORITE",              "즐겨찾기"},
+        {&APP_SETTINGS,               "APP_SETTINGS",               "앱 설정"},
+        {&ON_MAIN_MENU,               "ON_MAIN_MENU",               "메인 메뉴"},
+        {&ON_A_COMMAND,               "ON_A_COMMAND",               "커맨드 위에서"},
+        {&ON_OVERLAY_PACKAGE,         "ON_OVERLAY_PACKAGE",         "오버레이/패키지 위에서"},
+        {&FEATURES,                   "FEATURES",                   "이펙트"},
+        {&SWIPE_TO_OPEN,              "SWIPE_TO_OPEN",              "밀어서 열기"},
+        {&THEME_SETTINGS,             "THEME_SETTINGS",             "테마 설정"},
+        {&DYNAMIC_LOGO,               "DYNAMIC_LOGO",               "동적 로고"},
+        {&SELECTION_BACKGROUND,       "SELECTION_BACKGROUND",       "선택 배경"},
+        {&SELECTION_TEXT,             "SELECTION_TEXT",             "선택 텍스트"},
+        {&SELECTION_VALUE,            "SELECTION_VALUE",            "선택 값"},
+        {&LIBULTRAHAND_TITLES,        "LIBULTRAHAND_TITLES",        "libultrahand 제목"},
+        {&LIBULTRAHAND_VERSIONS,      "LIBULTRAHAND_VERSIONS",      "libultrahand 버전"},
+        {&PACKAGE_TITLES,             "PACKAGE_TITLES",             "패키지 제목"},
+        {&ULTRAHAND_HAS_STARTED,      "ULTRAHAND_HAS_STARTED",      "Ultrahand 시작됨"},
+        {&ULTRAHAND_HAS_RESTARTED,    "ULTRAHAND_HAS_RESTARTED",    "Ultrahand 재시작됨"},
+        {&NEW_UPDATE_IS_AVAILABLE,    "NEW_UPDATE_IS_AVAILABLE",    "새로운 버전이 있습니다!"},
+        {&DELETE_PACKAGE,             "DELETE_PACKAGE",             "패키지 삭제"},
+        {&DELETE_OVERLAY,             "DELETE_OVERLAY",             "오버레이 삭제"},
+        {&SELECTION_IS_EMPTY,         "SELECTION_IS_EMPTY",         "비어 있음"},
+        {&FORCED_SUPPORT_WARNING,     "FORCED_SUPPORT_WARNING",     "강제 지원은 위험할 수 있습니다"},
+        {&TASK_IS_COMPLETE,           "TASK_IS_COMPLETE",           "작업 완료!"},
+        {&TASK_HAS_FAILED,            "TASK_HAS_FAILED",            "작업 실패"},
+        {&REBOOT_TO,                  "REBOOT_TO",                  "다시 시작 · 시스템 종료"},
+        {&CFWBOOT,                    "CFWBOOT",                    "에뮤/시스낸드 (커펌)"},
+        {&OFWBOOT,                    "OFWBOOT",                    "시스낸드 (정펌)"},
+        {&ANDROID,                    "ANDROID",                    "Lineage (안드로이드)"},
+        {&LAKKA,                      "LAKKA",                      "Lakka (에뮬레이터)"},
+        {&UBUNTU,                     "UBUNTU",                     "Ubuntu (리눅스)"},
+        {&REBOOT,                     "REBOOT",                     "Hekate (메인 메뉴)"},
+        {&SHUTDOWN,                   "SHUTDOWN",                   "시스템 종료"},
+        {&BOOT_ENTRY,                 "BOOT_ENTRY",                 "로 재부팅, 해당 OS 설치시 사용 가능합니다"},
+        /* ASAP Packages */
+        {&UPDATE_ASAP_1,              "UPDATE_ASAP_1",              "테스터 버전을 설치합니다."},
+        {&UPDATE_ASAP_2,              "UPDATE_ASAP_2",              "Atmosphère 와 Hekate만 업데이트됩니다!"},
+        {&UPDATE_ASAP_3,              "UPDATE_ASAP_3",              "반드시 시스템 모듈을 모두 끄세요."},
+        {&UPDATE_ASAP_4,              "UPDATE_ASAP_4",              "재부팅 시, ATLAS로 자동 적용됩니다."},
+        // Informations
+        {&CFWBOOT_TITLE,              "CFWBOOT_TITLE",              "Extra Setting+"},
+        {&HEKATE_TITLE,               "HEKATE_TITLE",               "Hekate"},
+        {&L4T_TITLE,                  "L4T_TITLE",                  "L4T"},
+        {&VOLUME_INFO,                "VOLUME_INFO",                "독 모드 볼륨 조절 지원"},
+        {&LAUNCHER_INFO,              "LAUNCHER_INFO",              "재부팅 · UMS 도구"},
+        {&CFWBOOT_INFO,               "CFWBOOT_INFO",               "에서 선택한 낸드로만 커펌 부팅"},
+        {&HEKATE_INFO,                "HEKATE_INFO",                "홈 메뉴, UMS (이동식 디스크)로 재부팅"},
+        // Configs
+        {&MAINMENU_INFO,              "MAINMENU_INFO",              "시스템 확인 및 울트라핸드의 설정을 변경"},
+        {&INFO,                       "INFO",                       "정보"},
+        {&ABOUT_INFO,                 "ABOUT_INFO",                 "커스텀 패키지 테슬라 메뉴"},
+        {&OLD_DEVICE,                 "OLD_DEVICE",                 "구형"},
+        {&NEW_DEVICE,                 "NEW_DEVICE",                 "개선판"},
+        {&DF_THEME,                   "DF_THEME",                   "Black"},
+        {&UPDATE_ULTRA_INFO,          "UPDATE_ULTRA_INFO",          "다음 구성 요소를 전부 업데이트합니다"},
+        {&UPDATE_TEST_WARN,           "UPDATE_TEST_WARN",           "테스터 팩에선 오류가 발생할 수 있습니다"},
+        {&HIGHLIGHT_LINE,             "HIGHLIGHT_LINE",             "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯  　　　　　　"},
+        {&UPDATE_TEST_INFO,           "UPDATE_TEST_INFO",           "ASAP을 테스터 버전으로 교체합니다"},
+        {&UPDATE_TEST_NOTICE,         "UPDATE_TEST_NOTICE",         "다운로드 이후 자동으로 재부팅합니다"},
+        // ETC.
+        {&OVERRIDE_SELECTION,         "OVERRIDE_SELECTION",         "설정 안 함"},
+        {&AUTO_SELECTION,             "AUTO_SELECTION",             "자동"},
+        // Package-System Clock+
+        {&ENABLED,                    "ENABLED",                    "활성화"},
+        {&SCPLUS_INFO,                "SCPLUS_INFO",                "Sys-ClkOC Toolkitloader.kip 관리 도구"},
+        {&SC_STATUS,                  "SC_STATUS",                  "앱의 사용 여부 선택"},
+        {&LDR_TOOL,                   "LDR_TOOL",                   "Loader.kip 편집 도구"},
+        {&LDR_INFO,                   "LDR_INFO",                   "선택시 자동 재부팅"},
+        {&TOOL_WARNING_1,             "TOOL_WARNING_1",             "낸드에 치명적인 손상을 초래할 수 있습니다"},
+        {&TOOL_WARNING_2,             "TOOL_WARNING_2",             "시스낸드에서의 편집/사용을 피해주십시오"},
+        {&CPU_VOLTAGE,                "CPU_VOLTAGE",                "CPU 전압 허용 범위"},
+        {&CPU_INFO,                   "CPU_INFO",                   "단위: mV"},
+        {&CPU_CHART,                  "CPU_CHART",                  "　 구분"},
+        {&USED,                       "USED",                       "사용중"},
+        // Package-Extra Setting+
+        {&ES_DISABLED,                "ES_DISABLED",                "비활성화"},
+        {&CD_LAUNCHER,                "CD_LAUNCHER",                "런처 생성/제거"},
+        {&INSTALL_PATH,               "INSTALL_PATH",               "설치 경로"},
+        {&INSTALL_VER,                "INSTALL_VER",                "설치 버전"},
+        {&RBOOT_OPTION,               "RBOOT_OPTION",               "재부팅 옵션"},
+        {&CD_LAUNCHER_INFO,           "CD_LAUNCHER_INFO",           "L4T 런처의 세부 설정을 조정합니다"},
+        {&AND_LCR_INFO,               "AND_LCR_INFO",               "Android 기본 값을 생성/제거"},
+        {&UBU_LCR_INFO,               "UBU_LCR_INFO",               "Ubuntu 기본 값을 생성/제거"},
+        {&SET_OS_NAND,                "SET_OS_NAND",                "OS가 설치된 낸드를 설정"},
+        {&REBOOT_BOOTLOADER,          "REBOOT_BOOTLOADER",          "재부팅 부트로더를 선택"},
+        {&USB_HS_INFO,                "USB_HS_INFO",                "USB 3.0 지원 유무 설정"},
+        {&DDR_INFO,                   "DDR_INFO",                   "삼성 SD 카드인 경우에만 활성화"},
+        {&UNSURE_INFO,                "UNSURE_INFO",                "잘 모르는 경우 설정하지 마세요"},
+        {&SET_UBU_VER,                "SET_UBU_VER",                "설치한 Ubuntu 버전을 반드시 지정"},
+        {&EXTRA_SETTING,              "EXTRA_SETTING",              "커스텀 펌웨어 관련 설정을 진행합니다"},
+        {&CFW_CFG,                    "CFW_CFG",                    "시스템 세부 설정 편집"},
+        {&CFW_CFG_INFO,               "CFW_CFG_INFO",               "커스텀 펌웨어의 여러 기능을 설정합니다"},
+        {&DEFAULT_NAND,               "DEFAULT_NAND",               "기본 낸드"},
+        {&DEFAULT_NAND_INFO,          "DEFAULT_NAND_INFO",          "Atmosphère 부팅 낸드 설정"},
+        {&NO_EMUNAND,                 "NO_EMUNAND",                 "에뮤낸드 없음"},
+        {&ADD_ENTRY,                  "ADD_ENTRY",                  "부팅 런처"},
+        {&ADD_ENTRY_INFO,             "ADD_ENTRY_INFO",             "Hekate - Moon 런처 항목 설정"},
+        {&MOON_LAUNCHER,              "MOON_LAUNCHER",              "Moon 런처"},
+        {&MOON_ENTRY,                 "MOON_ENTRY",                 "부팅 엔트리"},
+        {&MOON_LAUNCHER_INFO,         "MOON_LAUNCHER_INFO",         "각 엔트리의 아이콘은 자동으로 설정됩니다"},
+        {&MOON_LAUNCHER_WARN_1,       "MOON_LAUNCHER_WARN_1",       "L4T를 부팅하려면 OS의 설치가 필요합니다"},
+        {&MOON_LAUNCHER_WARN_2,       "MOON_LAUNCHER_WARN_2",       "Ubuntu의 경우, 버전을 맞춰 생성하세요"},
+        {&MOON_CFW,                   "MOON_CFW",                   "기본 낸드로 설정된 커펌 (자동 생성)"},
+        {&MOON_STOCK,                 "MOON_STOCK",                 "커펌 모듈 OFF 정펌 (자동 생성)"},
+        {&MOON_ANDROID,               "MOON_ANDROID",               "안드로이드 (Lineage OS) 부팅 엔트리"},
+        {&MOON_LAKKA,                 "MOON_LAKKA",                 "Libretro 기반 Lakka 부팅 엔트리"},
+        {&MOON_UBUNTU,                "MOON_UBUNTU",                "Switchroot 포팅 LINUX 부팅 엔트리"},
+        {&SYSTEM_CFG,                 "SYSTEM_CFG",                 "시스템 설정"},
+        {&SYSTEM_CFG_INFO,            "SYSTEM_CFG_INFO",            "커펌 시스템 값 설정"},
+        {&HEKATE_BOOT,                "HEKATE_BOOT",                "부팅"},
+        {&HEKATE_BOOT_INFO,           "HEKATE_BOOT_INFO",           "시작 관련 설정을 변경합니다"},
+        {&HEKATE_BACKLIGHT_INFO,      "HEKATE_BACKLIGHT_INFO",      "홈 화면의 백라이트 밝기를 조절합니다"},
+        {&HEKATE_BACKLIGHT,           "HEKATE_BACKLIGHT",           "화면 밝기"},
+        {&AUTO_HOS_OFF_SEC,           "AUTO_HOS_OFF_SEC",           "시스템 종료 후"},
+        {&AUTO_HOS_OFF_VAL,           "AUTO_HOS_OFF_VAL",           "자동으로 깨어나지 않도록합니다"},
+        {&HEKATE_AUTO_HOS_OFF,        "HEKATE_AUTO_HOS_OFF",        "HOS 종료"},
+        {&BOOT_WAIT_SEC,              "BOOT_WAIT_SEC",              "1초 이상"},
+        {&BOOT_WAIT_VAL,              "BOOT_WAIT_VAL",              " 볼륨 입력으로 Hekate로 이동 가능"},
+        {&HEKATE_BOOT_WAIT,           "HEKATE_BOOT_WAIT",           "부팅 화면 대기 시간"},
+        {&BOOT_WAIT_SECOND,           "BOOT_WAIT_SECOND",           "초"},
+        {&AUTOBOOT_CFW_SEC,           "AUTOBOOT_CFW_SEC",           " 버튼"},
+        {&AUTOBOOT_CFW_VAL,           "AUTOBOOT_CFW_VAL",           "재기동 시 Atmosphère로 재시작합니다"},
+        {&HEKATE_AUTOBOOT,            "HEKATE_AUTOBOOT",            "자동 부팅"},
+        {&SYSTEM_PAGE,                "SYSTEM_PAGE",                "시스템"},
+        {&DMNT_CHEAT,                 "DMNT_CHEAT",                 "dmnt 치트"},
+        {&DMNT_TOGGLE,                "DMNT_TOGGLE",                "dmnt 토글 저장"},
+        {&NO_GC_INFO,                 "NO_GC_INFO",                 "게임 카드 설치를 비활성화합니다"},
+        {&NO_GC_WARN,                 "NO_GC_WARN",                 "슬립 해제시 카트리지를 인식하면 오류 발생"},
+        {&NO_GC,                      "NO_GC",                      "카트리지 차단"},
+        {&REC_INFO,                   "REC_INFO",                   " 버튼 녹화 설정을 변경합니다"},
+        {&REC_WARN,                   "REC_WARN",                   "값에 따라 녹화 시간이 변동될 수 있습니다"},
+        {&SYSMMC_ONLY,                "SYSMMC_ONLY",                "시스낸드 전용"},
+        {&ENABLED_EMUMMC,             "ENABLED_EMUMMC",             "에뮤낸드 = 기본 적용"},
+        {&EXOSPHERE_INFO,             "EXOSPHERE_INFO",             "본체의 시리얼 넘버를 변조합니다"},
+        {&EXOSPHERE,                  "EXOSPHERE",                  "시리얼 변조"},
+        {&DNS_INFO,                   "DNS_INFO",                   "닌텐도 서버와 연결을 차단합니다"},
+        {&DNS_MITM,                   "DNS_MITM",                   "서버 차단"},
+        {&APPLY_RESET_SEC,            "APPLY_RESET_SEC",            "설정 값 적용리셋"},
+        {&APPLY_RESET_VAL,            "APPLY_RESET_VAL",            "자동으로 재부팅 됩니다"},
+        {&APPLY_CFG,                  "APPLY_CFG",                  "설정 적용"},
+        {&RESET_CFG,                  "RESET_CFG",                  "기본 값으로 되돌리기"},
+        {&HB_MENU,                    "HB_MENU",                    "홈브류 설정"},
+        {&HB_MENU_INFO,               "HB_MENU_INFO",               "Sphaira 실행 버튼"},
+        {&FULL_MEMORY,                "FULL_MEMORY",                "풀 메모리 모드"},
+        {&FULL_MEMORY_INFO,           "FULL_MEMORY_INFO",           "메모리 제한 없음"},
+        {&FULL_MEMORY_REC,            "FULL_MEMORY_REC",            "권장"},
+        {&FULL_MEMORY_FORWARDER_VAL,  "FULL_MEMORY_FORWARDER_VAL",  "sphaira 열기  sphaira 아이콘으로 이동"},
+        {&FULL_MEMORY_FORWARDER_CTN,  "FULL_MEMORY_FORWARDER_CTN",  "  버튼 입력  바로가기 설치  설치"},
+        {&FULL_MEMORY_KEY,            "FULL_MEMORY_KEY",            "(타이틀) +  홀드 진입을 활성화합니다"},
+        {&APPLET_MEMORY,              "APPLET_MEMORY",              "애플릿 모드"},
+        {&APPLET_MEMORY_INFO,         "APPLET_MEMORY_INFO",         "메모리 제한됨"},
+        {&APPLET_MEMORY_VAL,          "APPLET_MEMORY_VAL",          " (앨범),  (유저) 진입 설정을 변경합니다"},
+        {&APPLET_MEMORY_KEY,          "APPLET_MEMORY_KEY",          "기본:  (앨범) +  홀드"},
+        {&APPLET_HB_MENU_ICON,        "APPLET_HB_MENU_ICON",        "진입 아이콘"},
+        {&APPLET_HB_MENU_KEY,         "APPLET_HB_MENU_KEY",         "진입 커맨드"},
+        {&S_LANG_PATCH,               "S_LANG_PATCH",               "한글 패치"},
+        {&S_TRANSLATE,                "S_TRANSLATE",                "번역 업데이트"},
+        {&S_LANG,                     "S_LANG",                     "ko"},
+        {&APPLET_ALBUM,               "APPLET_ALBUM",               "앨범"},
+        {&APPLET_USER,                "APPLET_USER",                "유저"},
+        {&APPLET_KEY_HOLD,            "APPLET_KEY_HOLD",            "홀드"},
+        {&APPLET_KEY_CLICK,           "APPLET_KEY_CLICK",           "원클릭"},
+        {&SD_CLEANUP,                 "SD_CLEANUP",                 "SD 카드 정리"},
+        {&SD_CLEANUP_INFO,            "SD_CLEANUP_INFO",            "Ultrahand 초기화, 정크 삭제"},
+        {&NORMAL_DEVICE,              "NORMAL_DEVICE",              "일반 기기"},
+        {&PATCH_DEVICE,               "PATCH_DEVICE",               "8GB 기기"},
+        {&RAM_PATCH_WARN,             "RAM_PATCH_WARN",             "패치시 일반 기기는 작동하지 않게됩니다"},
+        {&RAM_PATCH,                  "RAM_PATCH",                  "8GB 패치"},
+        // Package-Quick Guide+
+        {&QUICK_GUIDE_INFO,           "QUICK_GUIDE_INFO",           "간이 설명서오류 코드"},
+        {&QUICK_GUIDE,                "QUICK_GUIDE",                "가이드"},
+        {&KEYMAP_INFO,                "KEYMAP_INFO",                "전반적인 터치 조작 가능"},
+        {&KEY_MOVE,                   "KEY_MOVE",                   "이동"},
+        {&KEY_MENU,                   "KEY_MENU",                   "메뉴"},
+        {&KEY_SELECT,                 "KEY_SELECT",                 "선택"},
+        {&KEYGAP_1,                   "KEYGAP_1",                   "    　　"},
+        {&KEYGAP_2,                   "KEYGAP_2",                   "    "},
+        {&KEYGAP_3,                   "KEYGAP_3",                   "    　　"},
+        {&PACK_INFO,                  "PACK_INFO",                  "패키지 설명서"},
+        {&USEFUL,                     "USEFUL",                     "유용한 기능 (앱 실행 상태)"},
+        {&HIDE_SPHAIRA,               "HIDE_SPHAIRA",               "'앱 숨기기:' = '  숨기기  켬'"},
+        {&FORWARDER_SPHAIRA,          "FORWARDER_SPHAIRA",          "'바로가기 설치:' = '홈브류 +   바로가기 설치'"},
+        {&APP_INSTALL,                "APP_INSTALL",                "앱 설치"},
+        {&PC_INSTALL,                 "PC_INSTALL",                 "  기타  FTP·MTP 설치  파일 넣기"},
+        {&FTP_INSTALL,                "FTP_INSTALL",                "서버 연결  Install 폴더에 파일 끌어넣기"},
+        {&MTP_INSTALL,                "MTP_INSTALL",                "PC 연결  Install 폴더에 파일 끌어넣기"},
+        {&USB_INSTALL,                "USB_INSTALL",                "'2.외장하드:' = '파일 탐색기  마운트  파일 선택'"},
+        {&HDD_INSTALL_1,              "HDD_INSTALL_1",              "하드 연결  파일 탐색기    고급 "},
+        {&HDD_INSTALL_2,              "HDD_INSTALL_2",              "마운트  하드 선택  파일 선택  예"},
+        {&ERROR_INFO,                 "ERROR_INFO",                 "오류 코드"},
+        {&ALBUM_INFO,                 "ALBUM_INFO",                 "앨범 오류"},
+        {&ALBUM_ERROR_1,              "ALBUM_ERROR_1",              "sphairahbmenu 혹은 dmnt의 구성 불량"},
+        {&ALBUM_ERROR_2,              "ALBUM_ERROR_2",              "애플릿 모드 사용중인 경우, 메모리 부족 충돌"},
+        {&CPUDEAD_INFO,               "CPUDEAD_INFO",               "CPU 파손"},
+        {&CPU_ERROR,                  "CPU_ERROR",                  "CPU에 복구 불가능한 손상이 발생"},
+        {&SYSTEM_ERROR,               "SYSTEM_ERROR",               "시스템 오류"},
+        {&MODULE_ERROR,               "MODULE_ERROR",               "모듈 오류"},
+        {&MODULE_INFO_1,              "MODULE_INFO_1",              "스위치 모듈 오류시 안내문 참고"},
+        {&MODULE_INFO_2,              "MODULE_INFO_2",              "앱이 아닌 스위치 모듈 오류가 발생한 경우"},
+        {&MODULE_INFO_3,              "MODULE_INFO_3",              "시스템 파일 손상, 낸드 리빌딩 필요"},
+        {&MODULE_INFO_4,              "MODULE_INFO_4",              "에뮤낸드 파일 손상, 재생성으로 해결"},
+        {&SYSNAND_INFO,               "SYSNAND_INFO",               "시스낸드"},
+        {&EMUNAND_INFO,               "EMUNAND_INFO",               "에뮤낸드"},
+        {&NORMAL_ERROR,               "NORMAL_ERROR",               "자주 발생하는 오류"},
+        {&APP_MODULE_ERROR,           "APP_MODULE_ERROR",           "앱 모듈 오류"},
+        {&SWITCH_MODULE_ERROR,        "SWITCH_MODULE_ERROR",        "스위치 모듈 오류"},
+        {&PREV_PAGE,                  "PREV_PAGE",                  "이전 페이지"},
+        {&NEXT_PAGE,                  "NEXT_PAGE",                  "다음 페이지"},
+        {&VER_ERR,                    "VER_ERR",                    "버전 오류"},
+        {&SD_ERR,                     "SD_ERR",                     "SD 카드 오류"},
+        {&STORAGE_ERR,                "STORAGE_ERR",                "저장소 오류"},
+        {&MISC_ERR,                   "MISC_ERR",                   "기타 오류"},
+        {&NSS_ERR,                    "NSS_ERR",                    "Switch Online Service 오류"},
+        {&SERVER_ERR,                 "SERVER_ERR",                 "서버 오류"},
+        {&NETWORK_ERR,                "NETWORK_ERR",                "네트워크 오류"},
+        {&FORWARDER_ERR,              "FORWARDER_ERR",              "글로벌 오류"},
+        {&FORWARDER_INFO,             "FORWARDER_INFO",             "NSP 포워더 (바로가기)"},
+        {&APP_ERR,                    "APP_ERR",                    "유저 환경에 따라 발생하는 오류"},
+        {&APP_MODULE,                 "APP_MODULE",                 "홈브류오버레이용 시스템 모듈"},
+        {&SCROLL,                     "SCROLL",                     "스크롤"},
+        {&SWITCH_MODULE,              "SWITCH_MODULE",              "스위치 시스템 모듈"},
+        // Overlays-Custom infomation
+        {&OVLSYSMODULE,               "OVLSYSMODULE",               "모듈 관리자"},
+        {&EDIZON,                     "EDIZON",                     "치트 매니저"},
+        {&EMUIIBO,                    "EMUIIBO",                    "가상 아미보"},
+        {&FIZEAU,                     "FIZEAU",                     "색감 매니저"},
+        {&NXFANCONTROL,               "NXFANCONTROL",               "쿨링 시스템"},
+        {&FPSLOCKER,                  "FPSLOCKER",                  "고정 프레임"},
+        {&LDNMITM,                    "LDNMITM",                    "LAN 플레이"},
+        {&QUICKNTP,                   "QUICKNTP",                   "시간 동기화"},
+        {&REVERSENX,                  "REVERSENX",                  "모드 전환기"},
+        {&STATUSMONITOR,              "STATUSMONITOR",              "상태 모니터"},
+        {&STUDIOUSPANCAKE,            "STUDIOUSPANCAKE",            "빠른 재부팅"},
+        {&SYSCLK,                     "SYSCLK",                     "클럭 조정기"},
+        {&SYSDVR,                     "SYSDVR",                     "USB 스트리밍"},
+        {&SYSPATCH,                   "SYSPATCH",                   "패치 시스템"},
         #endif
 
-        {&INCOMPATIBLE_WARNING,       "INCOMPATIBLE_WARNING",       "Incompatible on AMS v1.10+"},
-        {&SYSTEM_RAM,                 "SYSTEM_RAM",                 "System RAM"},
-        {&FREE,                       "FREE",                       "free"},
+        {&INCOMPATIBLE_WARNING,       "INCOMPATIBLE_WARNING",       "AMS 1.10.0 미호환"},
+        {&SYSTEM_RAM,                 "SYSTEM_RAM",                 "시스템 RAM"},
+        {&FREE,                       "FREE",                       "여유"},
         {&DEFAULT_CHAR_WIDTH,         "DEFAULT_CHAR_WIDTH",         "0.33"},
-        {&UNAVAILABLE_SELECTION,      "UNAVAILABLE_SELECTION",      "Not available"},
-        {&ON,                         "ON",                         "On"},
-        {&OFF,                        "OFF",                        "Off"},
-        {&OK,                         "OK",                         "OK"},
-        {&BACK,                       "BACK",                       "Back"},
-        {&HIDE,                       "HIDE",                       "Hide"},
-        {&CANCEL,                     "CANCEL",                     "Cancel"},
+        {&UNAVAILABLE_SELECTION,      "UNAVAILABLE_SELECTION",      "설정 없음"},
+        {&ON,                         "ON",                         "\uE14B"},
+        {&OFF,                        "OFF",                        "\uE14C"},
+        {&OK,                         "OK",                         "확인"},
+        {&BACK,                       "BACK",                       "뒤로"},
+        {&HIDE,                       "HIDE",                       "숨기기"},
+        {&CANCEL,                     "CANCEL",                     "취소"},
         {&GAP_1,                      "GAP_1",                      "     "},
         {&GAP_2,                      "GAP_2",                      "  "},
 
         #if USING_WIDGET_DIRECTIVE
-        {&SUNDAY,                     "SUNDAY",                     "Sunday"},
-        {&MONDAY,                     "MONDAY",                     "Monday"},
-        {&TUESDAY,                    "TUESDAY",                    "Tuesday"},
-        {&WEDNESDAY,                  "WEDNESDAY",                  "Wednesday"},
-        {&THURSDAY,                   "THURSDAY",                   "Thursday"},
-        {&FRIDAY,                     "FRIDAY",                     "Friday"},
-        {&SATURDAY,                   "SATURDAY",                   "Saturday"},
-        {&JANUARY,                    "JANUARY",                    "January"},
-        {&FEBRUARY,                   "FEBRUARY",                   "February"},
-        {&MARCH,                      "MARCH",                      "March"},
-        {&APRIL,                      "APRIL",                      "April"},
-        {&MAY,                        "MAY",                        "May"},
-        {&JUNE,                       "JUNE",                       "June"},
-        {&JULY,                       "JULY",                       "July"},
-        {&AUGUST,                     "AUGUST",                     "August"},
-        {&SEPTEMBER,                  "SEPTEMBER",                  "September"},
-        {&OCTOBER,                    "OCTOBER",                    "October"},
-        {&NOVEMBER,                   "NOVEMBER",                   "November"},
-        {&DECEMBER,                   "DECEMBER",                   "December"},
-        {&SUN,                        "SUN",                        "Sun"},
-        {&MON,                        "MON",                        "Mon"},
-        {&TUE,                        "TUE",                        "Tue"},
-        {&WED,                        "WED",                        "Wed"},
-        {&THU,                        "THU",                        "Thu"},
-        {&FRI,                        "FRI",                        "Fri"},
-        {&SAT,                        "SAT",                        "Sat"},
-        {&JAN,                        "JAN",                        "Jan"},
-        {&FEB,                        "FEB",                        "Feb"},
-        {&MAR,                        "MAR",                        "Mar"},
-        {&APR,                        "APR",                        "Apr"},
-        {&MAY_ABBR,                   "MAY_ABBR",                   "May"},
-        {&JUN,                        "JUN",                        "Jun"},
-        {&JUL,                        "JUL",                        "Jul"},
-        {&AUG,                        "AUG",                        "Aug"},
-        {&SEP,                        "SEP",                        "Sep"},
-        {&OCT,                        "OCT",                        "Oct"},
-        {&NOV,                        "NOV",                        "Nov"},
-        {&DEC,                        "DEC",                        "Dec"},
+        {&SUNDAY,                     "SUNDAY",                     " 日"},
+        {&MONDAY,                     "MONDAY",                     " 月"},
+        {&TUESDAY,                    "TUESDAY",                    " 火"},
+        {&WEDNESDAY,                  "WEDNESDAY",                  " 水"},
+        {&THURSDAY,                   "THURSDAY",                   " 木"},
+        {&FRIDAY,                     "FRIDAY",                     " 金"},
+        {&SATURDAY,                   "SATURDAY",                   " 土"},
+        {&JANUARY,                    "JANUARY",                    "1월"},
+        {&FEBRUARY,                   "FEBRUARY",                   "2월"},
+        {&MARCH,                      "MARCH",                      "3월"},
+        {&APRIL,                      "APRIL",                      "4월"},
+        {&MAY,                        "MAY",                        "5월"},
+        {&JUNE,                       "JUNE",                       "6월"},
+        {&JULY,                       "JULY",                       "7월"},
+        {&AUGUST,                     "AUGUST",                     "8월"},
+        {&SEPTEMBER,                  "SEPTEMBER",                  "9월"},
+        {&OCTOBER,                    "OCTOBER",                    "10월"},
+        {&NOVEMBER,                   "NOVEMBER",                   "11월"},
+        {&DECEMBER,                   "DECEMBER",                   "12월"},
+        {&SUN,                        "SUN",                        " 日"},
+        {&MON,                        "MON",                        " 月"},
+        {&TUE,                        "TUE",                        " 火"},
+        {&WED,                        "WED",                        " 水"},
+        {&THU,                        "THU",                        " 木"},
+        {&FRI,                        "FRI",                        " 金"},
+        {&SAT,                        "SAT",                        " 土"},
+        {&JAN,                        "JAN",                        "1월"},
+        {&FEB,                        "FEB",                        "2월"},
+        {&MAR,                        "MAR",                        "3월"},
+        {&APR,                        "APR",                        "4월"},
+        {&MAY_ABBR,                   "MAY_ABBR",                   "5월"},
+        {&JUN,                        "JUN",                        "6월"},
+        {&JUL,                        "JUL",                        "7월"},
+        {&AUG,                        "AUG",                        "8월"},
+        {&SEP,                        "SEP",                        "9월"},
+        {&OCT,                        "OCT",                        "10월"},
+        {&NOV,                        "NOV",                        "11월"},
+        {&DEC,                        "DEC",                        "12월"},
         #endif
     };
 
@@ -881,7 +1297,9 @@ namespace ult {
         #if IS_LAUNCHER_DIRECTIVE
         else {
             switch (text.length()) {
-                case 6:  if (text == "Reboot")    { text = REBOOT;    } break;
+                case 5:  if (text == "LAKKA")     { text = LAKKA;     } break;
+                case 6:  if (text == "Reboot") { text = REBOOT; } else if (text == "UBUNTU") { text = UBUNTU; } break;
+                case 7:  if (text == "CFWBOOT") { text = CFWBOOT; } else if (text == "OFWBOOT") { text = OFWBOOT; } else if (text == "ANDROID") { text = ANDROID; } break;
                 case 8:  if (text == "Shutdown")  { text = SHUTDOWN;  } break;
                 case 9:  if (text == "Reboot To") { text = REBOOT_TO; } break;
                 case 10: if (text == "Boot Entry"){ text = BOOT_ENTRY;} break;
@@ -907,13 +1325,13 @@ namespace ult {
     std::map<const std::string, std::string> defaultThemeSettingsMap = {
         {"default_overlay_color", whiteColor},
         {"default_package_color", whiteColor},
-        {"default_script_color", "FF33FF"},
+        {"default_script_color", whiteColor},
         {"clock_color", whiteColor},
         {"temperature_color", whiteColor},
-        {"battery_color", "ffff45"},
+        {"battery_color", "3CDD88"},
         {"battery_charging_color", "00FF00"},
-        {"battery_low_color", "FF0000"},
-        {"widget_backdrop_alpha", "15"},
+        {"battery_low_color", "F63345"},
+        {"widget_backdrop_alpha", "13"},
         {"widget_backdrop_color", blackColor},
         {"bg_alpha", "13"},
         {"bg_color", blackColor},
@@ -924,30 +1342,30 @@ namespace ult {
         {"notification_text_color", whiteColor},
         {"header_text_color", whiteColor},
         {"header_separator_color", whiteColor},
-        {"star_color", whiteColor},
-        {"selection_star_color", whiteColor},
+        {"star_color", "FFAA17"},
+        {"selection_star_color", "FFAA17"},
         {"bottom_button_color", whiteColor},
         {"bottom_text_color", whiteColor},
         {"bottom_separator_color", whiteColor},
         {"top_separator_color", "404040"},
-        {"table_bg_color", "2C2C2C"},
-        {"table_bg_alpha", "14"},
-        {"table_section_text_color", whiteColor},
+        {"table_bg_color", "3F3F3F"},
+        {"table_bg_alpha", "13"},
+        {"table_section_text_color", "5DC5FB"},
         //{"table_info_text_color", "00FFDD"},
-        {"table_info_text_color", "9ed0ff"},
-        {"warning_text_color", "FF7777"},
-        {"healthy_ram_text_color", "00FF00"},
-        {"neutral_ram_text_color", "FFAA00"},
-        {"bad_ram_text_color", "FF0000"},
+        {"table_info_text_color", whiteColor},
+        {"warning_text_color", "F63345"},
+        {"healthy_ram_text_color", "3CDD88"},
+        {"neutral_ram_text_color", "FFAA17"},
+        {"bad_ram_text_color", "F63345"},
         {"trackbar_slider_color", "606060"},
         {"trackbar_slider_border_color", "505050"},
         {"trackbar_slider_malleable_color", "A0A0A0"},
         {"trackbar_full_color", "00FFDD"},
         {"trackbar_empty_color", "404040"},
         {"overlay_text_color", whiteColor},
-        {"ult_overlay_text_color", "9ed0ff"},
+        {"ult_overlay_text_color", whiteColor},
         {"package_text_color", whiteColor},
-        {"ult_package_text_color", "9ed0ff"},
+        {"ult_package_text_color", whiteColor},
         {"banner_version_text_color", greyColor},
         {"overlay_version_text_color", greyColor},
         {"ult_overlay_version_text_color", "00FFDD"},
@@ -955,31 +1373,44 @@ namespace ult {
         {"ult_package_version_text_color", "00FFDD"},
         {"on_text_color", "00FFDD"},
         {"off_text_color", greyColor},
-        {"invalid_text_color", "FF0000"},
-        {"inprogress_text_color", "FFFF45"},
-        {"selection_text_color", "9ed0ff"},
-        {"selection_value_text_color", "FF7777"},
+        {"invalid_text_color", "F63345"},
+        {"inprogress_text_color", "3CDD88"},
+        {"selection_text_color", whiteColor},
+        {"selection_value_text_color", "00FFFF"},
         {"selection_bg_color", blackColor},
-        {"selection_bg_alpha", "11"},
+        {"selection_bg_alpha", "13"},
         {"scrollbar_color", "555555"},
-        {"scrollbar_wall_color", "AAAAAA"},
+        {"scrollbar_wall_color", greyColor},
         {"highlight_color_1", "2288CC"},
         {"highlight_color_2", "88FFFF"},
-        {"highlight_color_3", "FFFF45"},
-        {"highlight_color_4", "F7253E"},
+        {"highlight_color_3", "3CDD88"},
+        {"highlight_color_4", "2CD2B1"},
         {"click_text_color", whiteColor},
-        {"click_alpha", "7"},
-        {"click_color", "3E25F7"},
+        {"click_alpha", "13"},
+        {"click_color", "2CD2B1"},
         {"progress_alpha", "7"},
-        {"progress_color", "253EF7"},
+        {"progress_color", "2597F7"},
         {"invert_bg_click_color", FALSE_STR},
         //{"disable_selection_bg", FALSE_STR},
         //{"disable_selection_value_color", FALSE_STR},
         //{"disable_colorful_logo", FALSE_STR},
-        {"logo_color_1", whiteColor},
-        {"logo_color_2", "FF0000"},
-        {"dynamic_logo_color_1", "00E669"},
-        {"dynamic_logo_color_2", "8080EA"}
+        {"logo_color_1", "EAEAEA"},
+        {"logo_color_2", whiteColor},
+        {"dynamic_logo_color_1", "C9F1FF"},
+        {"dynamic_logo_color_2", "4BCDF9"},
+        // ASAP: Packages coler.
+        {"accent_text_color", "00FFDD"},
+        {"notice_text_color", "00FFFF"},
+        // fpslocker
+        {"fps_accent_color", "FF3333"},
+        {"fps_faild_color", "FF9999"},
+        // status-monitor-overlay
+        {"stm_bg_alpha", "10"},
+        {"stm_bg_color", "111111"},
+        {"stm_mimicbg_color", "000000"},
+        {"stm_accent_color", "00FFDD"},
+        {"stm_section_color", "22DDFF"},
+        {"stm_text_color", whiteColor}
     };
     
     bool isNumericCharacter(char c) {
@@ -1327,7 +1758,7 @@ namespace ult {
     
     
     // Time implementation
-    CONSTEXPR_STRING std::string DEFAULT_DT_FORMAT = "%a %T";
+    CONSTEXPR_STRING std::string DEFAULT_DT_FORMAT = "%T %a";
     std::string datetimeFormat = DEFAULT_DT_FORMAT;
     
     

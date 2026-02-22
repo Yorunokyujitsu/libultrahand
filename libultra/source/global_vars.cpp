@@ -30,6 +30,10 @@ namespace ult {
     const std::string OVL_HEAP_CONFIG_PATH = NX_OVLLOADER_PATH + "heap_size.bin";
     const std::string OVL_EXIT_FLAG_PATH = NX_OVLLOADER_PATH + "exit_flag.bin";
     
+    const std::string ATMOSPHERE_PATH    = ROOT_PATH + "atmosphere/";
+    const std::string LDRKIP_PATH        = ROOT_PATH + "backup/kips/.OC/loader.kip";
+    const std::string HEKATE_PATH        = ROOT_PATH + "bootloader/";
+
     // Filenames
     CONSTEXPR_STRING std::string CONFIG_FILENAME       = "config.ini";
     const std::string BOOT_PACKAGE_FILENAME            = "boot_package.ini";
@@ -52,7 +56,7 @@ namespace ult {
     // Paths
     const std::string SETTINGS_PATH               = BASE_CONFIG_PATH;
     const std::string ULTRAHAND_CONFIG_INI_PATH   = BASE_CONFIG_PATH + CONFIG_FILENAME;
-    const std::string TESLA_CONFIG_INI_PATH       = TESLA_CONFIG_PATH + CONFIG_FILENAME;
+    //const std::string TESLA_CONFIG_INI_PATH       = TESLA_CONFIG_PATH + CONFIG_FILENAME;
     const std::string LANG_PATH                   = BASE_CONFIG_PATH + "lang/";
     const std::string THEMES_PATH                 = BASE_CONFIG_PATH + "themes/";
     const std::string WALLPAPERS_PATH             = BASE_CONFIG_PATH + "wallpapers/";
@@ -71,6 +75,7 @@ namespace ult {
     const std::string FUSE_DATA_INI_PATH          = BASE_CONFIG_PATH + FUSE_FILENAME;
     const std::string PACKAGE_PATH                = SWITCH_PATH + ".packages/";
     const std::string OVERLAY_PATH                = SWITCH_PATH + ".overlays/";
+    const std::string EXPANSION_RAM_PATH          = PACKAGE_PATH + ".offload/ram_expansion/";
     const std::string OVERLAYS_INI_FILEPATH       = BASE_CONFIG_PATH + OVERLAYS_INI_FILENAME;
     const std::string PACKAGES_INI_FILEPATH       = BASE_CONFIG_PATH + PACKAGES_INI_FILENAME;
     const std::string NOTIFICATIONS_FLAG_FILEPATH = FLAGS_PATH + NOTIFICATIONS_FLAG_FILENAME;
@@ -83,17 +88,21 @@ namespace ult {
     };
 
     // GitHub URLs
-    const std::string GITHUB_BASE_URL               = "https://github.com/ppkantorski/";
-    const std::string GITHUB_RAW_BASE_URL           = "https://raw.githubusercontent.com/ppkantorski/";
-    const std::string ULTRAHAND_REPO_URL            = GITHUB_BASE_URL + "Ultrahand-Overlay/";
-    const std::string INCLUDED_THEME_FOLDER_URL     = GITHUB_RAW_BASE_URL + "Ultrahand-Overlay/main/themes/";
-    const std::string LATEST_RELEASE_INFO_URL       = GITHUB_RAW_BASE_URL + "Ultrahand-Overlay/main/RELEASE.ini";
+    const std::string GITHUB_BASE_URL               = "https://github.com/Yorunokyujitsu/";
+    const std::string GITHUB_ORIGIN_URL             = "https://github.com/ppkantorski/";
+    const std::string GITHUB_RAW_BASE_URL           = "https://raw.githubusercontent.com/Yorunokyujitsu/";
+    const std::string GITHUB_RAW_ORIGIN_URL         = "https://raw.githubusercontent.com/ppkantorski/";
+    const std::string ULTRAHAND_REPO_URL            = GITHUB_BASE_URL + "ASAP-NX/";
+    const std::string INCLUDED_THEME_FOLDER_URL     = GITHUB_RAW_BASE_URL + "ASAP-NX/main/misc/ini/";
+    const std::string INCLUDED_WALLPAPER_FOLDER_URL = GITHUB_RAW_BASE_URL + "ASAP-NX/main/misc/res/misc/ASAP.rgba";
+    const std::string LANGUAGE_FOLDER_URL           = GITHUB_RAW_BASE_URL + "ASAP-NX/main/misc/json/lang/ultrahand/";
+    const std::string LATEST_RELEASE_INFO_URL       = GITHUB_RAW_BASE_URL + "ASAP-NX/main/version.inc";
     const std::string LATEST_UPDATER_INI_URL        = ULTRAHAND_REPO_URL + "releases/latest/download/update.ini";
-    //const std::string NX_OVLLOADER_ZIP_URL          = GITHUB_BASE_URL + "nx-ovlloader/releases/latest/download/nx-ovlloader.zip";
-    //const std::string NX_OVLLOADER_PLUS_ZIP_URL     = GITHUB_BASE_URL + "nx-ovlloader/releases/latest/download/nx-ovlloader+.zip";
-    //const std::string OLD_NX_OVLLOADER_ZIP_URL      = GITHUB_BASE_URL + "nx-ovlloader/releases/download/v1.0.8/nx-ovlloader.zip";
-    //const std::string OLD_NX_OVLLOADER_PLUS_ZIP_URL = GITHUB_BASE_URL + "nx-ovlloader/releases/download/v1.0.8/nx-ovlloader+.zip";
-    const std::string UPDATER_PAYLOAD_URL           = GITHUB_RAW_BASE_URL + "Ultrahand-Overlay/main/payloads/ultrahand_updater.bin";
+    //const std::string NX_OVLLOADER_ZIP_URL          = GITHUB_ORIGIN_URL + "nx-ovlloader/releases/latest/download/nx-ovlloader.zip";
+    //const std::string NX_OVLLOADER_PLUS_ZIP_URL     = GITHUB_ORIGIN_URL + "nx-ovlloader/releases/latest/download/nx-ovlloader+.zip";
+    //const std::string OLD_NX_OVLLOADER_ZIP_URL      = GITHUB_ORIGIN_URL + "nx-ovlloader/releases/download/v1.0.8/nx-ovlloader.zip";
+    //const std::string OLD_NX_OVLLOADER_PLUS_ZIP_URL = GITHUB_ORIGIN_URL + "nx-ovlloader/releases/download/v1.0.8/nx-ovlloader+.zip";
+    //const std::string UPDATER_PAYLOAD_URL           = GITHUB_RAW_ORIGIN_URL + "Ultrahand-Overlay/main/payloads/ultrahand_updater.bin";
     //const std::string SOUND_EFFECTS_URL             = GITHUB_RAW_BASE_URL + "Ultrahand-Overlay/main/sounds/sounds.zip";
 
     // Launch options
@@ -105,12 +114,12 @@ namespace ult {
     const std::string USE_LOGGING_STR       = "use_logging";
 
     // Combos
-    CONSTEXPR_STRING std::string TESLA_COMBO_STR       = "L+DDOWN+RS";
-    CONSTEXPR_STRING std::string ULTRAHAND_COMBO_STR   = "ZL+ZR+DDOWN";
+    //CONSTEXPR_STRING std::string TESLA_COMBO_STR       = "L+DDOWN+RS";
+    CONSTEXPR_STRING std::string ULTRAHAND_COMBO_STR   = "L+DDOWN+RS";
 
     // System / mode strings
     CONSTEXPR_STRING std::string FUSE_STR         = "fuse";
-    CONSTEXPR_STRING std::string TESLA_STR        = "tesla";
+    //CONSTEXPR_STRING std::string TESLA_STR        = "tesla";
     CONSTEXPR_STRING std::string ERISTA_STR       = "erista";
     CONSTEXPR_STRING std::string MARIKO_STR       = "mariko";
     CONSTEXPR_STRING std::string HANDHELD_STR     = "handheld";

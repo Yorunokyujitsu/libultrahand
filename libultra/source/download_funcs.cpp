@@ -393,9 +393,9 @@ bool downloadFile(const std::string& url, const std::string& toDestination, bool
         downloadPercentage.store(100, std::memory_order_release);
     }
 
-    // CHECK FOR PROTECTED FILES AND ADD .ultra EXTENSION IF NEEDED
+    // CHECK FOR PROTECTED FILES AND ADD .aio EXTENSION IF NEEDED
     if (PROTECTED_FILES.find(destination) != PROTECTED_FILES.end()) {
-        destination += ".ultra";
+        destination += ".aio";
         
         #if USING_LOGGING_DIRECTIVE
         if (!disableLogging)
@@ -705,9 +705,9 @@ bool unzipFile(const std::string& zipFilePath, const std::string& toDestination)
             }), extractedFilePath.end());
         }
 
-        // CHECK FOR PROTECTED FILES AND ADD .ultra EXTENSION IF NEEDED
+        // CHECK FOR PROTECTED FILES AND ADD .aio EXTENSION IF NEEDED
         if (PROTECTED_FILES.find(extractedFilePath) != PROTECTED_FILES.end()) {
-            extractedFilePath += ".ultra";
+            extractedFilePath += ".aio";
             
             #if USING_LOGGING_DIRECTIVE
             if (!disableLogging)
