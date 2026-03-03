@@ -195,6 +195,19 @@ Color trackBarSliderMalleableColor;
 Color trackBarFullColor;
 Color trackBarEmptyColor;
 
+/* ASAP Color */
+Color accentTextColor;
+Color noticeTextColor;
+// fpslocker
+Color fpsAccentColor;
+Color fpsFaildColor;
+// status-monitor-overlay
+size_t stmBGAlpha = 10;
+Color stmBGColor;
+Color stmMimicBGColor;
+Color stmAccentColor;
+Color stmSectionColor;
+Color stmTextColor;
 
 
 
@@ -298,6 +311,19 @@ void initializeThemeVars() {
     trackBarSliderMalleableColor = getColor("trackbar_slider_malleable_color");
     trackBarFullColor            = getColor("trackbar_full_color");
     trackBarEmptyColor           = getColor("trackbar_empty_color");
+    /* ASAP Color */
+    accentTextColor              = getColor("accent_text_color");
+    noticeTextColor              = getColor("notice_text_color");
+    // fpslocker
+    fpsAccentColor               = getColor("fps_accent_color");
+    fpsFaildColor                = getColor("fps_faild_color");
+    // status-monitor-overlay
+    stmBGAlpha                   = getAlpha("stm_bg_alpha");
+    stmBGColor                   = getColor("stm_bg_color", stmBGAlpha);
+    stmMimicBGColor              = getColor("stm_mimicbg_color");
+    stmAccentColor               = getColor("stm_accent_color");
+    stmSectionColor              = getColor("stm_section_color");
+    stmTextColor                 = getColor("stm_text_color");
 }
 
 // ---------------------------------------------------------------------------
