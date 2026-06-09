@@ -45,7 +45,7 @@ namespace ult {
     extern const std::string OVL_RELOAD_FLAG_PATH;
 
     extern const std::string ULTRAHAND_CONFIG_INI_PATH;
-    extern const std::string TESLA_CONFIG_INI_PATH;
+    //extern const std::string TESLA_CONFIG_INI_PATH;
     extern const std::string LANG_PATH;
     extern const std::string THEMES_PATH;
     extern const std::string WALLPAPERS_PATH;
@@ -81,14 +81,20 @@ namespace ult {
     extern const std::string NOTIFICATIONS_FLAG_FILEPATH;
     extern const std::string RELOADING_FLAG_FILEPATH;
     extern const std::string NTP_SYNC_PENDING_FLAG_FILEPATH;
+    extern const std::string ATMOSPHERE_PATH;
+    extern const std::string LDRKIP_PATH;
+    extern const std::string HEKATE_PATH;
+    extern const std::string EXPANSION_RAM_PATH;
 
     extern const std::set<std::string> PROTECTED_FILES;
 
     extern const std::string ULTRAHAND_REPO_URL;
     extern const std::string INCLUDED_THEME_FOLDER_URL;
+    extern const std::string INCLUDED_WALLPAPER_FOLDER_URL;
+    extern const std::string LANGUAGE_FOLDER_URL;
     extern const std::string LATEST_RELEASE_INFO_URL;
     extern const std::string LATEST_UPDATER_INI_URL;
-    extern const std::string UPDATER_PAYLOAD_URL;
+    //extern const std::string UPDATER_PAYLOAD_URL;
     
     extern const std::string LAUNCH_ARGS_STR;
     extern const std::string USE_LAUNCH_ARGS_STR;
@@ -97,11 +103,11 @@ namespace ult {
     extern const std::string USE_EXIT_PACKAGE_STR;
     extern const std::string USE_LOGGING_STR;
 
-    extern const std::string TESLA_COMBO_STR;
+    //extern const std::string TESLA_COMBO_STR;
     extern const std::string ULTRAHAND_COMBO_STR;
     
     extern const std::string FUSE_STR;
-    extern const std::string TESLA_STR;
+    //extern const std::string TESLA_STR;
     extern const std::string ERISTA_STR;
     extern const std::string MARIKO_STR;
     extern const std::string HANDHELD_STR;
