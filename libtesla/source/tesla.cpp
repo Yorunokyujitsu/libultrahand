@@ -237,46 +237,60 @@ Color s2ToggleOnColor;
 Color s2ToggleOffColor;
 Color s2ToggleCircleColor;
 
+/* ASAP Color */
+Color accentTextColor;
+Color noticeTextColor;
+// fpslocker
+Color fpsAccentColor;
+Color fpsFaildColor;
+// status-monitor-overlay
+size_t stmBGAlpha = 10;
+Color stmBGColor;
+Color stmMimicBGColor;
+Color stmAccentColor;
+Color stmSectionColor;
+Color stmTextColor;
+
 
 // Prepare a map of default settings
 constexpr ThemeDefault defaultThemeSettings[] = {
     // Must stay sorted alphabetically for binary search
-    {"bad_ram_text_color",              "FF0000"},
+    {"bad_ram_text_color",              "F63345"},
     {"banner_version_text_color",       "AAAAAA"},
     {"battery_charging_color",          "00FF00"},
-    {"battery_color",                   "FFFF45"},
-    {"battery_low_color",               "FF0000"},
+    {"battery_color",                   "3CDD88"},
+    {"battery_low_color",               "F63345"},
     {"bg_alpha",                        "13"},
     {"bg_color",                        "000000"},
     {"bottom_button_color",             "FFFFFF"},
     {"bottom_separator_color",          "FFFFFF"},
     {"bottom_text_color",               "FFFFFF"},
     {"unfocused_color",                 "666666"},
-    {"click_alpha",                     "7"},
-    {"click_color",                     "3E25F7"},
+    {"click_alpha",                     "13"},
+    {"click_color",                     "2CD2B1"},
     {"click_text_color",                "FFFFFF"},
     {"clock_color",                     "FFFFFF"},
     {"default_overlay_color",           "FFFFFF"},
     {"default_package_color",           "FFFFFF"},
-    {"default_script_color",            "FF33FF"},
-    {"dynamic_logo_color_1",            "00E669"},
-    {"dynamic_logo_color_2",            "8080EA"},
+    {"default_script_color",            "FFFFFF"},
+    {"dynamic_logo_color_1",            "C9F1FF"},
+    {"dynamic_logo_color_2",            "4BCDF9"},
     {"header_separator_color",          "FFFFFF"},
     {"header_text_color",               "FFFFFF"},
-    {"healthy_ram_text_color",          "00FF00"},
+    {"healthy_ram_text_color",          "3CDD88"},
     {"highlight_color_1",               "2288CC"},
     {"highlight_color_2",               "88FFFF"},
-    {"highlight_color_3",               "FFFF45"},
-    {"highlight_color_4",               "F7253E"},
-    {"inprogress_text_color",           "FFFF45"},
-    {"invalid_text_color",              "FF0000"},
+    {"highlight_color_3",               "3CDD88"},
+    {"highlight_color_4",               "2CD2B1"},
+    {"inprogress_text_color",           "3CDD88"},
+    {"invalid_text_color",              "F63345"},
     {"invert_bg_click_color",           "false"},
-    {"logo_color_1",                    "FFFFFF"},
-    {"logo_color_2",                    "FF0000"},
-    {"neutral_ram_text_color",          "FFAA00"},
+    {"logo_color_1",                    "EAEAEA"},
+    {"logo_color_2",                    "FFFFFF"},
+    {"neutral_ram_text_color",          "FFAA17"},
     {"notification_text_color",         "FFFFFF"},
     {"notification_title_color",        "FFFFFF"},
-    {"notification_time_color",         "AAAAAA"},
+    {"notification_time_color",        "AAAAAA"},
     {"off_text_color",                  "AAAAAA"},
     {"on_text_color",                   "00FFDD"},
     {"overlay_text_color",              "FFFFFF"},
@@ -284,7 +298,7 @@ constexpr ThemeDefault defaultThemeSettings[] = {
     {"package_text_color",              "FFFFFF"},
     {"package_version_text_color",      "AAAAAA"},
     {"progress_alpha",                  "7"},
-    {"progress_color",                  "253EF7"},
+    {"progress_color",                  "2597F7"},
     {"s2_alt_highlight_color_1",        "FFAA11"},
     {"s2_alt_highlight_color_2",        "FFFF00"},
     {"s2_alt_highlight_color_3",        "FF0088"},
@@ -318,19 +332,19 @@ constexpr ThemeDefault defaultThemeSettings[] = {
     {"s2_widget_border_color_4_deep",   "775555"},
     {"scrollbar_color",                 "555555"},
     {"scrollbar_wall_color",            "AAAAAA"},
-    {"selection_bg_alpha",              "11"},
+    {"selection_bg_alpha",              "13"},
     {"selection_bg_color",              "000000"},
-    {"selection_star_color",            "FFFFFF"},
-    {"selection_text_color",            "9ED0FF"},
-    {"selection_value_text_color",      "FF7777"},
+    {"selection_star_color",            "FFAA17"},
+    {"selection_text_color",            "FFFFFF"},
+    {"selection_value_text_color",      "00FFFF"},
     {"separator_alpha",                 "15"},
     {"separator_color",                 "404040"},
-    {"star_color",                      "FFFFFF"},
-    {"table_bg_alpha",                  "14"},
-    {"table_bg_color",                  "2C2C2C"},
+    {"star_color",                      "FFAA17"},
+    {"table_bg_alpha",                  "13"},
+    {"table_bg_color",                  "3F3F3F"},
     {"table_border_color",              "555555"},
-    {"table_info_text_color",           "9ED0FF"},
-    {"table_section_text_color",        "FFFFFF"},
+    {"table_info_text_color",           "FFFFFF"},
+    {"table_section_text_color",        "5DC5FB"},
     {"temperature_color",               "FFFFFF"},
     {"text_color",                      "FFFFFF"},
     {"text_separator_color",            "404040"},
@@ -340,14 +354,27 @@ constexpr ThemeDefault defaultThemeSettings[] = {
     {"trackbar_slider_border_color",    "505050"},
     {"trackbar_slider_color",           "606060"},
     {"trackbar_slider_malleable_color", "A0A0A0"},
-    {"ult_overlay_text_color",          "9ED0FF"},
+    {"ult_overlay_text_color",          "FFFFFF"},
     {"ult_overlay_version_text_color",  "00FFDD"},
-    {"ult_package_text_color",          "9ED0FF"},
+    {"ult_package_text_color",          "FFFFFF"},
     {"ult_package_version_text_color",  "00FFDD"},
-    {"warning_text_color",              "FF7777"},
-    {"widget_backdrop_alpha",           "15"},
+    {"warning_text_color",              "F63345"},
+    {"widget_backdrop_alpha",           "13"},
     {"widget_backdrop_color",           "000000"},
-    {"widget_border_color",             "555555"}
+    {"widget_border_color",             "555555"},
+    // ASAP: Packages coler.
+    {"accent_text_color",               "00FFDD"},
+    {"notice_text_color",               "00FFFF"},
+    // fpslocker
+    {"fps_accent_color",                "FF3333"},
+    {"fps_faild_color",                 "FF9999"},
+    // status-monitor-overlay
+    {"stm_bg_alpha",                    "10"},
+    {"stm_bg_color",                    "111111"},
+    {"stm_mimicbg_color",               "000000"},
+    {"stm_accent_color",                "00FFDD"},
+    {"stm_section_color",               "22DDFF"},
+    {"stm_text_color",                  "FFFFFF"}
 };
 const size_t defaultThemeSettingsCount = sizeof(defaultThemeSettings) / sizeof(defaultThemeSettings[0]);
 
@@ -510,6 +537,20 @@ void initializeThemeVars() {
     s2ToggleOnColor              = getColor("s2_toggle_on_color");
     s2ToggleOffColor             = getColor("s2_toggle_off_color");
     s2ToggleCircleColor          = getColor("s2_toggle_circle_color");
+
+    /* ASAP Color */
+    accentTextColor              = getColor("accent_text_color");
+    noticeTextColor              = getColor("notice_text_color");
+    // fpslocker
+    fpsAccentColor               = getColor("fps_accent_color");
+    fpsFaildColor                = getColor("fps_faild_color");
+    // status-monitor-overlay
+    stmBGAlpha                   = getAlpha("stm_bg_alpha");
+    stmBGColor                   = getColor("stm_bg_color", stmBGAlpha);
+    stmMimicBGColor              = getColor("stm_mimicbg_color");
+    stmAccentColor               = getColor("stm_accent_color");
+    stmSectionColor              = getColor("stm_section_color");
+    stmTextColor                 = getColor("stm_text_color");
 }
 
 
@@ -762,9 +803,9 @@ namespace impl {
     
         // Key combo — ultrahand first, tesla as fallback
         u64 decodedKeys = hlp::comboStringToKeys(getStr(ult::KEY_COMBO_STR.c_str()));
-        if (!decodedKeys)
+        /*if (!decodedKeys)
             decodedKeys = hlp::comboStringToKeys(
-                ult::parseValueFromIniSection(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR));
+                ult::parseValueFromIniSection(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR));*/
         if (decodedKeys) tsl::cfg::launchCombo = decodedKeys;
     
         // Datetime format
@@ -773,8 +814,8 @@ namespace impl {
         if (ult::datetimeFormat.empty()) ult::datetimeFormat = ult::DEFAULT_DT_FORMAT;
     
         // Language
-        std::string lang = getStr(ult::DEFAULT_LANG_STR.c_str(), "en");
-        if (lang.empty()) lang = "en";
+        std::string lang = getStr(ult::DEFAULT_LANG_STR.c_str(), "ko");
+        if (lang.empty()) lang = "ko";
     
         #ifdef UI_OVERRIDE_PATH
         {
