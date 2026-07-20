@@ -1070,6 +1070,20 @@ namespace tsl {
     extern Color trackBarFullColor;
     extern Color trackBarEmptyColor;
 
+    /* ASAP Color */
+    extern Color accentTextColor;
+    extern Color noticeTextColor;
+    // fpslocker
+    extern Color fpsAccentColor;
+    extern Color fpsFaildColor;
+    // status-monitor-overlay
+    extern size_t stmBGAlpha;
+    extern Color stmBGColor;
+    extern Color stmMimicBGColor;
+    extern Color stmAccentColor;
+    extern Color stmSectionColor;
+    extern Color stmTextColor;
+
     // Prepare a map of default settings
     struct ThemeDefault { const char* key; const char* value; };
     extern const ThemeDefault defaultThemeSettings[];
@@ -6472,7 +6486,7 @@ namespace tsl {
                     ult::noClickableItems.store(m_noClickableItems, std::memory_order_release);
             
                 const bool renderIsUltrahandMenu = (m_title == ult::CAPITAL_ULTRAHAND_PROJECT_NAME && 
-                                                     m_subtitle.find("Ultrahand Package") == std::string::npos && 
+                                                     m_subtitle.find("　") == std::string::npos && m_subtitle.find(" : ") == std::string::npos && 
                                                      m_subtitle.find("Ultrahand Script")  == std::string::npos);
                 
                 bool widgetDrawn = false;
@@ -6805,7 +6819,7 @@ namespace tsl {
                 
                 switch (c) {
                     case 'g': return (len == 5) ? tsl::Color{0x0,0xF,0x0,0xF} : defaultPackageColor;
-                    case 'r': return (len == 3) ? tsl::Color{0xF,0x2,0x4,0xF} : defaultPackageColor;
+                    case 'r': return (len == 3) ? tsl::Color{0xF,0x3,0x4,0xF} : defaultPackageColor;
                     case 'b': return (len == 4) ? tsl::Color{0x7,0x7,0xF,0xF} : defaultPackageColor;
                     case 'y': return (len == 6) ? tsl::Color{0xF,0xF,0x0,0xF} : defaultPackageColor;
                     case 'o': return (len == 6) ? tsl::Color{0xF,0xA,0x0,0xF} : defaultPackageColor;
@@ -14411,7 +14425,7 @@ namespace tsl {
     
     
     namespace impl {
-        static constexpr const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini";
+        // static constexpr const char* TESLA_CONFIG_FILE = "/config/tesla/config.ini";
         static constexpr const char* ULTRAHAND_CONFIG_FILE = "/config/ultrahand/config.ini";
 
         
@@ -14450,7 +14464,7 @@ namespace tsl {
             tsl::cfg::launchCombo = keys;
             const std::string comboStr = tsl::hlp::keysToComboString(keys);
             ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR, comboStr);
-            ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH,     ult::TESLA_STR,              ult::KEY_COMBO_STR, comboStr);
+            //ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH,     ult::TESLA_STR,              ult::KEY_COMBO_STR, comboStr);
         }
         
         static auto currentUnderscanPixels = std::make_pair(0, 0);
@@ -15046,12 +15060,12 @@ namespace tsl {
                                         if (FILE* f = std::fopen(ult::NOTIFICATIONS_FLAG_FILEPATH.c_str(), "w"))
                                             std::fclose(f);
                                     }
-                                    if (notification)
-                                        notification->show(ult::NOTIFY_HEADER+"API notifications enabled.", 22, 0);
+                                    if (tsl::notification)
+                                        notification->show(ult::NOTIFY_HEADER+ult::NOTIFY_ENABLED, 22, 0);
                                 } else {
                                     ult::deleteFileOrDirectory(ult::NOTIFICATIONS_FLAG_FILEPATH);
-                                    if (notification)
-                                        notification->show(ult::NOTIFY_HEADER+"API notifications disabled.", 22, 0);
+                                    if (tsl::notification)
+                                        notification->show(ult::NOTIFY_HEADER+ult::NOTIFY_DISABLED, 22, 0);
                                 }
                                 shData->keysDown &= ~KEY_MINUS;
                                 shData->keysHeld &= ~KEY_MINUS;
@@ -15066,7 +15080,7 @@ namespace tsl {
                     #if IS_LAUNCHER_DIRECTIVE
                         if (ult::updateMenuCombos) {
                             ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
-                            ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                            // ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
                             ult::updateMenuCombos = false;
                         }
                     #endif
@@ -15096,8 +15110,8 @@ namespace tsl {
                 #if IS_LAUNCHER_DIRECTIVE
                     else if (ult::updateMenuCombos && (((shData->keysHeld & tsl::cfg::launchCombo2) == tsl::cfg::launchCombo2) && shData->keysDown & tsl::cfg::launchCombo2)) {
                         std::swap(tsl::cfg::launchCombo, tsl::cfg::launchCombo2); // Swap the two launch combos
-                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
-                        ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
+                        ult::setIniFileValue(ult::ULTRAHAND_CONFIG_INI_PATH, ult::ULTRAHAND_PROJECT_NAME, ult::KEY_COMBO_STR , ult::ULTRAHAND_COMBO_STR);
+                        // ult::setIniFileValue(ult::TESLA_CONFIG_INI_PATH, ult::TESLA_STR, ult::KEY_COMBO_STR , ult::TESLA_COMBO_STR);
                         eventFire(&shData->comboEvent);
                         mainComboHasTriggered.store(true, std::memory_order_release);
                         ult::updateMenuCombos = false;
@@ -16552,7 +16566,7 @@ namespace tsl::cfg {
     u16 LayerPosY   = 0;
     u16 FramebufferWidth  = 0;
     u16 FramebufferHeight = 0;
-    u64 launchCombo = KEY_ZL | KEY_ZR | KEY_DDOWN;
+    u64 launchCombo = KEY_L | KEY_DDOWN | KEY_RSTICK;
     u64 launchCombo2 = KEY_L | KEY_DDOWN | KEY_RSTICK;
 }
 
